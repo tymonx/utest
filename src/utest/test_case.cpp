@@ -149,6 +149,14 @@ TestCase& TestCase::run(TestFunction test_run) noexcept {
     }
 
     run_teardown(test_params);
+
+    if (TestStatus::PASS == m_status) {
+        ++m_passed;
+    }
+    else {
+        ++m_failed;
+    }
+
     report(test_message::TestCaseEnd{*this});
 
     return *this;

@@ -43,7 +43,6 @@ if (CMAKE_BUILD_TYPE MATCHES "Release" OR NOT CMAKE_BUILD_TYPE)
     if (CMAKE_TOOLCHAIN_FILE AND CMAKE_SYSTEM_NAME MATCHES "Generic")
         set(CXX_FLAGS ${CXX_FLAGS}
             -Os
-            -s
             -DNDEBUG
             -fdata-sections
             -ffunction-sections
@@ -51,11 +50,11 @@ if (CMAKE_BUILD_TYPE MATCHES "Release" OR NOT CMAKE_BUILD_TYPE)
 
         set(LINKER_FLAGS ${LINKER_FLAGS}
             -Wl,--gc-sections
+            -Wl,--strip-all
         )
     else()
         set(CXX_FLAGS ${CXX_FLAGS}
             -O3
-            -s
             -DNDEBUG
             -fdata-sections
             -ffunction-sections
@@ -64,6 +63,7 @@ if (CMAKE_BUILD_TYPE MATCHES "Release" OR NOT CMAKE_BUILD_TYPE)
 
         set(LINKER_FLAGS ${LINKER_FLAGS}
             -Wl,--gc-sections
+            -Wl,--strip-all
             -z noexecstack
             -z relro
             -z now
@@ -79,6 +79,7 @@ elseif (CMAKE_BUILD_TYPE MATCHES "MinSizeRel")
 
     set(LINKER_FLAGS ${LINKER_FLAGS}
         -Wl,--gc-sections
+        -Wl,--strip-all
     )
 elseif (CMAKE_BUILD_TYPE MATCHES "Debug")
     set(CXX_FLAGS ${CXX_FLAGS}
@@ -103,3 +104,5 @@ set(CXX_FLAGS ${CXX_FLAGS}
     -Wno-c++98-compat
     -Wno-c++98-compat-pedantic
 )
+
+string(REPLACE ";" " " LINKER_FLAGS "${LINKER_FLAGS}")

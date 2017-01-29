@@ -84,10 +84,22 @@ private:
 
     void report(const TestMessage& test_message) noexcept;
 
+    TestSize passed() const noexcept;
+
+    TestSize failed() const noexcept;
+
+    TestSize test_cases_passed() const noexcept;
+
+    TestSize test_cases_failed() const noexcept;
+
     TestReporters m_reporters{};
     TestString m_name{};
     TestString m_file{};
     TestSize m_line{};
+    TestSize m_passed{0};
+    TestSize m_failed{0};
+    TestSize m_test_cases_passed{0};
+    TestSize m_test_cases_failed{0};
     TestStatus m_status{TestStatus::PASS};
 };
 
@@ -127,6 +139,26 @@ TestSuite::line() const noexcept -> TestSize {
 inline auto
 TestSuite::status() const noexcept -> TestStatus {
     return m_status;
+}
+
+inline auto
+TestSuite::passed() const noexcept -> TestSize {
+    return m_passed;
+}
+
+inline auto
+TestSuite::failed() const noexcept -> TestSize {
+    return m_failed;
+}
+
+inline auto
+TestSuite::test_cases_passed() const noexcept -> TestSize {
+    return m_test_cases_passed;
+}
+
+inline auto
+TestSuite::test_cases_failed() const noexcept -> TestSize {
+    return m_test_cases_failed;
 }
 
 }

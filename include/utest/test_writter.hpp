@@ -43,6 +43,7 @@
 #define UTEST_TEST_WRITTER_HPP
 
 #include <utest/test_string.hpp>
+#include <utest/test_color.hpp>
 
 namespace utest {
 
@@ -51,6 +52,8 @@ public:
     static TestWritter& get_default() noexcept;
 
     virtual void write(const TestString& str) noexcept = 0;
+
+    virtual void color(TestColor c) noexcept = 0;
 
     virtual ~TestWritter() noexcept;
 };

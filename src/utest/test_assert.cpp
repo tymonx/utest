@@ -96,9 +96,7 @@ TestAssert& TestAssert::operator<<(const void* ptr) noexcept {
         }
         else {
             char buffer[TestNumber::MAX_STRING_BUFFER];
-            TestSpan<char> address{buffer};
-
-            to_string(std::uintptr_t(ptr), address, 16);
+            auto address = to_string(std::uintptr_t(ptr), buffer, 16);
 
             if (!address.empty()) {
                 auto it1 = address.cend() - 1;
@@ -146,9 +144,7 @@ TestAssert& TestAssert::operator<<(const TestString& str) noexcept {
 TestAssert& TestAssert::operator<<(const TestNumber& number) noexcept {
     if (TestStatus::FAIL == m_status) {
         char buffer[TestNumber::MAX_STRING_BUFFER];
-        TestSpan<char> value{buffer};
-
-        to_string(number, value);
+        auto value = to_string(number, buffer);
 
         report(TestAssertExplanation{*this, value});
     }

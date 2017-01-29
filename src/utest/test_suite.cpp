@@ -64,10 +64,11 @@ void TestSuite::report(const TestMessage& test_message) noexcept {
 
 TestSuite& TestSuite::run(TestRun test_run) noexcept {
     report(test_message::TestSuiteBegin{*this});
+    TestSize test_cases_passed{0};
+    TestSize test_cases_failed{0};
 
     if (test_run) {
         TestCase test_case{*this};
-
 #if defined(UTEST_USE_EXCEPTIONS)
         try {
             test_run(test_case);
@@ -87,9 +88,25 @@ TestSuite& TestSuite::run(TestRun test_run) noexcept {
         test_run(test_case);
         m_status = test_case.status();
 #endif
+        test_cases_passed = test_case.passed();
+        test_cases_failed = test_case.failed();
+    }
+    else {
+        m_status = TestStatus::PASS;
     }
 
-    report(test_message::TestSuiteEnd{*this});
+    m_test_cases_passed += test_cases_passed;
+    m_test_cases_failed += test_cases_failed;
+
+    if (TestStatus::PASS == m_status) {
+        ++m_passed;
+    }
+    else {
+        ++m_failed;
+    }
+
+    report(test_message::TestSuiteEnd{*this,
+            test_cases_passed, test_cases_failed});
 
     return *this;
 }

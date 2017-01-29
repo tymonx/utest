@@ -131,60 +131,118 @@ bool utest::operator<(const TestNumber& lhs, const TestNumber& rhs) noexcept {
     return ok;
 }
 
+static void integer_to_string_base(const TestNumber& number,
+        TestSpan<char>& str, Uint base = 10) noexcept {
+    auto value = number.is_signed() ? Uint(-Int(number)) : Uint(number);
+    auto ptr = str.begin();
+    TestSize size = 0;
+
+    do {
+        *(ptr++) = STRING_BASE[TestString::size_type(value % base)];
+        value /= base;
+        ++size;
+    } while (0 != value);
+
+    if (number.is_signed()) {
+        *(ptr++) = '-';
+        ++size;
+    }
+
+    auto it1 = str.begin();
+    auto it2 = str.begin() + TestSpan<char>::difference_type(size) - 1;
+
+    while (it1 < it2) {
+        auto ch = *it2;
+        *(it2--) = *it1;
+        *(it1++) = ch;
+    }
+
+    str = {str.data(), size};
+}
+
 static void integer_to_string(const TestNumber& number,
         TestSpan<char>& str, Uint base = 10) noexcept {
-    if ((TestString::size_type(base) <= STRING_BASE.size()) && !str.empty()) {
-        TestSize size = 0;
-        auto value = number.is_signed() ? Uint(-Int(number)) : Uint(number);
-        auto ptr = str.begin();
-
-        do {
-            *(ptr++) = STRING_BASE[TestString::size_type(value % base)];
-            value /= base;
-            ++size;
-        } while ((0 != value) && (size < str.size()));
-
-        if (number.is_signed() && (size < str.size())) {
-            *(ptr++) = '-';
-            ++size;
-        }
-
-        auto it1 = str.begin();
-        auto it2 = str.begin() + TestSpan<char>::difference_type(size) - 1;
-
-        while (it1 < it2) {
-            auto ch = *it2;
-            *(it2--) = *it1;
-            *(it1++) = ch;
-        }
-
-        str = {str.data(), size};
+    if (str.size() >= TestNumber::MAX_INTEGER_BUFFER && (0 != base)
+            && (base <= STRING_BASE.size())) {
+        integer_to_string_base(number, str, base);
+    }
+    else {
+        str = {str.data(), 0};
     }
 }
 
 static void floating_to_string(const TestNumber& number,
         TestSpan<char>& str) noexcept {
-    if (!str.empty()) {
-        TestSize size = 0;
+    TestSize size = 0;
+
+    if (str.size() >= TestNumber::MAX_FLOATING_BUFFER) {
+        int exp = 0;
         auto value = Double(number);
         auto ptr = str.begin();
 
-        if (number.is_signed()) {
+        if (std::signbit(value)) {
             value = std::abs(value);
             *(ptr++) = '-';
             ++size;
         }
 
+        if (value < std::numeric_limits<Double>::epsilon()) {
+            *(ptr++) = '0';
+            *(ptr++) = '.';
+            *(ptr++) = '0';
+            size += 3;
+        }
+        else {
+            Double integral;
+            Double fractional;
 
+            while (value >= 10.0) {
+                value /= 10;
+                ++exp;
+            }
+
+            while (value < 1.0) {
+                value *= 10;
+                --exp;
+            }
+
+            *(ptr++) = STRING_BASE[TestString::size_type(value)];
+            ++size;
+
+            *(ptr++) = '.';
+            ++size;
+
+            do {
+                value *= 10;
+                fractional = std::modf(value, &integral);
+                *(ptr++) = STRING_BASE[TestString::size_type(integral) % 10];
+                ++size;
+            } while (fractional >= std::numeric_limits<Double>::epsilon());
+
+            if (0 != exp) {
+                *(ptr++) = 'e';
+                ++size;
+
+                TestSpan<char> tmp{&(*ptr), 0};
+                integer_to_string_base(exp, tmp);
+                size += tmp.size();
+            }
+        }
     }
+
+    str = {str.data(), size};
 }
 
-void utest::to_string(const TestNumber& number, TestSpan<char>& str,
+TestSpan<char> utest::to_string(const TestNumber& number, const TestSpan<char>& str,
         int base) noexcept {
+    TestSpan<char> tmp{str};
+
     if (number.is_floating()) {
-        floating_to_string(number, str);
+        floating_to_string(number, tmp);
     }
     else {
-        integer_to_string(number, str, Uint(base));
+        integer_to_string(number, tmp, Uint(base));
     }
+
+    return tmp;
 }

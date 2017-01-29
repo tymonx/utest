@@ -40,15 +40,16 @@
  */
 
 #include <utest/test_reporter.hpp>
-#include <utest/test_reporter/google_test_embedded.hpp>
+#include <utest/test_reporter/google_test.hpp>
 #include <utest/test_writter.hpp>
+#include <utest/test_number.hpp>
 
 using utest::TestReporter;
 
 static utest::TestWritter* g_default[1] {&utest::TestWritter::get_default()};
 
 TestReporter& TestReporter::get_default() noexcept {
-    static test_reporter::GoogleTestEmbedded instance;
+    static test_reporter::GoogleTest instance;
     return instance;
 }
 
@@ -60,6 +61,24 @@ void TestReporter::write(const TestString& str) noexcept {
     for (auto writter : m_writters) {
         if (writter) {
             writter->write(str);
+        }
+    }
+}
+
+void TestReporter::write(const TestNumber& number, const TestString& str) noexcept {
+    char buffer[TestNumber::MAX_STRING_BUFFER];
+
+    write(to_string(number, buffer));
+    write(str);
+    if (number != TestNumber{1}) {
+        write("s");
+    }
+}
+
+void TestReporter::color(TestColor c) noexcept {
+    for (auto writter : m_writters) {
+        if (writter) {
+            writter->color(c);
         }
     }
 }

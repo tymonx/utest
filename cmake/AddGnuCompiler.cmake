@@ -49,6 +49,7 @@ if (CMAKE_BUILD_TYPE MATCHES "Release" OR NOT CMAKE_BUILD_TYPE)
 
         set(LINKER_FLAGS ${LINKER_FLAGS}
             -Wl,--gc-sections
+            -Wl,--strip-all
         )
 
         if (LTO)
@@ -67,11 +68,24 @@ if (CMAKE_BUILD_TYPE MATCHES "Release" OR NOT CMAKE_BUILD_TYPE)
 
         set(LINKER_FLAGS ${LINKER_FLAGS}
             -Wl,--gc-sections
+            -Wl,--strip-all
             -z noexecstack
             -z relro
             -z now
         )
     endif()
+elseif (CMAKE_BUILD_TYPE MATCHES "MinSizeRel")
+    set(CXX_FLAGS ${CXX_FLAGS}
+        -Os
+        -DNDEBUG
+        -fdata-sections
+        -ffunction-sections
+    )
+
+    set(LINKER_FLAGS ${LINKER_FLAGS}
+        -Wl,--gc-sections
+        -Wl,--strip-all
+    )
 elseif (CMAKE_BUILD_TYPE MATCHES "Debug")
     set(CXX_FLAGS ${CXX_FLAGS}
         -O0

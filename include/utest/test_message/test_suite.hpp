@@ -97,13 +97,27 @@ public:
     using TestSuiteProxy::file;
     using TestSuiteProxy::line;
     using TestSuiteProxy::status;
+
+    TestSize tests_passed() const noexcept {
+        return m_passed;
+    }
+
+    TestSize tests_failed() const noexcept {
+        return m_failed;
+    }
 private:
     friend class utest::TestSuite;
 
-    TestSuiteEnd(const utest::TestSuite& test_suite) noexcept :
+    TestSuiteEnd(const utest::TestSuite& test_suite,
+            TestSize passed, TestSize failed) noexcept :
         TestMessage{TestMessage::TEST_SUITE_END},
-        TestSuiteProxy{test_suite}
+        TestSuiteProxy{test_suite},
+        m_passed{passed},
+        m_failed{failed}
     { }
+
+    TestSize m_passed{};
+    TestSize m_failed{};
 };
 
 class TestSuiteException : public TestMessage, public TestException {
