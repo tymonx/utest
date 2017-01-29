@@ -43,8 +43,9 @@
 #define UTEST_TEST_NUMBER_HPP
 
 #include <utest/test_size.hpp>
-#include <cstdint>
 #include <type_traits>
+#include <cstdint>
+#include <limits>
 #include <cmath>
 
 namespace utest {
@@ -54,11 +55,20 @@ class TestSpan;
 
 class TestNumber {
 public:
-    static constexpr TestSize MAX_STRING_BUFFER{32};
-
     using Double = double;
     using Int = std::intmax_t;
     using Uint = std::uintmax_t;
+
+
+    static constexpr TestSize MAX_INTEGER_BUFFER =
+        std::numeric_limits<Int>::digits10 + 1;
+
+    static constexpr TestSize MAX_FLOATING_BUFFER =
+        std::numeric_limits<Double>::max_digits10 + 7;
+
+    static constexpr TestSize MAX_STRING_BUFFER =
+        (MAX_INTEGER_BUFFER < MAX_FLOATING_BUFFER)
+        ? MAX_FLOATING_BUFFER : MAX_INTEGER_BUFFER;
 
     template<typename T>
     using enable_floating = typename std::enable_if<

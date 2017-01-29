@@ -105,7 +105,11 @@ public:
 
     TestAssert& operator<<(unsigned int value) noexcept;
 
-    TestAssert& operator<<(const TestNumber& str) noexcept;
+    TestAssert& operator<<(float number) noexcept;
+
+    TestAssert& operator<<(double number) noexcept;
+
+    TestAssert& operator<<(const TestNumber& number) noexcept;
 private:
     void report(const TestMessage& test_message) noexcept;
 
@@ -158,6 +162,16 @@ TestAssert::operator<<(int value) noexcept -> TestAssert& {
 
 inline auto
 TestAssert::operator<<(unsigned int value) noexcept -> TestAssert& {
+    return operator<<(TestNumber{value});
+}
+
+inline auto
+TestAssert::operator<<(float value) noexcept -> TestAssert& {
+    return operator<<(TestNumber{value});
+}
+
+inline auto
+TestAssert::operator<<(double value) noexcept -> TestAssert& {
     return operator<<(TestNumber{value});
 }
 
