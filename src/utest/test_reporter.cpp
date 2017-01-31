@@ -65,14 +65,9 @@ void TestReporter::write(const TestString& str) noexcept {
     }
 }
 
-void TestReporter::write(const TestNumber& number, const TestString& str) noexcept {
+void TestReporter::write(const TestNumber& number) noexcept {
     char buffer[TestNumber::MAX_STRING_BUFFER];
-
     write(to_string(number, buffer));
-    write(str);
-    if (number != TestNumber{1}) {
-        write("s");
-    }
 }
 
 void TestReporter::color(TestColor c) noexcept {

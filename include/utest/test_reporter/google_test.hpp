@@ -43,8 +43,13 @@
 #define UTEST_TEST_REPORTER_GOOGLE_TEST_HPP
 
 #include <utest/test_reporter.hpp>
+#include <utest/test_message.hpp>
 
 namespace utest {
+
+class TestNumber;
+class TestString;
+
 namespace test_reporter {
 
 class GoogleTest final : public TestReporter {
@@ -55,34 +60,30 @@ public:
 
     virtual ~GoogleTest() noexcept;
 private:
-    void display_entry() noexcept;
+    using TestReporter::write;
 
-    void display_section() noexcept;
+    void failure(const TestString& file, const TestNumber& line) noexcept;
 
-    void display_ok() noexcept;
+    template<typename T>
+    void failure(const T& message) noexcept;
 
-    void display_run() noexcept;
+    void write_exception(const TestString& message) noexcept;
 
-    void display_passed() noexcept;
+    void write(const TestNumber& number, const TestString& str) noexcept;
 
-    void display_failed() noexcept;
+    template<bool T>
+    void write(const TestString& str) noexcept;
 
-    void test_begin(const TestMessage& message) noexcept;
-
-    void test_end(const TestMessage& message) noexcept;
-
-    void test_suite_begin(const TestMessage& message) noexcept;
-
-    void test_suite_end(const TestMessage& message) noexcept;
-
-    void test_case_begin(const TestMessage& message) noexcept;
-
-    void test_case_end(const TestMessage& message) noexcept;
-
-    void close_explanation() noexcept;
+    template<TestMessage::Type T>
+    void report(const TestMessage& message) noexcept;
 
     bool m_explanation{false};
 };
+
+template<typename T> inline
+void GoogleTest::failure(const T& message) noexcept {
+    failure(message.file(), message.line());
+}
 
 }
 }

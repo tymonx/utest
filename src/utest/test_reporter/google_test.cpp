@@ -66,193 +66,294 @@ static constexpr TestString TEST_SUITE  {" test suite"};
 static constexpr TestString FROM        {" from "};
 static constexpr TestString ENDL        {"\n"};
 
-void GoogleTest::close_explanation() noexcept {
+static constexpr TestString EXCEPTION_BEGIN
+    {"C++ exception with description \""};
+
+static constexpr TestString EXCEPTION_END
+    {"\" thrown in the "};
+
+namespace utest {
+namespace test_reporter {
+
+template<>
+void GoogleTest::write<true>(const TestString& str) noexcept {
+    color(TestColor::GREEN);
+    write(str);
+    color(TestColor::DEFAULT);
+}
+
+template<>
+void GoogleTest::write<false>(const TestString& str) noexcept {
+    color(TestColor::RED);
+    write(str);
+    color(TestColor::DEFAULT);
+}
+
+template<>
+void GoogleTest::report<TestMessage::TEST_BEGIN>(
+        const TestMessage& message) noexcept {
+    const auto& msg = get<TestBegin>(message);
+
+    write<true>(ENTRY);
+    write("Running registered ");
+    write(msg.tests_registered(), TEST);
+    write(ENDL);
+
+    write<true>(SECTION);
+    write("Global test environment set-up\n");
+}
+
+template<>
+void GoogleTest::report<TestMessage::TEST_END>(
+        const TestMessage& message) noexcept {
+    const auto& msg = get<TestEnd>(message);
+
+    write<true>(SECTION);
+    write("Global test environment tear-down\n");
+
+    write<true>(ENTRY);
+    write(msg.test_cases(), TEST);
+    write(FROM);
+    write(msg.test_suites(), TEST_SUITE);
+    write(" ran\n");
+
+    write<true>(PASSED);
+    write(msg.test_cases_passed(), TEST);
+    write(ENDL);
+
+    if (msg.test_cases_failed()) {
+        write<false>(FAILED);
+        write(msg.test_cases_failed(), TEST);
+        write(ENDL);
+    }
+}
+
+template<>
+void GoogleTest::report<TestMessage::TEST_SUITE_BEGIN>(
+        const TestMessage& message) noexcept {
+    const auto& msg = get<TestSuiteBegin>(message);
+
+    write<true>(SECTION);
+    write("Running tests from ", msg.name(), ENDL);
+}
+
+template<>
+void GoogleTest::report<TestMessage::TEST_SUITE_END>(
+        const TestMessage& message) noexcept {
+    const auto& msg = get<TestSuiteEnd>(message);
+
+    write<true>(SECTION);
+    write(msg.tests_passed() + msg.tests_failed(), TEST);
+    write(FROM, msg.name(), ENDL);
+
+    write<true>(PASSED);
+    write(msg.tests_passed(), TEST);
+    write(ENDL);
+
+    if (msg.tests_failed()) {
+        write<false>(FAILED);
+        write(msg.tests_failed(), TEST);
+        write(ENDL);
+    }
+
+    write(ENDL);
+}
+
+template<>
+void GoogleTest::report<TestMessage::TEST_CASE_BEGIN>(
+        const TestMessage& message) noexcept {
+    const auto& msg = get<TestCaseBegin>(message);
+
+    write<true>(RUN);
+    write(msg.name(), ENDL);
+}
+
+template<>
+void GoogleTest::report<TestMessage::TEST_CASE_END>(
+        const TestMessage& message) noexcept {
+    const auto& msg = get<TestCaseEnd>(message);
+
+    if (TestStatus::PASS == msg.status()) {
+        write<true>(OK);
+    }
+    else {
+        write<false>(FAILED);
+    }
+    write(msg.name(), ENDL);
+}
+
+template<>
+void GoogleTest::report<TestMessage::TEST_ASSERT_EXPLANATION>(
+        const TestMessage& message) noexcept {
+    m_explanation = true;
+    write(get<TestAssertExplanation>(message).explanation());
+}
+
+template<>
+void GoogleTest::report<TestMessage::TEST_ASSERT_END>(
+        const TestMessage&) noexcept {
     if (m_explanation) {
         m_explanation = false;
         write(ENDL);
     }
 }
 
+template<>
+void GoogleTest::report<TestMessage::TEST_ASSERT_TRUE>(
+        const TestMessage& message) noexcept {
+    failure(get<TestAssertTrue>(message));
+    write("  Actual: false\n");
+    write("Expected: true\n");
+}
+
+template<>
+void GoogleTest::report<TestMessage::TEST_ASSERT_FALSE>(
+        const TestMessage& message) noexcept {
+    failure(get<TestAssertFalse>(message));
+    write("  Actual: true\n");
+    write("Expected: false\n");
+}
+
+template<>
+void GoogleTest::report<TestMessage::TEST_ASSERT_EQUAL>(
+        const TestMessage& message) noexcept {
+    failure(get<TestAssertEqual>(message));
+    write("Test assert equal number/string/object\n");
+}
+
+template<>
+void GoogleTest::report<TestMessage::TEST_ASSERT_NOT_EQUAL>(
+        const TestMessage& message) noexcept {
+    failure(get<TestAssertNotEqual>(message));
+    write("Test assert not equal number/string/object\n");
+}
+
+template<>
+void GoogleTest::report<TestMessage::TEST_RUNNER_EXCEPTION>(
+        const TestMessage& message) noexcept {
+    write_exception(get<TestRunnerException>(message).what());
+    write("test runner body\n");
+}
+
+template<>
+void GoogleTest::report<TestMessage::TEST_SUITE_EXCEPTION>(
+        const TestMessage& message) noexcept {
+    write_exception(get<TestSuiteException>(message).what());
+    write("test suite body\n");
+}
+
+template<>
+void GoogleTest::report<TestMessage::TEST_CASE_EXCEPTION>(
+        const TestMessage& message) noexcept {
+    write_exception(get<TestCaseException>(message).what());
+    write("test case body\n");
+}
+
+template<>
+void GoogleTest::report<TestMessage::TEST_CASE_SETUP_EXCEPTION>(
+        const TestMessage& message) noexcept {
+    write_exception(get<TestCaseSetupException>(message).what());
+    write("test case setup body\n");
+}
+
+template<>
+void GoogleTest::report<TestMessage::TEST_CASE_TEARDOWN_EXCEPTION>(
+        const TestMessage& message) noexcept {
+    write_exception(get<TestCaseTeardownException>(message).what());
+    write("test case teardown body\n");
+}
+
+}
+}
+
 void GoogleTest::report(const TestMessage& message) noexcept {
     switch (message.type()) {
     case TestMessage::TEST_BEGIN:
-        test_begin(message);
-        break;
-    case TestMessage::TEST_SUITE_BEGIN:
-        test_suite_begin(message);
-        break;
-    case TestMessage::TEST_CASE_BEGIN:
-        test_case_begin(message);
-        break;
-    case TestMessage::TEST_CASE_SETUP:
-        break;
-    case TestMessage::TEST_ASSERT_EXPLANATION:
-        m_explanation = true;
-        write(get<TestAssertExplanation>(message).explanation());
-        break;
-    case TestMessage::TEST_ASSERT_TRUE:
-        write("Test assert true\n");
-        break;
-    case TestMessage::TEST_ASSERT_FALSE:
-        write("Test assert false\n");
-        break;
-    case TestMessage::TEST_ASSERT_EQUAL:
-        write("Test assert equal number/string/object\n");
-        break;
-    case TestMessage::TEST_ASSERT_NOT_EQUAL:
-        write("Test assert not equal number/string/object\n");
-        break;
-    case TestMessage::TEST_ASSERT_END:
-        close_explanation();
-        break;
-    case TestMessage::TEST_CASE_TEARDOWN:
-        break;
-    case TestMessage::TEST_CASE_END:
-        test_case_end(message);
-        break;
-    case TestMessage::TEST_SUITE_END:
-        test_suite_end(message);
+        report<TestMessage::TEST_BEGIN>(message);
         break;
     case TestMessage::TEST_END:
-        test_end(message);
+        report<TestMessage::TEST_END>(message);
+        break;
+    case TestMessage::TEST_SUITE_BEGIN:
+        report<TestMessage::TEST_SUITE_BEGIN>(message);
+        break;
+    case TestMessage::TEST_SUITE_END:
+        report<TestMessage::TEST_SUITE_END>(message);
+        break;
+    case TestMessage::TEST_CASE_BEGIN:
+        report<TestMessage::TEST_CASE_BEGIN>(message);
+        break;
+    case TestMessage::TEST_CASE_END:
+        report<TestMessage::TEST_CASE_END>(message);
+        break;
+    case TestMessage::TEST_ASSERT_EXPLANATION:
+        report<TestMessage::TEST_ASSERT_EXPLANATION>(message);
+        break;
+    case TestMessage::TEST_ASSERT_END:
+        report<TestMessage::TEST_ASSERT_END>(message);
+        break;
+    case TestMessage::TEST_ASSERT_TRUE:
+        report<TestMessage::TEST_ASSERT_TRUE>(message);
+        break;
+    case TestMessage::TEST_ASSERT_FALSE:
+        report<TestMessage::TEST_ASSERT_FALSE>(message);
+        break;
+    case TestMessage::TEST_ASSERT_EQUAL:
+        report<TestMessage::TEST_ASSERT_EQUAL>(message);
+        break;
+    case TestMessage::TEST_ASSERT_NOT_EQUAL:
+        report<TestMessage::TEST_ASSERT_NOT_EQUAL>(message);
         break;
     case TestMessage::TEST_RUNNER_EXCEPTION:
-        write("Test runner exception: ");
-        write(get<TestRunnerException>(message).what());
-        write("\n");
+        report<TestMessage::TEST_RUNNER_EXCEPTION>(message);
         break;
     case TestMessage::TEST_SUITE_EXCEPTION:
-        write("Test suite exception: ");
-        write(get<TestSuiteException>(message).what());
-        write("\n");
+        report<TestMessage::TEST_SUITE_EXCEPTION>(message);
         break;
     case TestMessage::TEST_CASE_EXCEPTION:
-        write("Test case exception: ");
-        write(get<TestCaseException>(message).what());
-        write("\n");
+        report<TestMessage::TEST_CASE_EXCEPTION>(message);
         break;
     case TestMessage::TEST_CASE_SETUP_EXCEPTION:
-        write("Test case setup exception: ");
-        write(get<TestCaseSetupException>(message).what());
-        write("\n");
+        report<TestMessage::TEST_CASE_SETUP_EXCEPTION>(message);
         break;
     case TestMessage::TEST_CASE_TEARDOWN_EXCEPTION:
-        write("Test case teardown exception: ");
-        write(get<TestCaseTeardownException>(message).what());
-        write("\n");
+        report<TestMessage::TEST_CASE_TEARDOWN_EXCEPTION>(message);
         break;
+    case TestMessage::TEST_CASE_SETUP:
+    case TestMessage::TEST_CASE_TEARDOWN:
     default:
         break;
     }
 }
 
-void GoogleTest::display_entry() noexcept {
-    color(TestColor::GREEN);
-    write(ENTRY);
-    color(TestColor::DEFAULT);
+void GoogleTest::write_exception(const TestString& message) noexcept {
+    write(EXCEPTION_BEGIN, message, EXCEPTION_END);
 }
 
-void GoogleTest::display_section() noexcept {
-    color(TestColor::GREEN);
-    write(SECTION);
-    color(TestColor::DEFAULT);
+void GoogleTest::write(const TestNumber& number,
+        const TestString& str) noexcept {
+    write(number);
+    write(str);
+    if (number != TestNumber{1}) { write("s"); }
 }
 
-void GoogleTest::display_run() noexcept {
-    color(TestColor::GREEN);
-    write(RUN);
-    color(TestColor::DEFAULT);
-}
-
-void GoogleTest::display_ok() noexcept {
-    color(TestColor::GREEN);
-    write(OK);
-    color(TestColor::DEFAULT);
-}
-
-void GoogleTest::display_passed() noexcept {
-    color(TestColor::GREEN);
-    write(PASSED);
-    color(TestColor::DEFAULT);
-}
-
-void GoogleTest::display_failed() noexcept {
-    color(TestColor::RED);
-    write(FAILED);
-    color(TestColor::DEFAULT);
-}
-
-void GoogleTest::test_begin(const TestMessage& message) noexcept {
-    const auto& msg = get<TestBegin>(message);
-
-    display_entry();
-    write("Running registered ", msg.tests_registered(), TEST, ENDL);
-
-    display_section();
-    write("Global test environment set-up\n");
-}
-
-void GoogleTest::test_end(const TestMessage& message) noexcept {
-    const auto& msg = get<TestEnd>(message);
-
-    display_section();
-    write("Global test environment tear-down\n");
-
-    display_entry();
-    write(msg.test_cases(), TEST, FROM, msg.test_suites(),
-            TEST_SUITE, " ran\n");
-
-    display_passed();
-    write(msg.test_cases_passed(), TEST, ENDL);
-
-    if (msg.test_cases_failed()) {
-        display_failed();
-        write(msg.test_cases_failed(), TEST, ENDL);
-    }
-}
-
-void GoogleTest::test_suite_begin(const TestMessage& message) noexcept {
-    const auto& msg = get<TestSuiteBegin>(message);
-
-    display_section();
-    write("Running tests from ", msg.name(), ENDL);
-}
-
-void GoogleTest::test_suite_end(const TestMessage& message) noexcept {
-    const auto& msg = get<TestSuiteEnd>(message);
-
-    display_section();
-    write(msg.tests_passed() + msg.tests_failed(), TEST, FROM,
-            msg.name(), ENDL);
-
-    display_passed();
-    write(msg.tests_passed(), TEST, ENDL);
-
-    if (msg.tests_failed()) {
-        display_failed();
-        write(msg.tests_failed(), TEST, ENDL);
-    }
-
-    write(ENDL);
-}
-
-void GoogleTest::test_case_begin(const TestMessage& message) noexcept {
-    const auto& msg = get<TestCaseBegin>(message);
-
-    display_run();
-    write(msg.name(), ENDL);
-}
-
-void GoogleTest::test_case_end(const TestMessage& message) noexcept {
-    const auto& msg = get<TestCaseEnd>(message);
-
-    if (TestStatus::PASS == msg.status()) {
-        display_ok();
+void GoogleTest::failure(const TestString& file,
+        const TestNumber& line) noexcept {
+    if (!file.empty()) {
+        write(file);
     }
     else {
-        display_failed();
+        write("unknown file");
     }
-    write(msg.name(), ENDL);
+
+    write(":");
+
+    if (line > TestNumber{0}) {
+        write(line);
+        write(":");
+    }
+
+    write(" Failure\n");
 }
 
 GoogleTest::~GoogleTest() noexcept { }

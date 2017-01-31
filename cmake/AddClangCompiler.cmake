@@ -40,35 +40,21 @@ set(CXX_FLAGS
 set(LINKER_FLAGS)
 
 if (CMAKE_BUILD_TYPE MATCHES "Release" OR NOT CMAKE_BUILD_TYPE)
-    if (CMAKE_TOOLCHAIN_FILE AND CMAKE_SYSTEM_NAME MATCHES "Generic")
-        set(CXX_FLAGS ${CXX_FLAGS}
-            -Os
-            -DNDEBUG
-            -fdata-sections
-            -ffunction-sections
-        )
+    set(CXX_FLAGS ${CXX_FLAGS}
+        -O3
+        -DNDEBUG
+        -fdata-sections
+        -ffunction-sections
+        -fstack-protector-strong
+    )
 
-        set(LINKER_FLAGS ${LINKER_FLAGS}
-            -Wl,--gc-sections
-            -Wl,--strip-all
-        )
-    else()
-        set(CXX_FLAGS ${CXX_FLAGS}
-            -O3
-            -DNDEBUG
-            -fdata-sections
-            -ffunction-sections
-            -fstack-protector-strong
-        )
-
-        set(LINKER_FLAGS ${LINKER_FLAGS}
-            -Wl,--gc-sections
-            -Wl,--strip-all
-            -z noexecstack
-            -z relro
-            -z now
-        )
-    endif()
+    set(LINKER_FLAGS ${LINKER_FLAGS}
+        -Wl,--gc-sections
+        -Wl,--strip-all
+        -z noexecstack
+        -z relro
+        -z now
+    )
 elseif (CMAKE_BUILD_TYPE MATCHES "MinSizeRel")
     set(CXX_FLAGS ${CXX_FLAGS}
         -Os
@@ -79,7 +65,6 @@ elseif (CMAKE_BUILD_TYPE MATCHES "MinSizeRel")
 
     set(LINKER_FLAGS ${LINKER_FLAGS}
         -Wl,--gc-sections
-        -Wl,--strip-all
     )
 elseif (CMAKE_BUILD_TYPE MATCHES "Debug")
     set(CXX_FLAGS ${CXX_FLAGS}

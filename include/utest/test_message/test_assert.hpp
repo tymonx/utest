@@ -55,16 +55,16 @@ namespace utest {
 namespace test_message {
 
 class TestAssertProxy {
-protected:
-    TestAssertProxy(const TestAssert& test_assert) noexcept :
-        m_test_assert{test_assert}
-    { }
-
+public:
     const TestString& file() const noexcept;
 
     TestSize line() const noexcept;
 
     TestStatus status() const noexcept;
+protected:
+    TestAssertProxy(const TestAssert& test_assert) noexcept :
+        m_test_assert{test_assert}
+    { }
 private:
     const TestAssert& m_test_assert;
 };

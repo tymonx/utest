@@ -68,15 +68,13 @@ public:
 protected:
     void write(const TestString& str) noexcept;
 
-    void write(const TestNumber& number, const TestString& str) noexcept;
+    void write(const TestNumber& number) noexcept;
 
     template<TestSize... N>
-    void write(const TestNumber& number, const TestString& str,
-            const char (&...args)[N]) noexcept;
+    void write(const TestNumber& number, const char (&...args)[N]) noexcept;
 
     template<typename... Args>
-    void write(const TestNumber& number, const TestString& str,
-            const Args&... args) noexcept;
+    void write(const TestNumber& number, const Args&... args) noexcept;
 
     template<TestSize... N>
     void write(const TestString& str, const char (&...args)[N]) noexcept;
@@ -95,22 +93,23 @@ TestReporter::TestReporter(const TestWritters& test_writters) noexcept :
 { }
 
 template<TestSize... N>
-void TestReporter::write(const TestString& str, const char (&...args)[N]) noexcept {
+void TestReporter::write(const TestString& str,
+        const char (&...args)[N]) noexcept {
     write(str);
     write(args...);
 }
 
 template<TestSize... N>
-void TestReporter::write(const TestNumber& number, const TestString& str,
+void TestReporter::write(const TestNumber& number,
         const char (&...args)[N]) noexcept {
-    write(number, str);
+    write(number);
     write(args...);
 }
 
 template<typename... Args>
-void TestReporter::write(const TestNumber& number, const TestString& str,
+void TestReporter::write(const TestNumber& number,
         const Args&... args) noexcept {
-    write(number, str);
+    write(number);
     write(args...);
 }
 
