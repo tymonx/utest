@@ -114,6 +114,10 @@ private:
 
     void test_execute(TestParams& test_params, TestFunction test_run);
 
+    TestSize passed() const noexcept;
+
+    TestSize failed() const noexcept;
+
     TestReporters m_reporters{};
     TestContext m_context{};
     TestFunction m_setup{};
@@ -121,6 +125,8 @@ private:
     TestString m_name{};
     TestString m_file{};
     TestSize m_line{};
+    TestSize m_passed{};
+    TestSize m_failed{};
     TestStatus m_status{TestStatus::PASS};
 };
 
@@ -214,6 +220,16 @@ TestCase::line() const noexcept -> TestSize {
 inline auto
 TestCase::status() const noexcept -> TestStatus {
     return m_status;
+}
+
+inline auto
+TestCase::passed() const noexcept -> TestSize {
+    return m_passed;
+}
+
+inline auto
+TestCase::failed() const noexcept -> TestSize {
+    return m_failed;
 }
 
 }

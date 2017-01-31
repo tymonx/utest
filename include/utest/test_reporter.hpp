@@ -44,11 +44,13 @@
 
 #include <utest/test_span.hpp>
 #include <utest/test_string.hpp>
+#include <utest/test_color.hpp>
 
 namespace utest {
 
 class TestMessage;
 class TestWritter;
+class TestNumber;
 
 class TestReporter {
 public:
@@ -66,6 +68,24 @@ public:
 protected:
     void write(const TestString& str) noexcept;
 
+    void write(const TestNumber& number, const TestString& str) noexcept;
+
+    template<TestSize... N>
+    void write(const TestNumber& number, const TestString& str,
+            const char (&...args)[N]) noexcept;
+
+    template<typename... Args>
+    void write(const TestNumber& number, const TestString& str,
+            const Args&... args) noexcept;
+
+    template<TestSize... N>
+    void write(const TestString& str, const char (&...args)[N]) noexcept;
+
+    template<typename... Args>
+    void write(const TestString& str, const Args&... args) noexcept;
+
+    void color(TestColor c) noexcept;
+
     TestWritters m_writters{};
 };
 
@@ -73,6 +93,32 @@ inline
 TestReporter::TestReporter(const TestWritters& test_writters) noexcept :
     m_writters{test_writters}
 { }
+
+template<TestSize... N>
+void TestReporter::write(const TestString& str, const char (&...args)[N]) noexcept {
+    write(str);
+    write(args...);
+}
+
+template<TestSize... N>
+void TestReporter::write(const TestNumber& number, const TestString& str,
+        const char (&...args)[N]) noexcept {
+    write(number, str);
+    write(args...);
+}
+
+template<typename... Args>
+void TestReporter::write(const TestNumber& number, const TestString& str,
+        const Args&... args) noexcept {
+    write(number, str);
+    write(args...);
+}
+
+template<typename... Args>
+void TestReporter::write(const TestString& str, const Args&... args) noexcept {
+    write(str);
+    write(args...);
+}
 
 }
 

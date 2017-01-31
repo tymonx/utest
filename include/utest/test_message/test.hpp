@@ -69,37 +69,45 @@ private:
 
 class TestEnd : public TestMessage {
 public:
-    TestSize tests_registered() const noexcept {
-        return m_tests_registered;
+    TestSize test_suites_passed() const noexcept {
+        return m_test_suites_passed;
     }
 
-    TestSize tests_executed() const noexcept {
-        return m_tests_executed;
+    TestSize test_suites_failed() const noexcept {
+        return m_test_suites_failed;
     }
 
-    TestSize tests_passed() const noexcept {
-        return m_tests_passed;
+    TestSize test_cases_passed() const noexcept {
+        return m_test_cases_passed;
     }
 
-    TestSize tests_failed() const noexcept {
-        return m_tests_failed;
+    TestSize test_cases_failed() const noexcept {
+        return m_test_cases_failed;
+    }
+
+    TestSize test_suites() const noexcept {
+        return m_test_suites_passed + m_test_suites_failed;
+    }
+
+    TestSize test_cases() const noexcept {
+        return m_test_cases_passed + m_test_cases_failed;
     }
 private:
     friend class utest::Test;
 
-    TestEnd(TestSize registered, TestSize executed,
-            TestSize passed, TestSize failed) noexcept :
+    TestEnd(TestSize suites_passed, TestSize suites_failed,
+            TestSize cases_passed, TestSize cases_failed) noexcept :
         TestMessage{TestMessage::TEST_END},
-        m_tests_registered{registered},
-        m_tests_executed{executed},
-        m_tests_passed{passed},
-        m_tests_failed{failed}
+        m_test_suites_passed{suites_passed},
+        m_test_suites_failed{suites_failed},
+        m_test_cases_passed{cases_passed},
+        m_test_cases_failed{cases_failed}
     { }
 
-    TestSize m_tests_registered{0};
-    TestSize m_tests_executed{0};
-    TestSize m_tests_passed{0};
-    TestSize m_tests_failed{0};
+    TestSize m_test_suites_passed{0};
+    TestSize m_test_suites_failed{0};
+    TestSize m_test_cases_passed{0};
+    TestSize m_test_cases_failed{0};
 };
 
 template<> inline auto

@@ -51,6 +51,8 @@ class StandardOutput final : public TestWritter {
 public:
     virtual void write(const TestString& str) noexcept override;
 
+    virtual void color(TestColor c) noexcept override;
+
     virtual ~StandardOutput() noexcept;
 };
 

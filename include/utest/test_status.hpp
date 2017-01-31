@@ -44,7 +44,7 @@
 
 namespace utest {
 
-enum TestStatus {
+enum class TestStatus {
     PASS,
     FAIL
 };

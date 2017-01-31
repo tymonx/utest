@@ -42,7 +42,9 @@
 #ifndef UTEST_TEST_NUMBER_HPP
 #define UTEST_TEST_NUMBER_HPP
 
+#include <utest/test_span.hpp>
 #include <utest/test_size.hpp>
+
 #include <type_traits>
 #include <cstdint>
 #include <limits>
@@ -125,7 +127,7 @@ private:
     };
 };
 
-void to_string(const TestNumber& number, TestSpan<char>& str,
+TestSpan<char> to_string(const TestNumber& number, const TestSpan<char>& str,
         int base = 10) noexcept;
 
 inline constexpr

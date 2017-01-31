@@ -34,72 +34,57 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @file utest/test.cpp
+ * @file utest/test_reporter/google_test.hpp
  *
- * @brief Test implementation
+ * @brief Test reporter Google Test interface
  */
 
-#include <utest/test.hpp>
-#include <utest/test_suite.hpp>
-#include <utest/test_runner.hpp>
+#ifndef UTEST_TEST_REPORTER_GOOGLE_TEST_HPP
+#define UTEST_TEST_REPORTER_GOOGLE_TEST_HPP
+
 #include <utest/test_reporter.hpp>
-#include <utest/test_size.hpp>
 
-#include <utest/test_message/test.hpp>
+namespace utest {
+namespace test_reporter {
 
-#include "test_register.hpp"
+class GoogleTest final : public TestReporter {
+public:
+    using TestReporter::TestReporter;
 
-using utest::Test;
-using utest::TestStatus;
+    virtual void report(const TestMessage& message) noexcept override;
 
-static utest::TestReporter* g_default[1] {&utest::TestReporter::get_default()};
+    virtual ~GoogleTest() noexcept;
+private:
+    void display_entry() noexcept;
 
-Test::Test() noexcept :
-    m_reporters{g_default}
-{ }
+    void display_section() noexcept;
 
-void Test::report(const TestMessage& test_message) noexcept {
-    for (auto reporter : m_reporters) {
-        if (reporter) {
-            reporter->report(test_message);
-        }
-    }
+    void display_ok() noexcept;
+
+    void display_run() noexcept;
+
+    void display_passed() noexcept;
+
+    void display_failed() noexcept;
+
+    void test_begin(const TestMessage& message) noexcept;
+
+    void test_end(const TestMessage& message) noexcept;
+
+    void test_suite_begin(const TestMessage& message) noexcept;
+
+    void test_suite_end(const TestMessage& message) noexcept;
+
+    void test_case_begin(const TestMessage& message) noexcept;
+
+    void test_case_end(const TestMessage& message) noexcept;
+
+    void close_explanation() noexcept;
+
+    bool m_explanation{false};
+};
+
+}
 }
 
-Test& Test::run() noexcept {
-    TestSize test_suites_passed{0};
-    TestSize test_suites_failed{0};
-    TestSize test_cases_passed{0};
-    TestSize test_cases_failed{0};
-
-    auto& test_runs = TestRegister::get_instance();
-    m_status = TestStatus::PASS;
-
-    report(test_message::TestBegin{
-        test_runs.size()
-    });
-
-    for (auto& test_run : test_runs) {
-        TestSuite test_suite{*this};
-        test_run(test_suite);
-
-        test_suites_passed += test_suite.passed();
-        test_suites_failed += test_suite.failed();
-
-        test_cases_passed += test_suite.test_cases_passed();
-        test_cases_failed += test_suite.test_cases_failed();
-    }
-
-    if (test_suites_failed || test_cases_failed) {
-        m_status = TestStatus::FAIL;
-    }
-
-    report(test_message::TestEnd{
-        test_suites_passed,
-        test_suites_failed,
-        test_cases_passed,
-        test_cases_failed
-    });
-
-    return *this;
-}
+#endif /* UTEST_TEST_REPORTER_GOOGLE_TEST_HPP */

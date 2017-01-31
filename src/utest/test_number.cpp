@@ -233,12 +233,16 @@ static void floating_to_string(const TestNumber& number,
     str = {str.data(), size};
 }
 
-void utest::to_string(const TestNumber& number, TestSpan<char>& str,
+TestSpan<char> utest::to_string(const TestNumber& number, const TestSpan<char>& str,
         int base) noexcept {
+    TestSpan<char> tmp{str};
+
     if (number.is_floating()) {
-        floating_to_string(number, str);
+        floating_to_string(number, tmp);
     }
     else {
-        integer_to_string(number, str, Uint(base));
+        integer_to_string(number, tmp, Uint(base));
     }
+
+    return tmp;
 }

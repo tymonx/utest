@@ -34,33 +34,28 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @file utest/test_reporter/google_test_embedded.hpp
+ * @file utest/test_color.hpp
  *
- * @brief Test reporter Google Test embedded interface
+ * @brief Test color interface
  */
 
-#ifndef UTEST_TEST_REPORTER_GOOGLE_TEST_EMBEDDED_HPP
-#define UTEST_TEST_REPORTER_GOOGLE_TEST_EMBEDDED_HPP
-
-#include <utest/test_reporter.hpp>
+#ifndef UTEST_TEST_COLOR_HPP
+#define UTEST_TEST_COLOR_HPP
 
 namespace utest {
-namespace test_reporter {
 
-class GoogleTestEmbedded final : public TestReporter {
-public:
-    using TestReporter::TestReporter;
-
-    virtual void report(const TestMessage& test_message) noexcept override;
-
-    virtual ~GoogleTestEmbedded() noexcept;
-private:
-    void close_explanation() noexcept;
-
-    bool m_explanation{false};
+enum class TestColor {
+    DEFAULT,
+    BLACK,
+    RED,
+    GREEN,
+    YELLOW,
+    BLUE,
+    MAGENTA,
+    CYAN,
+    WHITE
 };
 
 }
-}
 
-#endif /* UTEST_TEST_REPORTER_GOOGLE_TEST_EMBEDDED_HPP */
+#endif /* UTEST_TEST_COLOR_HPP */

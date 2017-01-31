@@ -28,7 +28,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 add_library(utest-reporters OBJECT
-    google_test_embedded.cpp
+    google_test.cpp
 )
 
 target_compile_options(utest-reporters PRIVATE
