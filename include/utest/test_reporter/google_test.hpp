@@ -89,12 +89,12 @@ private:
     void report(const TestMessage& message) noexcept;
 };
 
-template<typename T> inline void
+template<typename T> void
 GoogleTest::failure(const T& message) noexcept {
     failure(message.file(), message.line());
 }
 
-template<typename ...Args> inline void
+template<typename ...Args> void
 GoogleTest::write(const TestString& str, const TestAssertValue& value,
         const Args&... args) noexcept {
     write(str, value);
