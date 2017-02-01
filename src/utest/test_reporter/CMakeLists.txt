@@ -30,7 +30,3 @@
 add_library(utest-reporters OBJECT
     google_test.cpp
 )
-
-target_compile_options(utest-reporters PRIVATE
-    ${CXX_FLAGS}
-)

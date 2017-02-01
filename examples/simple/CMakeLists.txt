@@ -31,19 +31,8 @@ add_executable(example-simple
     simple.cpp
 )
 
-set_target_properties(example-simple PROPERTIES
-    OUTPUT_NAME simple
-    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/examples
-    LINK_FLAGS ${LINKER_FLAGS}
-)
-
-target_compile_options(example-simple PRIVATE
-    ${CXX_FLAGS}
-)
-
-target_link_libraries(example-simple
-    utest
-)
+set_target_properties(example-simple PROPERTIES OUTPUT_NAME simple)
+target_link_libraries(example-simple utest)
 
 if (CMAKE_CXX_COMPILER_ID MATCHES Clang)
     set_source_files_properties(simple.cpp PROPERTIES

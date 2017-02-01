@@ -31,14 +31,24 @@ if (NOT CMAKE_CXX_COMPILER_ID MATCHES GNU)
     return()
 endif ()
 
-set(CXX_FLAGS
-    -std=c++14
-)
+set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -std=c++14)
 
-set(LINKER_FLAGS)
+if (NOT EXCEPTIONS)
+    set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-fno-exceptions")
+endif()
+
+if (NOT RTTI)
+    set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-fno-rtti")
+endif()
+
+if (LTO)
+    set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-flto")
+endif()
 
 if (CMAKE_BUILD_TYPE MATCHES "Release" OR NOT CMAKE_BUILD_TYPE)
-    set(CXX_FLAGS ${CXX_FLAGS}
+    set(CMAKE_BUILD_TYPE "Release")
+
+    set(CMAKE_CXX_FLAGS_RELEASE
         -O3
         -s
         -DNDEBUG
@@ -47,53 +57,49 @@ if (CMAKE_BUILD_TYPE MATCHES "Release" OR NOT CMAKE_BUILD_TYPE)
         -fstack-protector-strong
     )
 
-    set(LINKER_FLAGS ${LINKER_FLAGS}
+    set(CMAKE_EXE_LINKER_FLAGS_RELEASE
         -Wl,--gc-sections
         -Wl,--strip-all
         -z noexecstack
         -z relro
         -z now
     )
+
+    string(REPLACE ";" " " CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
+    string(REPLACE ";" " " CMAKE_EXE_LINKER_FLAGS_RELEASE
+        "${CMAKE_EXE_LINKER_FLAGS_RELEASE}")
 elseif (CMAKE_BUILD_TYPE MATCHES "MinSizeRel")
-    set(CXX_FLAGS ${CXX_FLAGS}
+    set(CMAKE_CXX_FLAGS_MINSIZEREL
         -Os
         -DNDEBUG
         -fdata-sections
         -ffunction-sections
     )
 
-    set(LINKER_FLAGS ${LINKER_FLAGS}
+    set(CMAKE_EXE_LINKER_FLAGS_MINSIZEREL
         -Wl,--gc-sections
     )
+
+    string(REPLACE ";" " " CMAKE_CXX_FLAGS_MINSIZEREL
+        "${CMAKE_CXX_FLAGS_MINSIZEREL}")
+
+    string(REPLACE ";" " " CMAKE_EXE_LINKER_FLAGS_MINSIZEREL
+        "${CMAKE_EXE_LINKER_FLAGS_MINSIZEREL}")
 elseif (CMAKE_BUILD_TYPE MATCHES "Debug")
-    set(CXX_FLAGS ${CXX_FLAGS}
+    set(CMAKE_CXX_FLAGS_DEBUG
         -O0
         -g3
         -ggdb
     )
 
-    set(LINKER_FLAGS " ")
-elseif (CMAKE_BUILD_TYPE MATCHES "Coverage")
-    set(CXX_FLAGS ${CXX_FLAGS}
-        -O0
-        -g
-        --coverage
-    )
+    set(CMAKE_EXE_LINKER_FLAGS_DEBUG)
 
-    set(LINKER_FLAGS ${LINKER_FLAGS}
-        --coverage
-    )
+    string(REPLACE ";" " " CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+    string(REPLACE ";" " " CMAKE_EXE_LINKER_FLAGS_DEBUG
+        "${CMAKE_EXE_LINKER_FLAGS_DEBUG}")
 endif()
 
-if (NOT EXCEPTIONS)
-    set(CXX_FLAGS ${CXX_FLAGS} "-fno-exceptions")
-endif()
-
-if (NOT RTTI)
-    set(CXX_FLAGS ${CXX_FLAGS} "-fno-rtti")
-endif()
-
-set(CXX_FLAGS ${CXX_FLAGS}
+set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS}
     -Waggregate-return
     -Wall
     -Wcast-qual
@@ -147,7 +153,7 @@ set(CXX_FLAGS ${CXX_FLAGS}
 )
 
 if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 6.3)
-    set(CXX_FLAGS ${CXX_FLAGS}
+    set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS}
         -Wduplicated-cond
         -Whsa
         -Wignored-attributes
@@ -157,4 +163,5 @@ if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 6.3)
     )
 endif()
 
-string(REPLACE ";" " " LINKER_FLAGS "${LINKER_FLAGS}")
+string(REPLACE ";" " " CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+string(REPLACE ";" " " CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")

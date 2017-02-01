@@ -31,19 +31,8 @@ add_executable(example-string
     string.cpp
 )
 
-set_target_properties(example-string PROPERTIES
-    OUTPUT_NAME string
-    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/examples
-    LINK_FLAGS ${LINKER_FLAGS}
-)
-
-target_compile_options(example-string PRIVATE
-    ${CXX_FLAGS}
-)
-
-target_link_libraries(example-string
-    utest
-)
+set_target_properties(example-string PROPERTIES OUTPUT_NAME string)
+target_link_libraries(example-string utest)
 
 if (CMAKE_CXX_COMPILER_ID MATCHES Clang)
     set_source_files_properties(string.cpp PROPERTIES

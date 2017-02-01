@@ -30,7 +30,3 @@
 add_library(utest-writters OBJECT
     standard_output.cpp
 )
-
-target_compile_options(utest-writters PRIVATE
-    ${CXX_FLAGS}
-)

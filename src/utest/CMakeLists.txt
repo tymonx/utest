@@ -46,10 +46,6 @@ add_library(utest-core OBJECT
     test_writter.cpp
 )
 
-target_compile_options(utest-core PRIVATE
-    ${CXX_FLAGS}
-)
-
 add_library(utest STATIC
     $<TARGET_OBJECTS:utest-core>
     $<TARGET_OBJECTS:utest-reporters>

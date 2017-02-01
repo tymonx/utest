@@ -31,58 +31,17 @@ if (NOT CMAKE_CXX_COMPILER_ID MATCHES Clang)
     return()
 endif ()
 
-set(CXX_FLAGS
-    -std=c++14
-    -fPIE
-    -fPIC
-)
-
-set(LINKER_FLAGS)
-
-if (CMAKE_BUILD_TYPE MATCHES "Release" OR NOT CMAKE_BUILD_TYPE)
-    set(CXX_FLAGS ${CXX_FLAGS}
-        -O3
-        -DNDEBUG
-        -fdata-sections
-        -ffunction-sections
-        -fstack-protector-strong
-    )
-
-    set(LINKER_FLAGS ${LINKER_FLAGS}
-        -Wl,--gc-sections
-        -Wl,--strip-all
-        -z noexecstack
-        -z relro
-        -z now
-    )
-elseif (CMAKE_BUILD_TYPE MATCHES "MinSizeRel")
-    set(CXX_FLAGS ${CXX_FLAGS}
-        -Os
-        -DNDEBUG
-        -fdata-sections
-        -ffunction-sections
-    )
-
-    set(LINKER_FLAGS ${LINKER_FLAGS}
-        -Wl,--gc-sections
-    )
-elseif (CMAKE_BUILD_TYPE MATCHES "Debug")
-    set(CXX_FLAGS ${CXX_FLAGS}
-        -O0
-        -g3
-        -ggdb
-    )
-endif()
+set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -std=c++14)
 
 if (NOT EXCEPTIONS)
-    set(CXX_FLAGS ${CXX_FLAGS} "-fno-exceptions")
+    set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-fno-exceptions")
 endif()
 
 if (NOT RTTI)
-    set(CXX_FLAGS ${CXX_FLAGS} "-fno-rtti")
+    set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-fno-rtti")
 endif()
 
-set(CXX_FLAGS ${CXX_FLAGS}
+set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS}
     -Weverything
     -Wno-padded
     -Wno-covered-switch-default
@@ -90,4 +49,58 @@ set(CXX_FLAGS ${CXX_FLAGS}
     -Wno-c++98-compat-pedantic
 )
 
-string(REPLACE ";" " " LINKER_FLAGS "${LINKER_FLAGS}")
+if (CMAKE_BUILD_TYPE MATCHES "Release" OR NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE "Release")
+
+    set(CMAKE_CXX_FLAGS_RELEASE
+        -O3
+        -DNDEBUG
+        -fdata-sections
+        -ffunction-sections
+        -fstack-protector-strong
+    )
+
+    set(CMAKE_EXE_LINKER_FLAGS_RELEASE
+        -Wl,--gc-sections
+        -Wl,--strip-all
+        -z noexecstack
+        -z relro
+        -z now
+    )
+
+    string(REPLACE ";" " " CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
+    string(REPLACE ";" " " CMAKE_EXE_LINKER_FLAGS_RELEASE
+        "${CMAKE_EXE_LINKER_FLAGS_RELEASE}")
+elseif (CMAKE_BUILD_TYPE MATCHES "MinSizeRel")
+    set(CMAKE_CXX_FLAGS_MINSIZEREL
+        -Os
+        -DNDEBUG
+        -fdata-sections
+        -ffunction-sections
+    )
+
+    set(CMAKE_EXE_LINKER_FLAGS_MINSIZEREL
+        -Wl,--gc-sections
+    )
+
+    string(REPLACE ";" " " CMAKE_CXX_FLAGS_MINSIZEREL
+        "${CMAKE_CXX_FLAGS_MINSIZEREL}")
+
+    string(REPLACE ";" " " CMAKE_EXE_LINKER_FLAGS_MINSIZEREL
+        "${CMAKE_EXE_LINKER_FLAGS_MINSIZEREL}")
+elseif (CMAKE_BUILD_TYPE MATCHES "Debug")
+    set(CMAKE_CXX_FLAGS_DEBUG
+        -O0
+        -g3
+        -ggdb
+    )
+
+    set(CMAKE_EXE_LINKER_FLAGS_DEBUG)
+
+    string(REPLACE ";" " " CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+    string(REPLACE ";" " " CMAKE_EXE_LINKER_FLAGS_DEBUG
+        "${CMAKE_EXE_LINKER_FLAGS_DEBUG}")
+endif()
+
+string(REPLACE ";" " " CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+string(REPLACE ";" " " CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
