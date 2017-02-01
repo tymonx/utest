@@ -13,5 +13,5 @@ make
 # Examples
 
 ```
-./bin/examples/simple
+./bin/simple
  ```
