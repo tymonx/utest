@@ -187,17 +187,13 @@ void GoogleTest::report<TestMessage::TEST_CASE_END>(
 template<>
 void GoogleTest::report<TestMessage::TEST_ASSERT_EXPLANATION>(
         const TestMessage& message) noexcept {
-    m_explanation = true;
     write(get<TestAssertExplanation>(message).explanation());
 }
 
 template<>
-void GoogleTest::report<TestMessage::TEST_ASSERT_END>(
+void GoogleTest::report<TestMessage::TEST_ASSERT_EXPLANATION_END>(
         const TestMessage&) noexcept {
-    if (m_explanation) {
-        m_explanation = false;
-        write(ENDL);
-    }
+    write(ENDL);
 }
 
 template<>
@@ -297,8 +293,8 @@ void GoogleTest::report(const TestMessage& message) noexcept {
     case TestMessage::TEST_ASSERT_EXPLANATION:
         report<TestMessage::TEST_ASSERT_EXPLANATION>(message);
         break;
-    case TestMessage::TEST_ASSERT_END:
-        report<TestMessage::TEST_ASSERT_END>(message);
+    case TestMessage::TEST_ASSERT_EXPLANATION_END:
+        report<TestMessage::TEST_ASSERT_EXPLANATION_END>(message);
         break;
     case TestMessage::TEST_ASSERT_TRUE:
         report<TestMessage::TEST_ASSERT_TRUE>(message);

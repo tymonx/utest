@@ -186,8 +186,8 @@ private:
     const TestString& m_message;
 };
 
-class TestAssertEnd :
-        public TestAssertMessage<TestMessage::TEST_ASSERT_END>,
+class TestAssertExplanationEnd :
+        public TestAssertMessage<TestMessage::TEST_ASSERT_EXPLANATION_END>,
         public TestAssertProxy {
     friend utest::TestAssert;
     using TestAssertProxy::TestAssertProxy;
@@ -232,8 +232,8 @@ class TestAssertNotEqual :
 };
 
 template<> inline auto
-get(const TestMessage& msg) noexcept -> const TestAssertEnd& {
-    return reinterpret_cast<const TestAssertEnd&>(msg);
+get(const TestMessage& msg) noexcept -> const TestAssertExplanationEnd& {
+    return reinterpret_cast<const TestAssertExplanationEnd&>(msg);
 }
 
 template<> inline auto

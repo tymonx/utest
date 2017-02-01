@@ -127,6 +127,7 @@ private:
     TestParams& m_params;
     TestSize m_line{0};
     TestStatus m_status{TestStatus::PASS};
+    bool m_explanation{false};
     bool m_non_fatal{false};
 };
 

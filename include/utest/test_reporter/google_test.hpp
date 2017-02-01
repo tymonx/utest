@@ -87,8 +87,6 @@ private:
 
     template<TestMessage::Type T>
     void report(const TestMessage& message) noexcept;
-
-    bool m_explanation{false};
 };
 
 template<typename T> inline void

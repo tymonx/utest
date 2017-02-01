@@ -59,7 +59,9 @@ static constexpr TestString STRING_FALSE{"false"};
 TestAssert::~TestAssert() noexcept {
     if (TestStatus::FAIL == m_status) {
         m_params.status(TestStatus::FAIL);
-        report(TestAssertEnd{*this});
+        if (m_explanation) {
+            report(TestAssertExplanationEnd{*this});
+        }
         if (!m_non_fatal) {
             m_params.jump();
         }
@@ -88,6 +90,7 @@ void TestAssert::report_not_equal(const void* lhs, const void* rhs) noexcept {
 
 TestAssert& TestAssert::operator<<(std::nullptr_t) noexcept {
     if (TestStatus::FAIL == m_status) {
+        m_explanation = true;
         report(TestAssertExplanation{*this, STRING_NULL});
     }
     return *this;
@@ -95,6 +98,7 @@ TestAssert& TestAssert::operator<<(std::nullptr_t) noexcept {
 
 TestAssert& TestAssert::operator<<(const void* ptr) noexcept {
     if (TestStatus::FAIL == m_status) {
+        m_explanation = true;
         if (nullptr != ptr) {
             char buffer[TestNumber::MAX_POINTER_SIZE];
             report(TestAssertExplanation{*this, to_string(ptr, buffer)});
@@ -108,6 +112,7 @@ TestAssert& TestAssert::operator<<(const void* ptr) noexcept {
 
 TestAssert& TestAssert::operator<<(bool value) noexcept {
     if (TestStatus::FAIL == m_status) {
+        m_explanation = true;
         if (true == value) {
             report(TestAssertExplanation{*this, STRING_TRUE});
         }
@@ -120,6 +125,7 @@ TestAssert& TestAssert::operator<<(bool value) noexcept {
 
 TestAssert& TestAssert::operator<<(const TestString& str) noexcept {
     if (TestStatus::FAIL == m_status) {
+        m_explanation = true;
         report(TestAssertExplanation{*this, str});
     }
     return *this;
@@ -127,6 +133,7 @@ TestAssert& TestAssert::operator<<(const TestString& str) noexcept {
 
 TestAssert& TestAssert::operator<<(const TestNumber& number) noexcept {
     if (TestStatus::FAIL == m_status) {
+        m_explanation = true;
         char buffer[TestNumber::MAX_STRING_BUFFER];
         auto value = to_string(number, buffer);
 
