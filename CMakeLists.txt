@@ -40,10 +40,16 @@ else()
     option(RTTI "Enable/disable rtti" ON)
 endif()
 
-include_directories(include)
+if (CMAKE_BUILD_TYPE MATCHES "MinSizeRel")
+    option(LTO "Enable/disable link time optimization" ON)
+else()
+    option(LTO "Enable/disable link time optimization" OFF)
+endif()
 
 include(AddGnuCompiler)
 include(AddClangCompiler)
+
+include_directories(include)
 
 add_subdirectory(src)
 add_subdirectory(examples)

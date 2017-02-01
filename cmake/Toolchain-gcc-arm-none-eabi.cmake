@@ -72,10 +72,6 @@ if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "MinSizeRel" CACHE STRING "Build type")
 endif()
 
-if (CMAKE_BUILD_TYPE MATCHES "MinSizeRel" AND NOT LTO)
-    set(LTO ON CACHE BOOL "Link time optimization")
-endif()
-
 if (NOT CMAKE_SYSTEM_PROCESSOR)
     set(CMAKE_SYSTEM_PROCESSOR "cortex-m3" CACHE STRING "ARM processor type")
 endif()
