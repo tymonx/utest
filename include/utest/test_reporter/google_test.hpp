@@ -50,6 +50,8 @@ namespace utest {
 class TestNumber;
 class TestString;
 
+namespace test_message { class TestAssertValue; }
+
 namespace test_reporter {
 
 class GoogleTest final : public TestReporter {
@@ -61,6 +63,7 @@ public:
     virtual ~GoogleTest() noexcept;
 private:
     using TestReporter::write;
+    using TestAssertValue = test_message::TestAssertValue;
 
     void failure(const TestString& file, const TestNumber& line) noexcept;
 
@@ -69,7 +72,15 @@ private:
 
     void write_exception(const TestString& message) noexcept;
 
+    void write_address(std::uintptr_t address) noexcept;
+
     void write(const TestNumber& number, const TestString& str) noexcept;
+
+    void write(const TestString& str, const TestAssertValue& value) noexcept;
+
+    template<typename ...Args>
+    void write(const TestString& str, const TestAssertValue& value,
+            const Args&... args) noexcept;
 
     template<bool T>
     void write(const TestString& str) noexcept;
@@ -80,9 +91,16 @@ private:
     bool m_explanation{false};
 };
 
-template<typename T> inline
-void GoogleTest::failure(const T& message) noexcept {
+template<typename T> inline void
+GoogleTest::failure(const T& message) noexcept {
     failure(message.file(), message.line());
+}
+
+template<typename ...Args> inline void
+GoogleTest::write(const TestString& str, const TestAssertValue& value,
+        const Args&... args) noexcept {
+    write(str, value);
+    write(args...);
 }
 
 }

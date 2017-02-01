@@ -48,6 +48,7 @@
 #include <utest/test_size.hpp>
 
 #include <cstddef>
+#include <type_traits>
 
 namespace utest {
 
@@ -56,6 +57,12 @@ class TestParams;
 
 class TestAssert {
 public:
+    template<typename T>
+    using enable_object = typename std::enable_if<
+            !std::is_integral<T>::value && !std::is_floating_point<T>::value &&
+            !std::is_same<T, TestString>::value,
+        int>::type;
+
     TestAssert(TestParams& params) noexcept;
 
     ~TestAssert() noexcept;
@@ -84,10 +91,10 @@ public:
     TestAssert& not_equal(const TestString& lhs,
             const TestString& rhs) noexcept;
 
-    template<typename T>
+    template<typename T, enable_object<T> = 0>
     TestAssert& equal(const T& lhs, const T& rhs) noexcept;
 
-    template<typename T>
+    template<typename T, enable_object<T> = 0>
     TestAssert& not_equal(const T& lhs, const T& rhs) noexcept;
 
     TestAssert& operator<<(std::nullptr_t) noexcept;
@@ -155,6 +162,7 @@ TestAssert::operator<<(const char (&arr)[N]) noexcept -> TestAssert& {
     return operator<<(TestString{arr});
 }
 
+
 inline auto
 TestAssert::operator<<(int value) noexcept -> TestAssert& {
     return operator<<(TestNumber{value});
@@ -175,7 +183,7 @@ TestAssert::operator<<(double value) noexcept -> TestAssert& {
     return operator<<(TestNumber{value});
 }
 
-template<typename T> inline auto
+template<typename T, TestAssert::enable_object<T>> inline auto
 TestAssert::equal(const T& lhs, const T& rhs) noexcept -> TestAssert& {
     if (!(lhs == rhs)) {
         m_status = TestStatus::FAIL;
@@ -184,7 +192,7 @@ TestAssert::equal(const T& lhs, const T& rhs) noexcept -> TestAssert& {
     return *this;
 }
 
-template<typename T> inline auto
+template<typename T, TestAssert::enable_object<T>> inline auto
 TestAssert::not_equal(const T& lhs, const T& rhs) noexcept -> TestAssert& {
     if (!(lhs != rhs)) {
         m_status = TestStatus::FAIL;

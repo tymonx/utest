@@ -43,7 +43,11 @@
 #include <utest/test_params.hpp>
 #include <utest/test_reporter.hpp>
 #include <utest/test_message/test_assert.hpp>
+#include <utest/test_size.hpp>
+#include <utest/test_number.hpp>
 
+using utest::TestSize;
+using utest::TestNumber;
 using utest::TestAssert;
 using utest::TestString;
 using namespace utest::test_message;
@@ -91,32 +95,12 @@ TestAssert& TestAssert::operator<<(std::nullptr_t) noexcept {
 
 TestAssert& TestAssert::operator<<(const void* ptr) noexcept {
     if (TestStatus::FAIL == m_status) {
-        if (nullptr == ptr) {
-            report(TestAssertExplanation{*this, STRING_NULL});
+        if (nullptr != ptr) {
+            char buffer[TestNumber::MAX_POINTER_SIZE];
+            report(TestAssertExplanation{*this, to_string(ptr, buffer)});
         }
         else {
-            char buffer[TestNumber::MAX_STRING_BUFFER];
-            auto address = to_string(std::uintptr_t(ptr), buffer, 16);
-
-            if (!address.empty()) {
-                auto it1 = address.cend() - 1;
-                auto it2 = address.begin() + 2*sizeof(std::uintptr_t) - 1;
-
-                if (it1 < it2) {
-                    while (it1 >= address.cbegin()) {
-                        *it2-- = *it1--;
-                    }
-
-                    while (it2 >= address.cbegin()) {
-                        *it2-- = '0';
-                    }
-
-                    address = {address.data(), 2*sizeof(std::uintptr_t)};
-                }
-            }
-
-            report(TestAssertExplanation{*this, "0x"});
-            report(TestAssertExplanation{*this, address});
+            report(TestAssertExplanation{*this, STRING_NULL});
         }
     }
     return *this;

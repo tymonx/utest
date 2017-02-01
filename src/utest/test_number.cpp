@@ -55,7 +55,7 @@ using Int = TestNumber::Int;
 using Uint = TestNumber::Uint;
 using Double = TestNumber::Double;
 
-static_assert(2*sizeof(std::uintptr_t) <= TestNumber::MAX_STRING_BUFFER,
+static_assert(TestNumber::MAX_POINTER_SIZE <= TestNumber::MAX_STRING_BUFFER,
         "TestNumber::MAX_STRING_BUFFER smaller that address width");
 
 static constexpr TestString STRING_BASE{"0123456789abcdef"};
@@ -233,8 +233,8 @@ static void floating_to_string(const TestNumber& number,
     str = {str.data(), size};
 }
 
-TestSpan<char> utest::to_string(const TestNumber& number, const TestSpan<char>& str,
-        int base) noexcept {
+TestSpan<char> utest::to_string(const TestNumber& number,
+        const TestSpan<char>& str, int base) noexcept {
     TestSpan<char> tmp{str};
 
     if (number.is_floating()) {
@@ -242,6 +242,36 @@ TestSpan<char> utest::to_string(const TestNumber& number, const TestSpan<char>& 
     }
     else {
         integer_to_string(number, tmp, Uint(base));
+    }
+
+    return tmp;
+}
+
+TestSpan<char> utest::to_string(const void* ptr,
+        const TestSpan<char>& str) noexcept {
+    TestSpan<char> tmp{const_cast<char*>(str.data()), 0};
+
+    if (str.size() >= TestNumber::MAX_POINTER_SIZE) {
+        tmp[0] = '0';
+        tmp[1] = 'x';
+        tmp = {tmp.data() + 2, 0};
+
+        integer_to_string_base(std::uintptr_t(ptr), tmp, 16);
+
+        auto it1 = tmp.cend() - 1;
+        auto it2 = tmp.begin() + 2*sizeof(std::uintptr_t) - 1;
+
+        if (it1 < it2) {
+            while (it1 >= tmp.cbegin()) {
+                *it2-- = *it1--;
+            }
+
+            while (it2 >= tmp.cbegin()) {
+                *it2-- = '0';
+            }
+        }
+
+        tmp = {tmp.data() - 2, TestNumber::MAX_POINTER_SIZE};
     }
 
     return tmp;

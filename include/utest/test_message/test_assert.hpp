@@ -92,7 +92,7 @@ protected:
     { }
 };
 
-class TestAssertCompare : public TestAssertProxy {
+class TestAssertValue {
 public:
     enum Type {
         NUMBER,
@@ -104,65 +104,68 @@ public:
         return m_type;
     }
 
-    template<typename T, int N>
-    const T& get() const noexcept;
-protected:
-    TestAssertCompare(const TestAssert& test_assert,
-            const TestNumber& lhs, const TestNumber& rhs) noexcept :
-        TestAssertProxy{test_assert}, m_type{NUMBER}, m_numbers{lhs, rhs}
-    { }
-
-    TestAssertCompare(const TestAssert& test_assert,
-            const TestString& lhs, const TestString& rhs) noexcept :
-        TestAssertProxy{test_assert}, m_type{STRING}, m_strings{lhs, rhs}
-    { }
-
     template<typename T>
-    TestAssertCompare(const TestAssert& test_assert,
-            const T& lhs, const T& rhs) noexcept :
-        TestAssertProxy{test_assert}, m_type{OBJECT},
-        m_objects{std::uintptr_t(&lhs), std::uintptr_t(&rhs)}
+    const T& get() const noexcept;
+
+    TestAssertValue(const TestNumber& value) noexcept :
+        m_type{NUMBER}, m_number{value}
+    { }
+
+    TestAssertValue(const TestString& value) noexcept :
+        m_type{STRING}, m_string{value}
+    { }
+
+    TestAssertValue(const void* value) noexcept :
+        m_type{OBJECT}, m_object{value}
     { }
 private:
     Type m_type;
 
     union {
-        std::pair<const TestNumber&, const TestNumber&> m_numbers;
-        std::pair<const TestString&, const TestString&> m_strings;
-        std::pair<std::uintptr_t, std::uintptr_t> m_objects;
+        const TestNumber m_number;
+        const TestString m_string;
+        const void* m_object;
     };
 };
 
 template<> inline auto
-TestAssertCompare::get<TestString, 0>() const noexcept -> const TestString& {
-    return m_strings.first;
+TestAssertValue::get<TestString>() const noexcept -> const TestString& {
+    return m_string;
 }
 
 template<> inline auto
-TestAssertCompare::get<TestString, 1>() const noexcept -> const TestString& {
-    return m_strings.second;
+TestAssertValue::get<TestNumber>() const noexcept -> const TestNumber& {
+    return m_number;
 }
 
 template<> inline auto
-TestAssertCompare::get<TestNumber, 0>() const noexcept -> const TestNumber& {
-    return m_numbers.first;
+TestAssertValue::get<const void*>() const noexcept ->
+        const void* const& {
+    return m_object;
+}
+
+class TestAssertValuePair {
+public:
+    template<int N>
+    const TestAssertValue& get() const noexcept;
+protected:
+    TestAssertValuePair(const TestAssertValue& lhs,
+            const TestAssertValue& rhs) noexcept :
+        m_lhs{lhs}, m_rhs{rhs}
+    { }
+private:
+    TestAssertValue m_lhs;
+    TestAssertValue m_rhs;
+};
+
+template<> inline auto
+TestAssertValuePair::get<0>() const noexcept -> const TestAssertValue& {
+    return m_lhs;
 }
 
 template<> inline auto
-TestAssertCompare::get<TestNumber, 1>() const noexcept -> const TestNumber& {
-    return m_numbers.second;
-}
-
-template<> inline auto
-TestAssertCompare::get<std::uintptr_t, 0>() const noexcept ->
-        const std::uintptr_t& {
-    return m_objects.first;
-}
-
-template<> inline auto
-TestAssertCompare::get<std::uintptr_t, 1>() const noexcept ->
-        const std::uintptr_t& {
-    return m_objects.second;
+TestAssertValuePair::get<1>() const noexcept -> const TestAssertValue& {
+    return m_rhs;
 }
 
 class TestAssertExplanation :
@@ -206,16 +209,26 @@ class TestAssertFalse :
 
 class TestAssertEqual :
         public TestAssertMessage<TestMessage::TEST_ASSERT_EQUAL>,
-        public TestAssertCompare {
+        public TestAssertProxy,
+        public TestAssertValuePair {
     friend class utest::TestAssert;
-    using TestAssertCompare::TestAssertCompare;
+
+    TestAssertEqual(const TestAssert& test_assert,
+            const TestAssertValue& lhs, const TestAssertValue& rhs) noexcept :
+        TestAssertProxy{test_assert}, TestAssertValuePair{lhs, rhs}
+    { }
 };
 
 class TestAssertNotEqual :
         public TestAssertMessage<TestMessage::TEST_ASSERT_NOT_EQUAL>,
-        public TestAssertCompare {
+        public TestAssertProxy,
+        public TestAssertValuePair {
     friend class utest::TestAssert;
-    using TestAssertCompare::TestAssertCompare;
+
+    TestAssertNotEqual(const TestAssert& test_assert,
+            const TestAssertValue& lhs, const TestAssertValue& rhs) noexcept :
+        TestAssertProxy{test_assert}, TestAssertValuePair{lhs, rhs}
+    { }
 };
 
 template<> inline auto

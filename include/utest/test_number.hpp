@@ -61,6 +61,8 @@ public:
     using Int = std::intmax_t;
     using Uint = std::uintmax_t;
 
+    static constexpr TestSize MAX_POINTER_SIZE =
+        2 + 2*sizeof(std::uintptr_t);
 
     static constexpr TestSize MAX_INTEGER_BUFFER =
         std::numeric_limits<Int>::digits10 + 1;
@@ -129,6 +131,8 @@ private:
 
 TestSpan<char> to_string(const TestNumber& number, const TestSpan<char>& str,
         int base = 10) noexcept;
+
+TestSpan<char> to_string(const void* ptr, const TestSpan<char>& str) noexcept;
 
 inline constexpr
 TestNumber::TestNumber() noexcept :

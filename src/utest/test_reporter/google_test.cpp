@@ -50,6 +50,8 @@
 #include <utest/test_message/test_assert.hpp>
 #include <utest/test_message/test_runner.hpp>
 
+using utest::TestSize;
+using utest::TestNumber;
 using utest::TestString;
 using utest::TestMessage;
 using utest::test_reporter::GoogleTest;
@@ -217,15 +219,21 @@ void GoogleTest::report<TestMessage::TEST_ASSERT_FALSE>(
 template<>
 void GoogleTest::report<TestMessage::TEST_ASSERT_EQUAL>(
         const TestMessage& message) noexcept {
-    failure(get<TestAssertEqual>(message));
-    write("Test assert equal number/string/object\n");
+    const auto& msg = get<TestAssertEqual>(message);
+
+    failure(msg);
+    write("      Expected: ", msg.get<0>(), ENDL);
+    write("To be equal to: ", msg.get<1>(), ENDL);
 }
 
 template<>
 void GoogleTest::report<TestMessage::TEST_ASSERT_NOT_EQUAL>(
         const TestMessage& message) noexcept {
-    failure(get<TestAssertNotEqual>(message));
-    write("Test assert not equal number/string/object\n");
+    const auto& msg = get<TestAssertNotEqual>(message);
+
+    failure(msg);
+    write("    Expected: ", msg.get<0>(), ENDL);
+    write("Not equal to: ", msg.get<1>(), ENDL);
 }
 
 template<>
@@ -354,6 +362,26 @@ void GoogleTest::failure(const TestString& file,
     }
 
     write(" Failure\n");
+}
+
+void GoogleTest::write(const TestString& str,
+        const TestAssertValue& value) noexcept {
+    write(str);
+
+    switch (value.type()) {
+    case TestAssertValue::NUMBER:
+        write(value.get<TestNumber>());
+        break;
+    case TestAssertValue::STRING:
+        write("\"", value.get<TestString>(), "\"");
+        break;
+    case TestAssertValue::OBJECT:
+        char buffer[TestNumber::MAX_POINTER_SIZE];
+        write(to_string(value.get<const void*>(), buffer));
+        break;
+    default:
+        break;
+    }
 }
 
 GoogleTest::~GoogleTest() noexcept { }
