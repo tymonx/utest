@@ -100,7 +100,7 @@ TestAssert& TestAssert::operator<<(const void* ptr) noexcept {
     if (TestStatus::FAIL == m_status) {
         m_explanation = true;
         if (nullptr != ptr) {
-            char buffer[TestNumber::MAX_POINTER_SIZE];
+            char buffer[TestNumber::MAX_ADDRESS_BUFFER];
             report(TestAssertExplanation{*this, to_string(ptr, buffer)});
         }
         else {

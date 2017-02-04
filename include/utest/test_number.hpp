@@ -45,7 +45,6 @@
 #include <utest/test_span.hpp>
 #include <utest/test_size.hpp>
 
-#include <type_traits>
 #include <cstdint>
 #include <limits>
 #include <cmath>
@@ -61,7 +60,7 @@ public:
     using Int = std::intmax_t;
     using Uint = std::uintmax_t;
 
-    static constexpr TestSize MAX_POINTER_SIZE =
+    static constexpr TestSize MAX_ADDRESS_BUFFER =
         2 + 2*sizeof(std::uintptr_t);
 
     static constexpr TestSize MAX_INTEGER_BUFFER =
@@ -74,30 +73,31 @@ public:
         (MAX_INTEGER_BUFFER < MAX_FLOATING_BUFFER)
         ? MAX_FLOATING_BUFFER : MAX_INTEGER_BUFFER;
 
-    template<typename T>
-    using enable_floating = typename std::enable_if<
-        std::is_floating_point<T>::value, long>::type;
-
-    template<typename T>
-    using enable_signed = typename std::enable_if<
-            std::is_integral<T>::value && std::is_signed<T>::value,
-        int>::type;
-
-    template<typename T>
-    using enable_unsigned = typename std::enable_if<
-            std::is_integral<T>::value && std::is_unsigned<T>::value,
-        unsigned>::type;
-
     constexpr TestNumber() noexcept;
 
-    template<typename T, enable_floating<T> = 0>
-    constexpr TestNumber(T value) noexcept;
+    constexpr TestNumber(float value) noexcept;
 
-    template<typename T, enable_signed<T> = 0>
-    constexpr TestNumber(T value) noexcept;
+    constexpr TestNumber(double value) noexcept;
 
-    template<typename T, enable_unsigned<T> = 0>
-    constexpr TestNumber(T value) noexcept;
+    constexpr TestNumber(signed char value) noexcept;
+
+    constexpr TestNumber(unsigned char value) noexcept;
+
+    constexpr TestNumber(signed short value) noexcept;
+
+    constexpr TestNumber(unsigned short value) noexcept;
+
+    constexpr TestNumber(signed int value) noexcept;
+
+    constexpr TestNumber(unsigned int value) noexcept;
+
+    constexpr TestNumber(signed long value) noexcept;
+
+    constexpr TestNumber(unsigned long value) noexcept;
+
+    constexpr TestNumber(signed long long value) noexcept;
+
+    constexpr TestNumber(unsigned long long value) noexcept;
 
     constexpr operator Double() const noexcept;
 
@@ -118,15 +118,15 @@ public:
 
     constexpr bool is_unsigned() const noexcept;
 private:
-    unsigned m_is_signed : 1;
-    unsigned m_is_floating : 1;
-    unsigned m_size : 6;
-
     union {
         Double m_double;
         Int m_int;
         Uint m_uint;
     };
+
+    unsigned m_is_signed : 1;
+    unsigned m_is_floating : 1;
+    unsigned m_size : 6;
 };
 
 TestSpan<char> to_string(const TestNumber& number, const TestSpan<char>& str,
@@ -136,34 +136,106 @@ TestSpan<char> to_string(const void* ptr, const TestSpan<char>& str) noexcept;
 
 inline constexpr
 TestNumber::TestNumber() noexcept :
+    m_uint{},
     m_is_signed{false},
     m_is_floating{false},
-    m_size{sizeof(0)},
-    m_uint{}
+    m_size{sizeof(0)}
 { }
 
-template<typename T, TestNumber::enable_floating<T>> inline constexpr
-TestNumber::TestNumber(T value) noexcept :
+inline constexpr
+TestNumber::TestNumber(float value) noexcept :
+    m_double{Double(value)},
     m_is_signed{std::signbit(value)},
     m_is_floating{true},
-    m_size{sizeof(T)},
-    m_double{Double(value)}
+    m_size{sizeof(float)}
 { }
 
-template<typename T, TestNumber::enable_signed<T>> inline constexpr
-TestNumber::TestNumber(T value) noexcept :
+inline constexpr
+TestNumber::TestNumber(double value) noexcept :
+    m_double{Double(value)},
     m_is_signed{std::signbit(value)},
-    m_is_floating{false},
-    m_size{sizeof(T)},
-    m_int{Int(value)}
+    m_is_floating{true},
+    m_size{sizeof(double)}
 { }
 
-template<typename T, TestNumber::enable_unsigned<T>> inline constexpr
-TestNumber::TestNumber(T value) noexcept :
+inline constexpr
+TestNumber::TestNumber(signed char value) noexcept :
+    m_int{Int(value)},
+    m_is_signed{value < 0},
+    m_is_floating{false},
+    m_size{sizeof(signed char)}
+{ }
+
+inline constexpr
+TestNumber::TestNumber(unsigned char value) noexcept :
+    m_uint{Uint(value)},
     m_is_signed{false},
     m_is_floating{false},
-    m_size{sizeof(T)},
-    m_uint{Uint(value)}
+    m_size{sizeof(unsigned char)}
+{ }
+
+inline constexpr
+TestNumber::TestNumber(signed short value) noexcept :
+    m_int{Int(value)},
+    m_is_signed{value < 0},
+    m_is_floating{false},
+    m_size{sizeof(signed short)}
+{ }
+
+inline constexpr
+TestNumber::TestNumber(unsigned short value) noexcept :
+    m_uint{Uint(value)},
+    m_is_signed{false},
+    m_is_floating{false},
+    m_size{sizeof(unsigned short)}
+{ }
+
+inline constexpr
+TestNumber::TestNumber(signed int value) noexcept :
+    m_int{Int(value)},
+    m_is_signed{value < 0},
+    m_is_floating{false},
+    m_size{sizeof(signed int)}
+{ }
+
+inline constexpr
+TestNumber::TestNumber(unsigned int value) noexcept :
+    m_uint{Uint(value)},
+    m_is_signed{false},
+    m_is_floating{false},
+    m_size{sizeof(unsigned int)}
+{ }
+
+inline constexpr
+TestNumber::TestNumber(signed long value) noexcept :
+    m_int{Int(value)},
+    m_is_signed{value < 0},
+    m_is_floating{false},
+    m_size{sizeof(signed long)}
+{ }
+
+inline constexpr
+TestNumber::TestNumber(unsigned long value) noexcept :
+    m_uint{Uint(value)},
+    m_is_signed{false},
+    m_is_floating{false},
+    m_size{sizeof(unsigned long)}
+{ }
+
+inline constexpr
+TestNumber::TestNumber(signed long long value) noexcept :
+    m_int{Int(value)},
+    m_is_signed{value < 0},
+    m_is_floating{false},
+    m_size{sizeof(signed long long)}
+{ }
+
+inline constexpr
+TestNumber::TestNumber(unsigned long long value) noexcept :
+    m_uint{Uint(value)},
+    m_is_signed{false},
+    m_is_floating{false},
+    m_size{sizeof(unsigned long long)}
 { }
 
 inline constexpr

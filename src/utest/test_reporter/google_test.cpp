@@ -372,7 +372,7 @@ void GoogleTest::write(const TestString& str,
         write("\"", value.get<TestString>(), "\"");
         break;
     case TestAssertValue::OBJECT:
-        char buffer[TestNumber::MAX_POINTER_SIZE];
+        char buffer[TestNumber::MAX_ADDRESS_BUFFER];
         write(to_string(value.get<const void*>(), buffer));
         break;
     default:

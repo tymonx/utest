@@ -43,9 +43,6 @@
 #include <utest/test_string.hpp>
 #include <utest/test_span.hpp>
 
-#include <cmath>
-#include <limits>
-
 using utest::TestNumber;
 using utest::TestString;
 using utest::TestSpan;
@@ -55,7 +52,7 @@ using Int = TestNumber::Int;
 using Uint = TestNumber::Uint;
 using Double = TestNumber::Double;
 
-static_assert(TestNumber::MAX_POINTER_SIZE <= TestNumber::MAX_STRING_BUFFER,
+static_assert(TestNumber::MAX_ADDRESS_BUFFER <= TestNumber::MAX_STRING_BUFFER,
         "TestNumber::MAX_STRING_BUFFER smaller that address width");
 
 static constexpr TestString STRING_BASE{"0123456789abcdef"};
@@ -251,7 +248,7 @@ TestSpan<char> utest::to_string(const void* ptr,
         const TestSpan<char>& str) noexcept {
     TestSpan<char> tmp{const_cast<char*>(str.data()), 0};
 
-    if (str.size() >= TestNumber::MAX_POINTER_SIZE) {
+    if (str.size() >= TestNumber::MAX_ADDRESS_BUFFER) {
         tmp[0] = '0';
         tmp[1] = 'x';
         tmp = {tmp.data() + 2, 0};
@@ -271,7 +268,7 @@ TestSpan<char> utest::to_string(const void* ptr,
             }
         }
 
-        tmp = {tmp.data() - 2, TestNumber::MAX_POINTER_SIZE};
+        tmp = {tmp.data() - 2, TestNumber::MAX_ADDRESS_BUFFER};
     }
 
     return tmp;
