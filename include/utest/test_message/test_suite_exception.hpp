@@ -34,27 +34,49 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @file utest/test_message/test_assert.hpp
+ * @file utest/test_message/test_suite_exception.hpp
  *
  * @brief Test message interface
  */
 
-#ifndef UTEST_TEST_MESSAGE_TEST_ASSERT_HPP
-#define UTEST_TEST_MESSAGE_TEST_ASSERT_HPP
+#ifndef UTEST_TEST_MESSAGE_TEST_SUITE_EXCEPTION_HPP
+#define UTEST_TEST_MESSAGE_TEST_SUITE_EXCEPTION_HPP
 
-#include <utest/test_message/test_assert_explanation.hpp>
-#include <utest/test_message/test_assert_explanation_end.hpp>
-#include <utest/test_message/test_assert_fail.hpp>
-#include <utest/test_message/test_assert_true.hpp>
-#include <utest/test_message/test_assert_false.hpp>
-#include <utest/test_message/test_assert_equal.hpp>
-#include <utest/test_message/test_assert_not_equal.hpp>
-#include <utest/test_message/test_assert_greater_than.hpp>
-#include <utest/test_message/test_assert_greater_than_or_equal.hpp>
-#include <utest/test_message/test_assert_less_than.hpp>
-#include <utest/test_message/test_assert_less_than_or_equal.hpp>
-#include <utest/test_message/test_assert_expected_throw.hpp>
-#include <utest/test_message/test_assert_any_throw.hpp>
-#include <utest/test_message/test_assert_no_throw.hpp>
+#include <utest/test_message/test_suite_base.hpp>
+#include <utest/test_exception.hpp>
 
-#endif /* UTEST_TEST_MESSAGE_TEST_ASSERT_HPP */
+namespace utest {
+namespace test_message {
+
+class TestSuiteException : public TestSuiteBase, public TestException {
+private:
+    friend class utest::TestSuite;
+
+    TestSuiteException(const TestSuite& test_suite) noexcept;
+
+    TestSuiteException(const TestSuite& test_suite,
+            const TestString& message) noexcept;
+};
+
+inline
+TestSuiteException::TestSuiteException(const TestSuite& test_suite) noexcept :
+    TestSuiteBase{TestMessage::TEST_SUITE_EXCEPTION, test_suite},
+    TestException{}
+{ }
+
+inline
+TestSuiteException::TestSuiteException(const TestSuite& test_suite,
+        const TestString& message) noexcept :
+    TestSuiteBase{TestMessage::TEST_SUITE_EXCEPTION, test_suite},
+    TestException{message}
+{ }
+
+template<> inline auto
+get(const TestMessage& msg) noexcept -> const TestSuiteException& {
+    return reinterpret_cast<const TestSuiteException&>(msg);
+}
+
+}
+}
+
+#endif /* UTEST_TEST_MESSAGE_TEST_SUITE_EXCEPTION_HPP */

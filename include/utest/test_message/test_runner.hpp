@@ -42,34 +42,6 @@
 #ifndef UTEST_TEST_MESSAGE_TEST_RUNNER_HPP
 #define UTEST_TEST_MESSAGE_TEST_RUNNER_HPP
 
-#include <utest/test_runner.hpp>
-#include <utest/test_message.hpp>
-#include <utest/test_exception.hpp>
-
-namespace utest {
-namespace test_message {
-
-class TestRunnerException : public TestMessage, public TestException {
-private:
-    friend class utest::TestRunner;
-
-    TestRunnerException() noexcept :
-        TestMessage{TestMessage::TEST_RUNNER_EXCEPTION},
-        TestException{}
-    { }
-
-    TestRunnerException(const TestString& message) noexcept :
-        TestMessage{TestMessage::TEST_RUNNER_EXCEPTION},
-        TestException{message}
-    { }
-};
-
-template<> inline auto
-get(const TestMessage& msg) noexcept -> const TestRunnerException& {
-    return reinterpret_cast<const TestRunnerException&>(msg);
-}
-
-}
-}
+#include <utest/test_message/test_runner_exception.hpp>
 
 #endif /* UTEST_TEST_MESSAGE_TEST_RUNNER_HPP */

@@ -42,9 +42,8 @@
 #include <utest/test_assert.hpp>
 #include <utest/test_params.hpp>
 #include <utest/test_reporter.hpp>
+
 #include <utest/test_message/test_assert.hpp>
-#include <utest/test_size.hpp>
-#include <utest/test_number.hpp>
 
 using utest::TestSize;
 using utest::TestNumber;
@@ -80,14 +79,6 @@ void TestAssert::report(const TestMessage& test_message) noexcept {
     }
 }
 
-void TestAssert::report_equal(const void* lhs, const void* rhs) noexcept {
-    report(TestAssertEqual{*this, lhs, rhs});
-}
-
-void TestAssert::report_not_equal(const void* lhs, const void* rhs) noexcept {
-    report(TestAssertNotEqual{*this, lhs, rhs});
-}
-
 TestAssert& TestAssert::operator<<(std::nullptr_t) noexcept {
     if (TestStatus::FAIL == m_status) {
         m_explanation = true;
@@ -101,7 +92,8 @@ TestAssert& TestAssert::operator<<(const void* ptr) noexcept {
         m_explanation = true;
         if (nullptr != ptr) {
             char buffer[TestNumber::MAX_ADDRESS_BUFFER];
-            report(TestAssertExplanation{*this, to_string(ptr, buffer)});
+            report(TestAssertExplanation{
+                    *this, to_string(ptr, buffer)});
         }
         else {
             report(TestAssertExplanation{*this, STRING_NULL});
@@ -142,6 +134,12 @@ TestAssert& TestAssert::operator<<(const TestNumber& number) noexcept {
     return *this;
 }
 
+TestAssert& TestAssert::fail() noexcept {
+    m_status = TestStatus::FAIL;
+    report(TestAssertFail{*this});
+    return *this;
+}
+
 TestAssert& TestAssert::is_true(bool value) noexcept {
     if (true != value) {
         m_status = TestStatus::FAIL;
@@ -158,38 +156,93 @@ TestAssert& TestAssert::is_false(bool value) noexcept {
     return *this;
 }
 
-TestAssert& TestAssert::equal(const TestNumber& lhs,
-        const TestNumber& rhs) noexcept {
-    if (!(lhs == rhs)) {
-        m_status = TestStatus::FAIL;
-        report(TestAssertEqual{*this, lhs, rhs});
+void TestAssert::equal(const TestValue& lhs, const TestValue& rhs) noexcept {
+    m_status = TestStatus::FAIL;
+    report(TestAssertEqual{*this, lhs, rhs});
+}
+
+void TestAssert::not_equal(const TestValue& lhs,
+        const TestValue& rhs) noexcept {
+    m_status = TestStatus::FAIL;
+    report(TestAssertNotEqual{*this, lhs, rhs});
+}
+
+void TestAssert::greater_than(const TestValue& lhs,
+        const TestValue& rhs) noexcept {
+    m_status = TestStatus::FAIL;
+    report(TestAssertGreaterThan{*this, lhs, rhs});
+}
+
+void TestAssert::greater_than_or_equal(const TestValue& lhs,
+        const TestValue& rhs) noexcept {
+    m_status = TestStatus::FAIL;
+    report(TestAssertGreaterThanOrEqual{*this, lhs, rhs});
+}
+
+void TestAssert::less_than(const TestValue& lhs,
+        const TestValue& rhs) noexcept {
+    m_status = TestStatus::FAIL;
+    report(TestAssertLessThan{*this, lhs, rhs});
+}
+
+void TestAssert::less_than_or_equal(const TestValue& lhs,
+        const TestValue& rhs) noexcept {
+    m_status = TestStatus::FAIL;
+    report(TestAssertLessThanOrEqual{*this, lhs, rhs});
+}
+
+#if defined(UTEST_USE_EXCEPTIONS)
+
+TestAssert& TestAssert::any_throw(TestRun test_run) noexcept {
+    if (test_run) {
+        try {
+            test_run(m_params);
+            m_status = TestStatus::FAIL;
+            report(TestAssertAnyThrow{*this});
+        } catch (...) { }
     }
     return *this;
 }
 
-TestAssert& TestAssert::not_equal(const TestNumber& lhs,
-        const TestNumber& rhs) noexcept {
-    if (!(lhs != rhs)) {
-        m_status = TestStatus::FAIL;
-        report(TestAssertNotEqual{*this, lhs, rhs});
+TestAssert& TestAssert::no_throw(TestRun test_run) noexcept {
+    if (test_run) {
+        try {
+            test_run(m_params);
+        }
+        catch (const std::exception& e) {
+            m_status = TestStatus::FAIL;
+            report(TestAssertNoThrow{*this,
+                    {e.what(), TestString::length(e.what())}});
+        }
+        catch (...) {
+            m_status = TestStatus::FAIL;
+            report(TestAssertNoThrow{*this});
+        }
     }
     return *this;
 }
 
-TestAssert& TestAssert::equal(const TestString& lhs,
-        const TestString& rhs) noexcept {
-    if (!(lhs == rhs)) {
-        m_status = TestStatus::FAIL;
-        report(TestAssertEqual{*this, lhs, rhs});
+void TestAssert::expected_throw() noexcept {
+    m_status = TestStatus::FAIL;
+    report(TestAssertExpectedThrow{*this});
+}
+
+#else
+
+TestAssert& TestAssert::any_throw(TestRun test_run) noexcept {
+    if (test_run) {
+        test_run(m_params);
     }
     return *this;
 }
 
-TestAssert& TestAssert::not_equal(const TestString& lhs,
-        const TestString& rhs) noexcept {
-    if (!(lhs != rhs)) {
-        m_status = TestStatus::FAIL;
-        report(TestAssertNotEqual{*this, lhs, rhs});
+TestAssert& TestAssert::no_throw(TestRun test_run) noexcept {
+    if (test_run) {
+        test_run(m_params);
     }
     return *this;
 }
+
+void TestAssert::expected_throw() noexcept { }
+
+#endif

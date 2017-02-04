@@ -84,12 +84,12 @@ void TestCase::run_setup(TestParams& test_params) noexcept {
     catch (const std::exception& e) {
         m_status = TestStatus::FAIL;
         report(test_message::TestCaseSetupException{
-            {e.what(), TestString::length(e.what())}
+            *this, {e.what(), TestString::length(e.what())}
         });
     }
     catch (...) {
         m_status = TestStatus::FAIL;
-        report(test_message::TestCaseSetupException{});
+        report(test_message::TestCaseSetupException{*this});
     }
 #else
     test_execute(test_params, m_setup);
@@ -106,12 +106,12 @@ void TestCase::run_teardown(TestParams& test_params) noexcept {
     catch (const std::exception& e) {
         m_status = TestStatus::FAIL;
         report(test_message::TestCaseTeardownException{
-            {e.what(), TestString::length(e.what())}
+            *this, {e.what(), TestString::length(e.what())}
         });
     }
     catch (...) {
         m_status = TestStatus::FAIL;
-        report(test_message::TestCaseTeardownException{});
+        report(test_message::TestCaseTeardownException{*this});
     }
 #else
     test_execute(test_params, m_teardown);
@@ -135,12 +135,12 @@ TestCase& TestCase::run(TestFunction test_run) noexcept {
         catch (const std::exception& e) {
             m_status = TestStatus::FAIL;
             report(test_message::TestCaseException{
-                {e.what(), TestString::length(e.what())}
+                *this, {e.what(), TestString::length(e.what())}
             });
         }
         catch (...) {
             m_status = TestStatus::FAIL;
-            report(test_message::TestCaseException{});
+            report(test_message::TestCaseException{*this});
         }
 #else
         test_execute(test_params, test_run);

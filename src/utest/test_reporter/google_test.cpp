@@ -47,8 +47,8 @@
 #include <utest/test_message/test.hpp>
 #include <utest/test_message/test_suite.hpp>
 #include <utest/test_message/test_case.hpp>
-#include <utest/test_message/test_assert.hpp>
 #include <utest/test_message/test_runner.hpp>
+#include <utest/test_message/test_assert.hpp>
 
 using utest::TestSize;
 using utest::TestNumber;
@@ -67,6 +67,13 @@ static constexpr TestString TEST        {" test"};
 static constexpr TestString TEST_SUITE  {" test suite"};
 static constexpr TestString FROM        {" from "};
 static constexpr TestString ENDL        {"\n"};
+static constexpr TestString ACTUAL      {"  Actual: "};
+static constexpr TestString EXPECTED    {"Expected: "};
+static constexpr TestString TRUE        {"true"};
+static constexpr TestString FALSE       {"false"};
+
+static constexpr TestString GLOBAL_TEST_ENVIRONMENT
+    {"Global test environment "};
 
 static constexpr TestString EXCEPTION_BEGIN
     {"C++ exception with description \""};
@@ -102,7 +109,7 @@ void GoogleTest::report<TestMessage::TEST_BEGIN>(
     write(ENDL);
 
     write<true>(SECTION);
-    write("Global test environment set-up\n");
+    write(GLOBAL_TEST_ENVIRONMENT, "set-up\n");
 }
 
 template<>
@@ -111,7 +118,7 @@ void GoogleTest::report<TestMessage::TEST_END>(
     const auto& msg = get<TestEnd>(message);
 
     write<true>(SECTION);
-    write("Global test environment tear-down\n");
+    write(GLOBAL_TEST_ENVIRONMENT, "tear-down\n");
 
     write<true>(ENTRY);
     write(msg.test_cases(), TEST);
@@ -197,39 +204,62 @@ void GoogleTest::report<TestMessage::TEST_ASSERT_EXPLANATION_END>(
 }
 
 template<>
+void GoogleTest::report<TestMessage::TEST_ASSERT_FAIL>(
+        const TestMessage& message) noexcept {
+    failure(get<TestAssertFail>(message));
+    write("Failed\n");
+}
+
+template<>
 void GoogleTest::report<TestMessage::TEST_ASSERT_TRUE>(
         const TestMessage& message) noexcept {
     failure(get<TestAssertTrue>(message));
-    write("  Actual: false\n");
-    write("Expected: true\n");
+    write(ACTUAL, FALSE, ENDL);
+    write(EXPECTED, TRUE, ENDL);
 }
 
 template<>
 void GoogleTest::report<TestMessage::TEST_ASSERT_FALSE>(
         const TestMessage& message) noexcept {
     failure(get<TestAssertFalse>(message));
-    write("  Actual: true\n");
-    write("Expected: false\n");
+    write(ACTUAL, TRUE, ENDL);
+    write(EXPECTED, FALSE, ENDL);
 }
 
 template<>
 void GoogleTest::report<TestMessage::TEST_ASSERT_EQUAL>(
         const TestMessage& message) noexcept {
-    const auto& msg = get<TestAssertEqual>(message);
-
-    failure(msg);
-    write("      Expected: ", msg.get<0>(), ENDL);
-    write("To be equal to: ", msg.get<1>(), ENDL);
+    report(get<TestAssertEqual>(message), " == ");
 }
 
 template<>
 void GoogleTest::report<TestMessage::TEST_ASSERT_NOT_EQUAL>(
         const TestMessage& message) noexcept {
-    const auto& msg = get<TestAssertNotEqual>(message);
+    report(get<TestAssertNotEqual>(message), " != ");
+}
 
-    failure(msg);
-    write("    Expected: ", msg.get<0>(), ENDL);
-    write("Not equal to: ", msg.get<1>(), ENDL);
+template<>
+void GoogleTest::report<TestMessage::TEST_ASSERT_GREATER_THAN>(
+        const TestMessage& message) noexcept {
+    report(get<TestAssertGreaterThan>(message), " > ");
+}
+
+template<>
+void GoogleTest::report<TestMessage::TEST_ASSERT_GREATER_THAN_OR_EQUAL>(
+        const TestMessage& message) noexcept {
+    report(get<TestAssertGreaterThanOrEqual>(message), " >= ");
+}
+
+template<>
+void GoogleTest::report<TestMessage::TEST_ASSERT_LESS_THAN>(
+        const TestMessage& message) noexcept {
+    report(get<TestAssertLessThan>(message), " < ");
+}
+
+template<>
+void GoogleTest::report<TestMessage::TEST_ASSERT_LESS_THAN_OR_EQUAL>(
+        const TestMessage& message) noexcept {
+    report(get<TestAssertLessThanOrEqual>(message), " <= ");
 }
 
 template<>
@@ -296,6 +326,9 @@ void GoogleTest::report(const TestMessage& message) noexcept {
     case TestMessage::TEST_ASSERT_EXPLANATION_END:
         report<TestMessage::TEST_ASSERT_EXPLANATION_END>(message);
         break;
+    case TestMessage::TEST_ASSERT_FAIL:
+        report<TestMessage::TEST_ASSERT_FAIL>(message);
+        break;
     case TestMessage::TEST_ASSERT_TRUE:
         report<TestMessage::TEST_ASSERT_TRUE>(message);
         break;
@@ -307,6 +340,24 @@ void GoogleTest::report(const TestMessage& message) noexcept {
         break;
     case TestMessage::TEST_ASSERT_NOT_EQUAL:
         report<TestMessage::TEST_ASSERT_NOT_EQUAL>(message);
+        break;
+    case TestMessage::TEST_ASSERT_GREATER_THAN:
+        report<TestMessage::TEST_ASSERT_GREATER_THAN>(message);
+        break;
+    case TestMessage::TEST_ASSERT_GREATER_THAN_OR_EQUAL:
+        report<TestMessage::TEST_ASSERT_GREATER_THAN_OR_EQUAL>(message);
+        break;
+    case TestMessage::TEST_ASSERT_LESS_THAN:
+        report<TestMessage::TEST_ASSERT_LESS_THAN>(message);
+        break;
+    case TestMessage::TEST_ASSERT_LESS_THAN_OR_EQUAL:
+        report<TestMessage::TEST_ASSERT_LESS_THAN_OR_EQUAL>(message);
+        break;
+    case TestMessage::TEST_ASSERT_EXPECTED_THROW:
+        break;
+    case TestMessage::TEST_ASSERT_ANY_THROW:
+        break;
+    case TestMessage::TEST_ASSERT_NO_THROW:
         break;
     case TestMessage::TEST_RUNNER_EXCEPTION:
         report<TestMessage::TEST_RUNNER_EXCEPTION>(message);
@@ -361,23 +412,29 @@ void GoogleTest::failure(const TestString& file,
 }
 
 void GoogleTest::write(const TestString& str,
-        const TestAssertValue& value) noexcept {
+        const TestValue& value) noexcept {
     write(str);
 
     switch (value.type()) {
-    case TestAssertValue::NUMBER:
+    case TestValue::NUMBER:
         write(value.get<TestNumber>());
         break;
-    case TestAssertValue::STRING:
+    case TestValue::STRING:
         write("\"", value.get<TestString>(), "\"");
         break;
-    case TestAssertValue::OBJECT:
+    case TestValue::OBJECT:
         char buffer[TestNumber::MAX_ADDRESS_BUFFER];
         write(to_string(value.get<const void*>(), buffer));
         break;
     default:
         break;
     }
+}
+
+void GoogleTest::report(const TestAssertCompare& message,
+        const TestString& str) noexcept {
+    failure(message);
+    write(EXPECTED, message.get<0>(), str, message.get<1>(), ENDL);
 }
 
 GoogleTest::~GoogleTest() noexcept { }

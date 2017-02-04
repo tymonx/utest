@@ -23,38 +23,49 @@
  *
  * @copright
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * AND EXPECTED EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * LIABLE FOR EXPECTED DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
  * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
  * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * INTERRUPTION) HOWEVER CAUSED AND ON EXPECTED THEORY OF LIABILITY, WHETHER IN
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * ARISING IN EXPECTED WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @file utest/test_message/test_assert.hpp
+ * @file utest/test_message/test_assert_expected_throw.hpp
  *
  * @brief Test message interface
  */
 
-#ifndef UTEST_TEST_MESSAGE_TEST_ASSERT_HPP
-#define UTEST_TEST_MESSAGE_TEST_ASSERT_HPP
+#ifndef UTEST_TEST_MESSAGE_TEST_ASSERT_EXPECTED_THROW_HPP
+#define UTEST_TEST_MESSAGE_TEST_ASSERT_EXPECTED_THROW_HPP
 
-#include <utest/test_message/test_assert_explanation.hpp>
-#include <utest/test_message/test_assert_explanation_end.hpp>
-#include <utest/test_message/test_assert_fail.hpp>
-#include <utest/test_message/test_assert_true.hpp>
-#include <utest/test_message/test_assert_false.hpp>
-#include <utest/test_message/test_assert_equal.hpp>
-#include <utest/test_message/test_assert_not_equal.hpp>
-#include <utest/test_message/test_assert_greater_than.hpp>
-#include <utest/test_message/test_assert_greater_than_or_equal.hpp>
-#include <utest/test_message/test_assert_less_than.hpp>
-#include <utest/test_message/test_assert_less_than_or_equal.hpp>
-#include <utest/test_message/test_assert_expected_throw.hpp>
-#include <utest/test_message/test_assert_any_throw.hpp>
-#include <utest/test_message/test_assert_no_throw.hpp>
+#include <utest/test_message/test_assert_base.hpp>
 
-#endif /* UTEST_TEST_MESSAGE_TEST_ASSERT_HPP */
+namespace utest {
+namespace test_message {
+
+class TestAssertExpectedThrow : public TestAssertBase {
+private:
+    friend class utest::TestAssert;
+
+    TestAssertExpectedThrow(const TestAssert& test_assert) noexcept;
+};
+
+inline
+TestAssertExpectedThrow::TestAssertExpectedThrow(
+        const TestAssert& test_assert) noexcept :
+    TestAssertBase{TestMessage::TEST_ASSERT_EXPECTED_THROW, test_assert}
+{ }
+
+template<> inline auto
+get(const TestMessage& msg) noexcept -> const TestAssertExpectedThrow& {
+    return reinterpret_cast<const TestAssertExpectedThrow&>(msg);
+}
+
+}
+}
+
+#endif /* UTEST_TEST_MESSAGE_TEST_ASSERT_EXPECTED_THROW_HPP */

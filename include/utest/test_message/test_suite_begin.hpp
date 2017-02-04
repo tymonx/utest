@@ -34,27 +34,42 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @file utest/test_message/test_assert.hpp
+ * @file utest/test_message/test_suite_begin.hpp
  *
  * @brief Test message interface
  */
 
-#ifndef UTEST_TEST_MESSAGE_TEST_ASSERT_HPP
-#define UTEST_TEST_MESSAGE_TEST_ASSERT_HPP
+#ifndef UTEST_TEST_MESSAGE_TEST_SUITE_BEGIN_HPP
+#define UTEST_TEST_MESSAGE_TEST_SUITE_BEGIN_HPP
 
-#include <utest/test_message/test_assert_explanation.hpp>
-#include <utest/test_message/test_assert_explanation_end.hpp>
-#include <utest/test_message/test_assert_fail.hpp>
-#include <utest/test_message/test_assert_true.hpp>
-#include <utest/test_message/test_assert_false.hpp>
-#include <utest/test_message/test_assert_equal.hpp>
-#include <utest/test_message/test_assert_not_equal.hpp>
-#include <utest/test_message/test_assert_greater_than.hpp>
-#include <utest/test_message/test_assert_greater_than_or_equal.hpp>
-#include <utest/test_message/test_assert_less_than.hpp>
-#include <utest/test_message/test_assert_less_than_or_equal.hpp>
-#include <utest/test_message/test_assert_expected_throw.hpp>
-#include <utest/test_message/test_assert_any_throw.hpp>
-#include <utest/test_message/test_assert_no_throw.hpp>
+#include <utest/test_message/test_suite_base.hpp>
 
-#endif /* UTEST_TEST_MESSAGE_TEST_ASSERT_HPP */
+namespace utest {
+namespace test_message {
+
+class TestSuiteBegin : protected TestSuiteBase {
+public:
+    using TestSuiteBase::name;
+    using TestSuiteBase::file;
+    using TestSuiteBase::line;
+private:
+    friend class utest::TestSuite;
+
+    TestSuiteBegin(const utest::TestSuite& test_suite) noexcept;
+};
+
+inline
+TestSuiteBegin::TestSuiteBegin(const utest::TestSuite& test_suite) noexcept :
+    TestSuiteBase{TestMessage::TEST_SUITE_BEGIN, test_suite}
+{ }
+
+
+template<> inline auto
+get(const TestMessage& msg) noexcept -> const TestSuiteBegin& {
+    return reinterpret_cast<const TestSuiteBegin&>(msg);
+}
+
+}
+}
+
+#endif /* UTEST_TEST_MESSAGE_TEST_SUITE_BEGIN_HPP */

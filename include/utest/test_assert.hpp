@@ -42,13 +42,11 @@
 #ifndef UTEST_TEST_ASSERT_HPP
 #define UTEST_TEST_ASSERT_HPP
 
-#include <utest/test_string.hpp>
-#include <utest/test_number.hpp>
+#include <utest/test_value.hpp>
 #include <utest/test_status.hpp>
-#include <utest/test_size.hpp>
+#include <utest/test_exception.hpp>
 
 #include <cstddef>
-#include <type_traits>
 
 namespace utest {
 
@@ -57,11 +55,7 @@ class TestParams;
 
 class TestAssert {
 public:
-    template<typename T>
-    using enable_object = typename std::enable_if<
-            !std::is_integral<T>::value && !std::is_floating_point<T>::value &&
-            !std::is_same<T, TestString>::value,
-        int>::type;
+    using TestRun = void(*)(TestParams& params);
 
     TestAssert(TestParams& params) noexcept;
 
@@ -77,25 +71,36 @@ public:
 
     TestAssert& fatal(bool test_fatal = true) noexcept;
 
+    TestAssert& fail() noexcept;
+
     TestAssert& is_true(bool value) noexcept;
 
     TestAssert& is_false(bool value) noexcept;
 
-    TestAssert& equal(const TestNumber& lhs, const TestNumber& rhs) noexcept;
+    template<typename T1, typename T2>
+    TestAssert& equal(const T1& lhs, const T2& rhs) noexcept;
 
-    TestAssert& not_equal(const TestNumber& lhs,
-            const TestNumber& rhs) noexcept;
+    template<typename T1, typename T2>
+    TestAssert& not_equal(const T1& lhs, const T2& rhs) noexcept;
 
-    TestAssert& equal(const TestString& lhs, const TestString& rhs) noexcept;
+    template<typename T1, typename T2>
+    TestAssert& greater_than(const T1& lhs, const T2& rhs) noexcept;
 
-    TestAssert& not_equal(const TestString& lhs,
-            const TestString& rhs) noexcept;
+    template<typename T1, typename T2>
+    TestAssert& greater_than_or_equal(const T1& lhs, const T2& rhs) noexcept;
 
-    template<typename T, enable_object<T> = 0>
-    TestAssert& equal(const T& lhs, const T& rhs) noexcept;
+    template<typename T1, typename T2>
+    TestAssert& less_than(const T1& lhs, const T2& rhs) noexcept;
 
-    template<typename T, enable_object<T> = 0>
-    TestAssert& not_equal(const T& lhs, const T& rhs) noexcept;
+    template<typename T1, typename T2>
+    TestAssert& less_than_or_equal(const T1& lhs, const T2& rhs) noexcept;
+
+    TestAssert& any_throw(TestRun test_run) noexcept;
+
+    TestAssert& no_throw(TestRun test_run) noexcept;
+
+    template<typename T>
+    TestAssert& expected_throw(TestRun test_run) noexcept;
 
     TestAssert& operator<<(std::nullptr_t) noexcept;
 
@@ -120,9 +125,21 @@ public:
 private:
     void report(const TestMessage& test_message) noexcept;
 
-    void report_equal(const void* lhs, const void* rhs) noexcept;
+    void equal(const TestValue& lhs, const TestValue& rhs) noexcept;
 
-    void report_not_equal(const void* lhs, const void* rhs) noexcept;
+    void not_equal(const TestValue& lhs, const TestValue& rhs) noexcept;
+
+    void greater_than(const TestValue& lhs, const TestValue& rhs) noexcept;
+
+    void greater_than_or_equal(const TestValue& lhs,
+            const TestValue& rhs) noexcept;
+
+    void less_than(const TestValue& lhs, const TestValue& rhs) noexcept;
+
+    void less_than_or_equal(const TestValue& lhs,
+            const TestValue& rhs) noexcept;
+
+    void expected_throw() noexcept;
 
     TestParams& m_params;
     TestSize m_line{0};
@@ -163,7 +180,6 @@ TestAssert::operator<<(const char (&arr)[N]) noexcept -> TestAssert& {
     return operator<<(TestString{arr});
 }
 
-
 inline auto
 TestAssert::operator<<(int value) noexcept -> TestAssert& {
     return operator<<(TestNumber{value});
@@ -184,23 +200,86 @@ TestAssert::operator<<(double value) noexcept -> TestAssert& {
     return operator<<(TestNumber{value});
 }
 
-template<typename T, TestAssert::enable_object<T>> inline auto
-TestAssert::equal(const T& lhs, const T& rhs) noexcept -> TestAssert& {
+template<typename T1, typename T2> inline auto
+TestAssert::equal(const T1& lhs, const T2& rhs) noexcept -> TestAssert& {
     if (!(lhs == rhs)) {
-        m_status = TestStatus::FAIL;
-        report_equal(&lhs, &rhs);
+        equal(TestValue{lhs}, TestValue{rhs});
     }
     return *this;
 }
 
-template<typename T, TestAssert::enable_object<T>> inline auto
-TestAssert::not_equal(const T& lhs, const T& rhs) noexcept -> TestAssert& {
+template<typename T1, typename T2> inline auto
+TestAssert::not_equal(const T1& lhs, const T2& rhs) noexcept -> TestAssert& {
     if (!(lhs != rhs)) {
-        m_status = TestStatus::FAIL;
-        report_not_equal(&lhs, &rhs);
+        not_equal(TestValue{lhs}, TestValue{rhs});
     }
     return *this;
 }
+
+template<typename T1, typename T2> inline auto
+TestAssert::greater_than(const T1& lhs, const T2& rhs) noexcept -> TestAssert& {
+    if (!(lhs > rhs)) {
+        greater_than(TestValue{lhs}, TestValue{rhs});
+    }
+    return *this;
+}
+
+template<typename T1, typename T2> inline auto
+TestAssert::greater_than_or_equal(const T1& lhs,
+        const T2& rhs) noexcept -> TestAssert& {
+    if (!(lhs > rhs)) {
+        greater_than_or_equal(TestValue{lhs}, TestValue{rhs});
+    }
+    return *this;
+}
+
+template<typename T1, typename T2> inline auto
+TestAssert::less_than(const T1& lhs, const T2& rhs) noexcept -> TestAssert& {
+    if (!(lhs < rhs)) {
+        less_than(TestValue{lhs}, TestValue{rhs});
+    }
+    return *this;
+}
+
+template<typename T1, typename T2> inline auto
+TestAssert::less_than_or_equal(const T1& lhs,
+        const T2& rhs) noexcept -> TestAssert& {
+    if (!(lhs < rhs)) {
+        less_than_or_equal(TestValue{lhs}, TestValue{rhs});
+    }
+    return *this;
+}
+
+#if defined(UTEST_USE_EXCEPTIONS)
+
+template<typename T> inline auto
+TestAssert::expected_throw(TestRun test_run) noexcept -> TestAssert& {
+    if (test_run) {
+        try {
+            test_run(m_params);
+            expected_throw();
+        }
+        catch (const T&) {
+            /* Do nothing */
+        }
+        catch (...) {
+            expected_throw();
+        }
+    }
+    return *this;
+}
+
+#else
+
+template<typename T> inline auto
+TestAssert::expected_throw(TestRun test_run) noexcept -> TestAssert& {
+    if (test_run) {
+        test_run(m_params);
+    }
+    return *this;
+}
+
+#endif
 
 }
 

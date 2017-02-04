@@ -34,27 +34,50 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @file utest/test_message/test_assert.hpp
+ * @file utest/test_message/assert_explanation.hpp
  *
  * @brief Test message interface
  */
 
-#ifndef UTEST_TEST_MESSAGE_TEST_ASSERT_HPP
-#define UTEST_TEST_MESSAGE_TEST_ASSERT_HPP
+#ifndef UTEST_TEST_MESSAGE_TEST_ASSERT_EXPLANATION_HPP
+#define UTEST_TEST_MESSAGE_TEST_ASSERT_EXPLANATION_HPP
 
-#include <utest/test_message/test_assert_explanation.hpp>
-#include <utest/test_message/test_assert_explanation_end.hpp>
-#include <utest/test_message/test_assert_fail.hpp>
-#include <utest/test_message/test_assert_true.hpp>
-#include <utest/test_message/test_assert_false.hpp>
-#include <utest/test_message/test_assert_equal.hpp>
-#include <utest/test_message/test_assert_not_equal.hpp>
-#include <utest/test_message/test_assert_greater_than.hpp>
-#include <utest/test_message/test_assert_greater_than_or_equal.hpp>
-#include <utest/test_message/test_assert_less_than.hpp>
-#include <utest/test_message/test_assert_less_than_or_equal.hpp>
-#include <utest/test_message/test_assert_expected_throw.hpp>
-#include <utest/test_message/test_assert_any_throw.hpp>
-#include <utest/test_message/test_assert_no_throw.hpp>
+#include <utest/test_message/test_assert_base.hpp>
 
-#endif /* UTEST_TEST_MESSAGE_TEST_ASSERT_HPP */
+namespace utest {
+namespace test_message {
+
+class TestAssertExplanation: public TestAssertBase {
+public:
+    const TestString& explanation() const noexcept;
+private:
+    friend class utest::TestAssert;
+
+    TestAssertExplanation(const TestAssert& test_assert,
+            const TestString& str) noexcept;
+
+    const TestString& m_explanation;
+};
+
+inline
+TestAssertExplanation::TestAssertExplanation(const TestAssert& test_assert,
+        const TestString& str) noexcept :
+    TestAssertBase{TestMessage::TEST_ASSERT_EXPLANATION, test_assert},
+    m_explanation{str}
+{ }
+
+inline auto
+TestAssertExplanation::explanation() const noexcept -> const TestString& {
+    return m_explanation;
+}
+
+template<> inline auto
+get(const TestMessage& msg) noexcept
+        -> const TestAssertExplanation& {
+    return reinterpret_cast<const TestAssertExplanation&>(msg);
+}
+
+}
+}
+
+#endif /* UTEST_TEST_MESSAGE_TEST_ASSERT_EXPLANATION_HPP */

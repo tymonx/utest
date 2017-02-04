@@ -53,10 +53,18 @@ public:
         TEST_CASE_SETUP,
         TEST_ASSERT_EXPLANATION,
         TEST_ASSERT_EXPLANATION_END,
+        TEST_ASSERT_FAIL,
         TEST_ASSERT_TRUE,
         TEST_ASSERT_FALSE,
         TEST_ASSERT_EQUAL,
         TEST_ASSERT_NOT_EQUAL,
+        TEST_ASSERT_GREATER_THAN,
+        TEST_ASSERT_GREATER_THAN_OR_EQUAL,
+        TEST_ASSERT_LESS_THAN,
+        TEST_ASSERT_LESS_THAN_OR_EQUAL,
+        TEST_ASSERT_EXPECTED_THROW,
+        TEST_ASSERT_ANY_THROW,
+        TEST_ASSERT_NO_THROW,
         TEST_CASE_TEARDOWN,
         TEST_CASE_END,
         TEST_SUITE_END,
@@ -91,7 +99,6 @@ template<typename U>
 const U& get(const TestMessage& test_message) noexcept;
 
 }
-
 }
 
 #endif /* UTEST_TEST_MESSAGE_HPP */
