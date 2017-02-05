@@ -65,6 +65,15 @@ Test::Test(const TestReporters& test_reporters) noexcept :
     m_reporters{test_reporters}
 { }
 
+Test& Test::color(bool enable) noexcept {
+    for (auto reporter : m_reporters) {
+        if (reporter) {
+            reporter->color(enable);
+        }
+    }
+    return *this;
+}
+
 void Test::report(const TestMessage& test_message) noexcept {
     for (auto reporter : m_reporters) {
         if (reporter) {

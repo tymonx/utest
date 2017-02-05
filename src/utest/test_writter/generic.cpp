@@ -51,36 +51,38 @@ void Generic::write(const TestString& str) noexcept {
 }
 
 void Generic::color(TestColor c) noexcept {
-    switch (c) {
-    case TestColor::BLACK:
-        write("\x1B[30m");
-        break;
-    case TestColor::RED:
-        write("\x1B[31m");
-        break;
-    case TestColor::GREEN:
-        write("\x1B[32m");
-        break;
-    case TestColor::YELLOW:
-        write("\x1B[33m");
-        break;
-    case TestColor::BLUE:
-        write("\x1B[34m");
-        break;
-    case TestColor::MAGENTA:
-        write("\x1B[35m");
-        break;
-    case TestColor::CYAN:
-        write("\x1B[36m");
-        break;
-    case TestColor::WHITE:
-        write("\x1B[37m");
-        break;
-    case TestColor::DEFAULT:
-        write("\x1B[39m");
-        break;
-    default:
-        break;
+    if (TestWritter::color()) {
+        switch (c) {
+        case TestColor::BLACK:
+            write("\x1B[30m");
+            break;
+        case TestColor::RED:
+            write("\x1B[31m");
+            break;
+        case TestColor::GREEN:
+            write("\x1B[32m");
+            break;
+        case TestColor::YELLOW:
+            write("\x1B[33m");
+            break;
+        case TestColor::BLUE:
+            write("\x1B[34m");
+            break;
+        case TestColor::MAGENTA:
+            write("\x1B[35m");
+            break;
+        case TestColor::CYAN:
+            write("\x1B[36m");
+            break;
+        case TestColor::WHITE:
+            write("\x1B[37m");
+            break;
+        case TestColor::DEFAULT:
+            write("\x1B[39m");
+            break;
+        default:
+            break;
+        }
     }
 }
 

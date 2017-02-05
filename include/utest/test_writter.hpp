@@ -56,7 +56,23 @@ public:
     virtual void color(TestColor c) noexcept = 0;
 
     virtual ~TestWritter() noexcept;
+
+    void color(bool enable) noexcept;
+
+    bool color() const noexcept;
+private:
+    bool m_no_color{false};
 };
+
+inline void
+TestWritter::color(bool enable) noexcept {
+    m_no_color = !enable;
+}
+
+inline auto
+TestWritter::color() const noexcept -> bool {
+    return !m_no_color;
+}
 
 }
 

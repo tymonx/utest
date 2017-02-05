@@ -65,6 +65,8 @@ public:
     virtual void report(const TestMessage& test_message) noexcept = 0;
 
     virtual ~TestReporter() noexcept;
+
+    void color(bool enable) noexcept;
 protected:
     void write(const TestString& str) noexcept;
 

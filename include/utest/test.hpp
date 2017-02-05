@@ -65,6 +65,8 @@ public:
     Test& run() noexcept;
 
     TestStatus status() const noexcept;
+
+    Test& color(bool enable = true) noexcept;
 private:
     friend class TestSuite;
 

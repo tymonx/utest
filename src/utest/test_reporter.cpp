@@ -70,6 +70,14 @@ void TestReporter::write(const TestNumber& number) noexcept {
     write(to_string(number, buffer));
 }
 
+void TestReporter::color(bool enable) noexcept {
+    for (auto writter : m_writters) {
+        if (writter) {
+            writter->color(enable);
+        }
+    }
+}
+
 void TestReporter::color(TestColor c) noexcept {
     for (auto writter : m_writters) {
         if (writter) {
