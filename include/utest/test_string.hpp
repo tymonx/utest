@@ -52,6 +52,12 @@ namespace utest {
 
 class TestString : public TestSpan<const char> {
 public:
+    template<typename T>
+    using enable_null_terminated_string = typename std::enable_if<
+            std::is_convertible<T, const_pointer>::value &&
+            !std::is_array<T>::value
+        , int>::type;
+
     static constexpr TestSize MAX_LENGTH{std::numeric_limits<TestSize>::max()};
 
     using TestSpan<const char>::TestSpan;
@@ -66,6 +72,9 @@ public:
     template<TestSize N>
     constexpr TestString(value_type (&arr)[N]) noexcept;
 
+    template<typename T, enable_null_terminated_string<T> = 0>
+    TestString(T str) noexcept;
+
     static TestSize length(const_pointer str) noexcept;
 private:
     bool m_ignore_case{false};
@@ -74,6 +83,11 @@ private:
 template<TestSize N> inline constexpr
 TestString::TestString(value_type (&arr)[N]) noexcept :
     TestSpan{arr, N - 1}
+{ }
+
+template<typename T, TestString::enable_null_terminated_string<T>> inline
+TestString::TestString(T str) noexcept :
+    TestSpan{str, TestString::length(str)}
 { }
 
 inline constexpr auto

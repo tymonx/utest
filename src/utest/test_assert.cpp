@@ -216,8 +216,7 @@ TestAssert& TestAssert::no_throw(TestRun test_run) noexcept {
         }
         catch (const std::exception& e) {
             m_status = TestStatus::FAIL;
-            report(TestAssertNoThrow{*this,
-                    {e.what(), TestString::length(e.what())}});
+            report(TestAssertNoThrow{*this, e.what()});
         }
         catch (...) {
             m_status = TestStatus::FAIL;

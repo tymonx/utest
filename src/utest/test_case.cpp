@@ -84,9 +84,7 @@ void TestCase::run_setup(TestParams& test_params) noexcept {
     }
     catch (const std::exception& e) {
         m_status = TestStatus::FAIL;
-        report(test_message::TestCaseSetupException{
-            *this, {e.what(), TestString::length(e.what())}
-        });
+        report(test_message::TestCaseSetupException{*this, e.what()});
     }
     catch (...) {
         m_status = TestStatus::FAIL;
@@ -105,9 +103,7 @@ void TestCase::run_teardown(TestParams& test_params) noexcept {
     }
     catch (const std::exception& e) {
         m_status = TestStatus::FAIL;
-        report(test_message::TestCaseTeardownException{
-            *this, {e.what(), TestString::length(e.what())}
-        });
+        report(test_message::TestCaseTeardownException{*this, e.what()});
     }
     catch (...) {
         m_status = TestStatus::FAIL;
@@ -133,9 +129,7 @@ TestCase& TestCase::run(TestFunction test_run) noexcept {
         }
         catch (const std::exception& e) {
             m_status = TestStatus::FAIL;
-            report(test_message::TestCaseException{
-                *this, {e.what(), TestString::length(e.what())}
-            });
+            report(test_message::TestCaseException{*this, e.what()});
         }
         catch (...) {
             m_status = TestStatus::FAIL;

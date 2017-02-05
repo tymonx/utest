@@ -65,9 +65,7 @@ auto TestRunner::operator()(TestSuite& test_suite) noexcept -> TestStatus {
         }
         catch (const std::exception& e) {
             status = TestStatus::FAIL;
-            test_suite.report(test_message::TestRunnerException{
-                {e.what(), TestString::length(e.what())}
-            });
+            test_suite.report(test_message::TestRunnerException{e.what()});
         }
         catch (...) {
             status = TestStatus::FAIL;

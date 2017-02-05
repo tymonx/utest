@@ -76,9 +76,7 @@ TestSuite& TestSuite::run(TestRun test_run) noexcept {
         }
         catch (const std::exception& e) {
             m_status = TestStatus::FAIL;
-            report(test_message::TestSuiteException{
-                *this, {e.what(), TestString::length(e.what())}
-            });
+            report(test_message::TestSuiteException{*this, e.what()});
         }
         catch (...) {
             m_status = TestStatus::FAIL;

@@ -258,7 +258,7 @@ TestAssert::expected_throw(TestRun test_run) noexcept -> TestAssert& {
             /* Do nothing */
         }
         catch (const std::exception& e) {
-            expected_throw(true, {e.what(), TestString::length(e.what())});
+            expected_throw(true, e.what());
         }
         catch (...) {
             expected_throw(true);
