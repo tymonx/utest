@@ -54,5 +54,7 @@ include(AddThreads)
 
 include_directories(include)
 
+install(DIRECTORY include/ DESTINATION include FILES_MATCHING PATTERN "*.hpp")
+
 add_subdirectory(src)
 add_subdirectory(examples)

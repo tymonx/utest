@@ -68,6 +68,11 @@ set_target_properties(utest-main PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
 )
 
+install(TARGETS utest utest-main
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+)
+
 if (CMAKE_CXX_COMPILER_ID MATCHES Clang)
     set_source_files_properties(
         test.cpp
