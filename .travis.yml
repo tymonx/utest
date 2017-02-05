@@ -1,17 +1,42 @@
+# Common settings
+sudo: required
+dist: precise
+
 # Enable C++ support
 language: cpp
 
-# Compiler selection
-compiler:
- - clang
- - gcc
-
-# OS selection
-os:
- - linux
+matrix:
+  include:
+   - os: linux
+     compiler: gcc
+     addons:
+       apt:
+         sources:
+          - george-edison55-precise-backports
+          - ubuntu-toolchain-r-test
+         packages:
+          - cmake
+          - cmake-data
+          - g++-6
+     env: COMPILER=g++-6
+   - os: linux
+     compiler: clang
+     addons:
+       apt:
+         sources:
+          - george-edison55-precise-backports
+          - ubuntu-toolchain-r-test
+          - llvm-toolchain-precise-3.9
+         packages:
+          - cmake
+          - cmake-data
+          - clang-3.9
+     env: COMPILER=clang++3.9
 
 # Build steps
 script:
  - mkdir build
  - cd build
- - cmake .. && make
+ - cmake -DCMAKE_CXX_COMPILER=$COMPILER .. && make
+ - ./bin/simple
+ - ./bin/string
