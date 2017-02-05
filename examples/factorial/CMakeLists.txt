@@ -27,8 +27,15 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+add_executable(example-factorial
+    factorial.cpp
+)
 
-add_subdirectory(simple)
-add_subdirectory(string)
-add_subdirectory(factorial)
+set_target_properties(example-factorial PROPERTIES OUTPUT_NAME factorial)
+target_link_libraries(example-factorial utest-main utest)
+
+if (CMAKE_CXX_COMPILER_ID MATCHES Clang)
+    set_source_files_properties(factorial.cpp PROPERTIES
+        COMPILE_FLAGS "-Wno-global-constructors"
+    )
+endif()
