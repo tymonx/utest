@@ -100,7 +100,6 @@ elseif (CMAKE_BUILD_TYPE MATCHES "Debug")
 endif()
 
 set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS}
-    -Waggregate-return
     -Wall
     -Wcast-qual
     -Wcomments
@@ -135,7 +134,6 @@ set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS}
     -Wstack-protector
     -Wstrict-null-sentinel
     -Wstrict-overflow=2
-    -Wsuggest-attribute=const
     -Wsuggest-attribute=noreturn
     -Wsuggest-attribute=format
     -Wsuggest-final-methods
