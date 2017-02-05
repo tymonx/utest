@@ -74,8 +74,6 @@ private:
 
     void write_address(std::uintptr_t address) noexcept;
 
-    void write(const TestNumber& number, const TestString& str) noexcept;
-
     void write(const TestString& str, const TestValue& value) noexcept;
 
     template<typename ...Args>

@@ -63,17 +63,13 @@ static constexpr TestString RUN         {"[ RUN      ] "};
 static constexpr TestString OK          {"[       OK ] "};
 static constexpr TestString FAILED      {"[  FAILED  ] "};
 static constexpr TestString PASSED      {"[  PASSED  ] "};
-static constexpr TestString TEST        {" test"};
-static constexpr TestString TEST_SUITE  {" test suite"};
-static constexpr TestString FROM        {" from "};
+static constexpr TestString TEST        {" test(s).\n"};
+static constexpr TestString TEST_FROM   {" test(s) from "};
 static constexpr TestString ENDL        {"\n"};
 static constexpr TestString ACTUAL      {"  Actual: "};
 static constexpr TestString EXPECTED    {"Expected: "};
 static constexpr TestString TRUE        {"true"};
 static constexpr TestString FALSE       {"false"};
-
-static constexpr TestString GLOBAL_TEST_ENVIRONMENT
-    {"Global test environment "};
 
 static constexpr TestString EXCEPTION_BEGIN
     {"C++ exception with description \""};
@@ -104,12 +100,7 @@ void GoogleTest::report<TestMessage::TEST_BEGIN>(
     const auto& msg = get<TestBegin>(message);
 
     write<true>(ENTRY);
-    write("Running registered ");
-    write(msg.tests_registered(), TEST);
-    write(ENDL);
-
-    write<true>(SECTION);
-    write(GLOBAL_TEST_ENVIRONMENT, "set-up\n");
+    write("Running ", msg.tests_registered(), " registered test(s).\n");
 }
 
 template<>
@@ -117,23 +108,16 @@ void GoogleTest::report<TestMessage::TEST_END>(
         const TestMessage& message) noexcept {
     const auto& msg = get<TestEnd>(message);
 
-    write<true>(SECTION);
-    write(GLOBAL_TEST_ENVIRONMENT, "tear-down\n");
-
     write<true>(ENTRY);
-    write(msg.test_cases(), TEST);
-    write(FROM);
-    write(msg.test_suites(), TEST_SUITE);
-    write(" ran\n");
+    write(msg.test_cases(), TEST_FROM,
+            msg.test_suites(), " test suite(s) ran.\n");
 
     write<true>(PASSED);
     write(msg.test_cases_passed(), TEST);
-    write(ENDL);
 
     if (msg.test_cases_failed()) {
         write<false>(FAILED);
         write(msg.test_cases_failed(), TEST);
-        write(ENDL);
     }
 }
 
@@ -152,17 +136,15 @@ void GoogleTest::report<TestMessage::TEST_SUITE_END>(
     const auto& msg = get<TestSuiteEnd>(message);
 
     write<true>(SECTION);
-    write(msg.tests_passed() + msg.tests_failed(), TEST);
-    write(FROM, msg.name(), ENDL);
+    write(msg.tests_passed() + msg.tests_failed(), TEST_FROM,
+            msg.name(), ENDL);
 
     write<true>(PASSED);
     write(msg.tests_passed(), TEST);
-    write(ENDL);
 
     if (msg.tests_failed()) {
         write<false>(FAILED);
         write(msg.tests_failed(), TEST);
-        write(ENDL);
     }
 
     write(ENDL);
@@ -447,13 +429,6 @@ void GoogleTest::write_exception(const TestString& message) noexcept {
 #else
     (void)message;
 #endif
-}
-
-void GoogleTest::write(const TestNumber& number,
-        const TestString& str) noexcept {
-    write(number);
-    write(str);
-    if (number != TestNumber{1}) { write("s"); }
 }
 
 void GoogleTest::failure(const TestString& file,
