@@ -61,6 +61,13 @@ set_target_properties(utest PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
 )
 
+add_library(utest-main STATIC test_main.cpp)
+
+set_target_properties(utest-main PROPERTIES
+    ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
+    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
+)
+
 if (CMAKE_CXX_COMPILER_ID MATCHES Clang)
     set_source_files_properties(
         test.cpp

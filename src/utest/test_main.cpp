@@ -34,26 +34,18 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @file examples/simple.cpp
+ * @file utest/test_main.cpp
  *
  * @brief Main implementation
  */
 
 #include <utest/utest.hpp>
 
+#include <cstdlib>
+
 using namespace utest;
 
-static TestRunner g([] (TestSuite& test_suite) {
-    test_suite.file(__FILE__)
-
-    .name("integer compare").run([] (TestCase& test_case) {
-        test_case
-        .name("equal").run([] (TestParams& p) {
-            TestAssert{p}.equal(5, 5);
-        })
-
-        .name("not equal").run([] (TestParams& p) {
-            TestAssert{p}.not_equal(5, 4);
-        });
-    });
-});
+int main() {
+    return TestStatus::PASS == Test().run().status()
+        ? EXIT_SUCCESS : EXIT_FAILURE;
+}

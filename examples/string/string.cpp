@@ -41,16 +41,10 @@
 
 #include <utest/utest.hpp>
 
-#include <cstdlib>
 #include <string>
 
 using std::string;
 using namespace utest;
-
-int main() {
-    return TestStatus::PASS == Test().run().status()
-        ? EXIT_SUCCESS : EXIT_FAILURE;
-}
 
 static void test_case_execution(TestCase& test_case) {
     test_case

@@ -32,7 +32,7 @@ add_executable(example-string
 )
 
 set_target_properties(example-string PROPERTIES OUTPUT_NAME string)
-target_link_libraries(example-string utest)
+target_link_libraries(example-string utest-main utest)
 
 if (CMAKE_CXX_COMPILER_ID MATCHES Clang)
     set_source_files_properties(string.cpp PROPERTIES
