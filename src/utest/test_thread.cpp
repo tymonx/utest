@@ -40,12 +40,12 @@
  */
 
 #include <utest/test_thread.hpp>
-#include <utest/test_thread/default.hpp>
+#include <utest/test_thread/generic.hpp>
 
 using utest::TestThread;
 
 TestThread& TestThread::get_default() noexcept {
-    static test_thread::Default instance;
+    static test_thread::Generic instance;
     return instance;
 }
 

@@ -34,23 +34,23 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @file utest/test_writter/default.cpp
+ * @file utest/test_writter/generic.cpp
  *
- * @brief Test writter default implementation
+ * @brief Test writter generic implementation
  */
 
-#include <utest/test_writter/default.hpp>
+#include <utest/test_writter/generic.hpp>
 
 #include <cstdio>
 
-using utest::test_writter::Default;
+using utest::test_writter::Generic;
 
-void Default::write(const TestString& str) noexcept {
+void Generic::write(const TestString& str) noexcept {
     std::fwrite(str.data(), sizeof(TestString::value_type),
             str.length(), stdout);
 }
 
-void Default::color(TestColor c) noexcept {
+void Generic::color(TestColor c) noexcept {
     switch (c) {
     case TestColor::BLACK:
         write("\x1B[30m");
@@ -84,4 +84,4 @@ void Default::color(TestColor c) noexcept {
     }
 }
 
-Default::~Default() noexcept { }
+Generic::~Generic() noexcept { }

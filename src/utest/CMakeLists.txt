@@ -70,6 +70,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES Clang)
 
     set_source_files_properties(
         test_writter.cpp
+        test_thread.cpp
         PROPERTIES
         COMPILE_FLAGS "-Wno-exit-time-destructors"
     )

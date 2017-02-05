@@ -34,12 +34,12 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @file utest/test_thread/default.cpp
+ * @file utest/test_thread/generic.cpp
  *
  * @brief Test thread implementation
  */
 
-#include <utest/test_thread/default.hpp>
+#include <utest/test_thread/generic.hpp>
 #include <utest/test_exception.hpp>
 #include <utest/test_case.hpp>
 
@@ -48,11 +48,11 @@
 #include <functional>
 #endif
 
-using utest::test_thread::Default;
+using utest::test_thread::Generic;
 
 #if defined(UTEST_USE_THREADS) && defined(UTEST_USE_EXCEPTIONS)
 
-void Default::run(TestCase& test_case, TestCaseRun test_run,
+void Generic::run(TestCase& test_case, TestCaseRun test_run,
         TestParams& test_params) noexcept {
     try {
         std::thread test{test_run, std::ref(test_case), std::ref(test_params)};
@@ -66,7 +66,7 @@ void Default::run(TestCase& test_case, TestCaseRun test_run,
 
 #elif defined(UTEST_USE_THREADS)
 
-void Default::run(TestCase& test_case, TestCaseRun test_run,
+void Generic::run(TestCase& test_case, TestCaseRun test_run,
         TestParams& test_params) noexcept {
     std::thread test{test_run, std::ref(test_case), std::ref(test_params)};
     test.join();
@@ -74,11 +74,11 @@ void Default::run(TestCase& test_case, TestCaseRun test_run,
 
 #else
 
-void Default::run(TestCase& test_case, TestCaseRun test_run,
+void Generic::run(TestCase& test_case, TestCaseRun test_run,
         TestParams& test_params) noexcept {
     (test_case.*test_run)(test_params);
 }
 
 #endif
 
-Default::~Default() noexcept { }
+Generic::~Generic() noexcept { }

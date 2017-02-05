@@ -28,5 +28,5 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 add_library(utest-threads OBJECT
-    default.cpp
+    generic.cpp
 )

@@ -34,29 +34,28 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @file utest/test_writter/default.hpp
+ * @file utest/test_thread/generic.hpp
  *
- * @brief Test writter interface
+ * @brief Test thread interface
  */
 
-#ifndef UTEST_TEST_WRITTER_DEFAULT_HPP
-#define UTEST_TEST_WRITTER_DEFAULT_HPP
+#ifndef UTEST_TEST_THREAD_GENERIC_HPP
+#define UTEST_TEST_THREAD_GENERIC_HPP
 
-#include <utest/test_writter.hpp>
+#include <utest/test_thread.hpp>
 
 namespace utest {
-namespace test_writter {
+namespace test_thread {
 
-class Default final : public TestWritter {
+class Generic final : public TestThread {
 public:
-    virtual void write(const TestString& str) noexcept override;
+    virtual void run(TestCase& test_case, TestCaseRun test_run,
+            TestParams& test_params) noexcept override;
 
-    virtual void color(TestColor c) noexcept override;
-
-    virtual ~Default() noexcept override;
+    virtual ~Generic() noexcept override;
 };
 
 }
 }
 
-#endif /* UTEST_TEST_WRITTER_DEFAULT_HPP */
+#endif /* UTEST_TEST_THREAD_GENERIC_HPP */

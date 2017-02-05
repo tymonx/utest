@@ -28,5 +28,5 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 add_library(utest-writters OBJECT
-    default.cpp
+    generic.cpp
 )
