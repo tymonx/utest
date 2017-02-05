@@ -31,7 +31,7 @@ matrix:
           - cmake
           - cmake-data
           - clang-3.9
-     env: COMPILER=clang++3.9
+     env: COMPILER=clang++-3.9
 
 # Build steps
 script:
