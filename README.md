@@ -3,7 +3,7 @@ Lightweight unit tests framework mainly for C++ and also for C projects. Target 
 
 ## Key Features
 
-* C++11 support
+* Written in C++11
 * An XUnit test framework
 * The 3-clause BSD license
 * No evil defined test macros, programmer API style
