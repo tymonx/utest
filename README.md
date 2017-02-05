@@ -1,3 +1,5 @@
+[![License (3-Clause BSD)](https://img.shields.io/badge/license-BSD%203--Clause-blue.svg?style=flat-square)](http://opensource.org/licenses/BSD-3-Clause)
+
 # µTest
 Lightweight unit tests framework mainly for C++ and also for C projects. Suitable for embedded devices.
 
