@@ -21,7 +21,7 @@ Run factorial example using QEMU:
 qemu-arm -cpu cortex-m3 ./bin/factorial
 ```
 
-## Build examples for embedded target:
+## Build examples for embedded target
 
 Download and unpack CMSIS archive from [ARM][arm-cmsis]. Adapt linker script
 and startup code to your project. Example for GCC compilers and Cortex-M3
@@ -32,7 +32,7 @@ Build:
 
 ```
 mkdir build && cd build
-cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-gcc-arm-none-eabi.cmake -DCMAKE_SYSTEM_PROCESSOR=cortex-m3 -DSEMIHOSTING=OFF -DLINKER_SCRIPT=<path_to_linker_script> -DSTARTUP_CODE=<path_to_startup_code> ..
+cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-gcc-arm-none-eabi.cmake -DCMAKE_SYSTEM_PROCESSOR=cortex-m3 -DSEMIHOSTING=OFF -DLINKER_SCRIPT=<linker_script_file> -DSTARTUP_CODE=<startup_code_file> ..
 make
 ```
 
