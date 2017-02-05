@@ -37,6 +37,7 @@ add_library(utest-core OBJECT
     test_exception.cpp
     test_list.cpp
     test_number.cpp
+    test_value.cpp
     test_params.cpp
     test_register.cpp
     test_reporter.cpp

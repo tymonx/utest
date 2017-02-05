@@ -104,6 +104,10 @@ public:
 
     constexpr bool empty() const noexcept;
 
+    constexpr bool operator!() const noexcept;
+
+    constexpr explicit operator bool() const noexcept;
+
     pointer data() noexcept;
 
     constexpr const_pointer data() const noexcept;
@@ -197,6 +201,16 @@ TestSpan<T>::length() const noexcept -> size_type {
 template<typename T> inline constexpr auto
 TestSpan<T>::empty() const noexcept -> bool {
     return (0 == m_size);
+}
+
+template<typename T> inline constexpr auto
+TestSpan<T>::operator!() const noexcept -> bool {
+    return (0 == m_size);
+}
+
+template<typename T> inline constexpr
+TestSpan<T>::operator bool() const noexcept {
+    return (0 != m_size);
 }
 
 template<typename T> inline auto

@@ -221,15 +221,15 @@ TestAssert& TestAssert::no_throw(TestRun test_run) noexcept {
         }
         catch (...) {
             m_status = TestStatus::FAIL;
-            report(TestAssertNoThrow{*this});
+            report(TestAssertNoThrow{*this, {}});
         }
     }
     return *this;
 }
 
-void TestAssert::expected_throw() noexcept {
+void TestAssert::expected_throw(bool throws, const TestString& str) noexcept {
     m_status = TestStatus::FAIL;
-    report(TestAssertExpectedThrow{*this});
+    report(TestAssertExpectedThrow{*this, throws, str});
 }
 
 #else
@@ -248,6 +248,6 @@ TestAssert& TestAssert::no_throw(TestRun test_run) noexcept {
     return *this;
 }
 
-void TestAssert::expected_throw() noexcept { }
+void TestAssert::expected_throw(bool, const TestString&) noexcept { }
 
 #endif

@@ -139,7 +139,7 @@ private:
     void less_than_or_equal(const TestValue& lhs,
             const TestValue& rhs) noexcept;
 
-    void expected_throw() noexcept;
+    void expected_throw(bool throws, const TestString& str = {}) noexcept;
 
     TestParams& m_params;
     TestSize m_line{0};
@@ -252,13 +252,34 @@ TestAssert::expected_throw(TestRun test_run) noexcept -> TestAssert& {
     if (test_run) {
         try {
             test_run(m_params);
-            expected_throw();
+            expected_throw(false);
         }
         catch (const T&) {
             /* Do nothing */
         }
+        catch (const std::exception& e) {
+            expected_throw(true, {e.what(), TestString::length(e.what())});
+        }
         catch (...) {
-            expected_throw();
+            expected_throw(true);
+        }
+    }
+    return *this;
+}
+
+template<> auto inline
+TestAssert::expected_throw<std::exception>(
+        TestRun test_run) noexcept -> TestAssert& {
+    if (test_run) {
+        try {
+            test_run(m_params);
+            expected_throw(false);
+        }
+        catch (const std::exception&) {
+            /* Do nothing */
+        }
+        catch (...) {
+            expected_throw(true);
         }
     }
     return *this;

@@ -262,6 +262,49 @@ void GoogleTest::report<TestMessage::TEST_ASSERT_LESS_THAN_OR_EQUAL>(
     report(get<TestAssertLessThanOrEqual>(message), " <= ");
 }
 
+#if defined(UTEST_USE_EXCEPTIONS)
+
+template<>
+void GoogleTest::report<TestMessage::TEST_ASSERT_NO_THROW>(
+        const TestMessage& message) noexcept {
+    const auto& msg = get<TestAssertNoThrow>(message);
+
+    failure(msg);
+    write(EXPECTED, "it doesn't throw an exception\n");
+    write(ACTUAL, "it throws an exception");
+    if (msg.what()) {
+        write(": \"", msg.what(), "\"");
+    }
+    write(ENDL);
+}
+
+template<>
+void GoogleTest::report<TestMessage::TEST_ASSERT_ANY_THROW>(
+        const TestMessage& message) noexcept {
+    failure(get<TestAssertAnyThrow>(message));
+    write(EXPECTED, "it throws an exception\n");
+    write(ACTUAL, "it throws nothing\n");
+}
+
+template<>
+void GoogleTest::report<TestMessage::TEST_ASSERT_EXPECTED_THROW>(
+        const TestMessage& message) noexcept {
+    const auto& msg = get<TestAssertExpectedThrow>(message);
+
+    failure(msg);
+    write(EXPECTED, "it throws expected exception\n");
+    if (msg.throws()) {
+        write(ACTUAL, "it throws unexpected exception");
+        if (msg.what()) {
+            write(": \"", msg.what(), "\"");
+        }
+        write(ENDL);
+    }
+    else {
+        write(ACTUAL, "it throws nothing\n");
+    }
+}
+
 template<>
 void GoogleTest::report<TestMessage::TEST_RUNNER_EXCEPTION>(
         const TestMessage& message) noexcept {
@@ -296,6 +339,8 @@ void GoogleTest::report<TestMessage::TEST_CASE_TEARDOWN_EXCEPTION>(
     write_exception(get<TestCaseTeardownException>(message).what());
     write("test case teardown body\n");
 }
+
+#endif
 
 }
 }
@@ -353,11 +398,15 @@ void GoogleTest::report(const TestMessage& message) noexcept {
     case TestMessage::TEST_ASSERT_LESS_THAN_OR_EQUAL:
         report<TestMessage::TEST_ASSERT_LESS_THAN_OR_EQUAL>(message);
         break;
+#if defined(UTEST_USE_EXCEPTIONS)
     case TestMessage::TEST_ASSERT_EXPECTED_THROW:
+        report<TestMessage::TEST_ASSERT_EXPECTED_THROW>(message);
         break;
     case TestMessage::TEST_ASSERT_ANY_THROW:
+        report<TestMessage::TEST_ASSERT_ANY_THROW>(message);
         break;
     case TestMessage::TEST_ASSERT_NO_THROW:
+        report<TestMessage::TEST_ASSERT_NO_THROW>(message);
         break;
     case TestMessage::TEST_RUNNER_EXCEPTION:
         report<TestMessage::TEST_RUNNER_EXCEPTION>(message);
@@ -374,6 +423,16 @@ void GoogleTest::report(const TestMessage& message) noexcept {
     case TestMessage::TEST_CASE_TEARDOWN_EXCEPTION:
         report<TestMessage::TEST_CASE_TEARDOWN_EXCEPTION>(message);
         break;
+#else
+    case TestMessage::TEST_ASSERT_EXPECTED_THROW:
+    case TestMessage::TEST_ASSERT_ANY_THROW:
+    case TestMessage::TEST_ASSERT_NO_THROW:
+    case TestMessage::TEST_RUNNER_EXCEPTION:
+    case TestMessage::TEST_SUITE_EXCEPTION:
+    case TestMessage::TEST_CASE_EXCEPTION:
+    case TestMessage::TEST_CASE_SETUP_EXCEPTION:
+    case TestMessage::TEST_CASE_TEARDOWN_EXCEPTION:
+#endif
     case TestMessage::TEST_CASE_SETUP:
     case TestMessage::TEST_CASE_TEARDOWN:
     default:
@@ -381,8 +440,13 @@ void GoogleTest::report(const TestMessage& message) noexcept {
     }
 }
 
+
 void GoogleTest::write_exception(const TestString& message) noexcept {
+#if defined(UTEST_USE_EXCEPTIONS)
     write(EXCEPTION_BEGIN, message, EXCEPTION_END);
+#else
+    (void)message;
+#endif
 }
 
 void GoogleTest::write(const TestNumber& number,

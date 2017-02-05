@@ -79,6 +79,8 @@ public:
     template<typename T, enable_object<T> = 0>
     TestValue(const T& value) noexcept;
 private:
+    TestValue(const void* value) noexcept;
+
     Type m_type;
 
     union {
@@ -88,24 +90,14 @@ private:
     };
 };
 
-inline
-TestValue::TestValue(const TestNumber& value) noexcept :
-    m_type{NUMBER}, m_number{value}
-{ }
-
-inline
-TestValue::TestValue(const TestString& value) noexcept :
-    m_type{STRING}, m_string{value}
-{ }
-
 template<typename T, TestValue::enable_object<T>> inline
 TestValue::TestValue(const T& value) noexcept :
-    m_type{OBJECT}, m_object{static_cast<const void*>(&value)}
+    TestValue{static_cast<const void*>(&value)}
 { }
 
 template<TestSize N> inline
 TestValue::TestValue(const char (&str)[N]) noexcept :
-    m_type{STRING}, m_string{str}
+    TestValue{TestString{str}}
 { }
 
 template<> inline auto

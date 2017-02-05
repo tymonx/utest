@@ -43,22 +43,36 @@
 #define UTEST_TEST_MESSAGE_TEST_ASSERT_EXPECTED_THROW_HPP
 
 #include <utest/test_message/test_assert_base.hpp>
+#include <utest/test_exception.hpp>
 
 namespace utest {
 namespace test_message {
 
-class TestAssertExpectedThrow : public TestAssertBase {
+class TestAssertExpectedThrow : public TestAssertBase, public TestException {
+public:
+    bool throws() const noexcept;
 private:
     friend class utest::TestAssert;
 
-    TestAssertExpectedThrow(const TestAssert& test_assert) noexcept;
+    TestAssertExpectedThrow(const TestAssert& test_assert,
+            bool exception_throws, const TestString& str) noexcept;
+
+    bool m_throws{false};
 };
 
 inline
 TestAssertExpectedThrow::TestAssertExpectedThrow(
-        const TestAssert& test_assert) noexcept :
-    TestAssertBase{TestMessage::TEST_ASSERT_EXPECTED_THROW, test_assert}
+        const TestAssert& test_assert, bool exception_throws,
+        const TestString& str) noexcept :
+    TestAssertBase{TestMessage::TEST_ASSERT_EXPECTED_THROW, test_assert},
+    TestException{str},
+    m_throws{exception_throws}
 { }
+
+inline auto
+TestAssertExpectedThrow::throws() const noexcept -> bool {
+    return m_throws;
+}
 
 template<> inline auto
 get(const TestMessage& msg) noexcept -> const TestAssertExpectedThrow& {
