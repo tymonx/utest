@@ -34,46 +34,56 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @file utest/test_writter.hpp
+ * @file utest/test_writer/generic.cpp
  *
- * @brief Test writter interface
+ * @brief Test writer generic implementation
  */
 
-#ifndef UTEST_TEST_WRITTER_HPP
-#define UTEST_TEST_WRITTER_HPP
+#include <utest/test_writer/generic.hpp>
 
-#include <utest/test_string.hpp>
-#include <utest/test_color.hpp>
+#include <cstdio>
 
-namespace utest {
+using utest::test_writer::Generic;
 
-class TestWritter {
-public:
-    static TestWritter& get_default() noexcept;
-
-    virtual void write(const TestString& str) noexcept = 0;
-
-    virtual void color(TestColor c) noexcept = 0;
-
-    virtual ~TestWritter() noexcept;
-
-    void color(bool enable) noexcept;
-
-    bool color() const noexcept;
-private:
-    bool m_no_color{false};
-};
-
-inline void
-TestWritter::color(bool enable) noexcept {
-    m_no_color = !enable;
+void Generic::write(const TestString& str) noexcept {
+    std::fwrite(str.data(), sizeof(TestString::value_type),
+            str.length(), stdout);
 }
 
-inline auto
-TestWritter::color() const noexcept -> bool {
-    return !m_no_color;
+void Generic::color(TestColor c) noexcept {
+    if (TestWriter::color()) {
+        switch (c) {
+        case TestColor::BLACK:
+            write("\x1B[30m");
+            break;
+        case TestColor::RED:
+            write("\x1B[31m");
+            break;
+        case TestColor::GREEN:
+            write("\x1B[32m");
+            break;
+        case TestColor::YELLOW:
+            write("\x1B[33m");
+            break;
+        case TestColor::BLUE:
+            write("\x1B[34m");
+            break;
+        case TestColor::MAGENTA:
+            write("\x1B[35m");
+            break;
+        case TestColor::CYAN:
+            write("\x1B[36m");
+            break;
+        case TestColor::WHITE:
+            write("\x1B[37m");
+            break;
+        case TestColor::DEFAULT:
+            write("\x1B[39m");
+            break;
+        default:
+            break;
+        }
+    }
 }
 
-}
-
-#endif /* UTEST_TEST_WRITTER_HPP */
+Generic::~Generic() noexcept { }

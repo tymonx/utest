@@ -49,18 +49,18 @@
 namespace utest {
 
 class TestMessage;
-class TestWritter;
+class TestWriter;
 class TestNumber;
 
 class TestReporter {
 public:
-    using TestWritters = TestSpan<TestWritter*>;
+    using TestWriters = TestSpan<TestWriter*>;
 
     static TestReporter& get_default() noexcept;
 
     TestReporter() noexcept;
 
-    TestReporter(const TestWritters& test_writters) noexcept;
+    TestReporter(const TestWriters& test_writers) noexcept;
 
     virtual void report(const TestMessage& test_message) noexcept = 0;
 
@@ -86,12 +86,12 @@ protected:
 
     void color(TestColor c) noexcept;
 
-    TestWritters m_writters{};
+    TestWriters m_writers{};
 };
 
 inline
-TestReporter::TestReporter(const TestWritters& test_writters) noexcept :
-    m_writters{test_writters}
+TestReporter::TestReporter(const TestWriters& test_writers) noexcept :
+    m_writers{test_writers}
 { }
 
 template<TestSize... N>

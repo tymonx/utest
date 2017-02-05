@@ -34,20 +34,20 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @file utest/test_writter/generic.hpp
+ * @file utest/test_writer/generic.hpp
  *
- * @brief Test writter interface
+ * @brief Test writer interface
  */
 
-#ifndef UTEST_TEST_WRITTER_GENERIC_HPP
-#define UTEST_TEST_WRITTER_GENERIC_HPP
+#ifndef UTEST_TEST_WRITER_GENERIC_HPP
+#define UTEST_TEST_WRITER_GENERIC_HPP
 
-#include <utest/test_writter.hpp>
+#include <utest/test_writer.hpp>
 
 namespace utest {
-namespace test_writter {
+namespace test_writer {
 
-class Generic final : public TestWritter {
+class Generic final : public TestWriter {
 public:
     virtual void write(const TestString& str) noexcept override;
 
@@ -59,4 +59,4 @@ public:
 }
 }
 
-#endif /* UTEST_TEST_WRITTER_GENERIC_HPP */
+#endif /* UTEST_TEST_WRITER_GENERIC_HPP */

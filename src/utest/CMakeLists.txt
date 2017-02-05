@@ -28,7 +28,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 add_subdirectory(test_reporter)
-add_subdirectory(test_writter)
+add_subdirectory(test_writer)
 add_subdirectory(test_thread)
 
 add_library(utest-core OBJECT
@@ -46,14 +46,14 @@ add_library(utest-core OBJECT
     test_runner.cpp
     test_string.cpp
     test_suite.cpp
-    test_writter.cpp
+    test_writer.cpp
 )
 
 add_library(utest STATIC
     $<TARGET_OBJECTS:utest-core>
     $<TARGET_OBJECTS:utest-threads>
     $<TARGET_OBJECTS:utest-reporters>
-    $<TARGET_OBJECTS:utest-writters>
+    $<TARGET_OBJECTS:utest-writers>
 )
 
 set_target_properties(utest PROPERTIES
@@ -76,7 +76,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES Clang)
     )
 
     set_source_files_properties(
-        test_writter.cpp
+        test_writer.cpp
         test_thread.cpp
         PROPERTIES
         COMPILE_FLAGS "-Wno-exit-time-destructors"
@@ -93,7 +93,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES GNU)
     set_source_files_properties(
         test_register.cpp
         test_reporter.cpp
-        test_writter.cpp
+        test_writer.cpp
         PROPERTIES
         COMPILE_FLAGS "-Wno-suggest-attribute=const"
     )

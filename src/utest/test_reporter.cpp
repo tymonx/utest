@@ -41,12 +41,12 @@
 
 #include <utest/test_reporter.hpp>
 #include <utest/test_reporter/google_test.hpp>
-#include <utest/test_writter.hpp>
+#include <utest/test_writer.hpp>
 #include <utest/test_number.hpp>
 
 using utest::TestReporter;
 
-static utest::TestWritter* g_default[1] {&utest::TestWritter::get_default()};
+static utest::TestWriter* g_default[1] {&utest::TestWriter::get_default()};
 
 TestReporter& TestReporter::get_default() noexcept {
     static test_reporter::GoogleTest instance;
@@ -54,13 +54,13 @@ TestReporter& TestReporter::get_default() noexcept {
 }
 
 TestReporter::TestReporter() noexcept :
-    m_writters{g_default}
+    m_writers{g_default}
 { }
 
 void TestReporter::write(const TestString& str) noexcept {
-    for (auto writter : m_writters) {
-        if (writter) {
-            writter->write(str);
+    for (auto writer : m_writers) {
+        if (writer) {
+            writer->write(str);
         }
     }
 }
@@ -71,17 +71,17 @@ void TestReporter::write(const TestNumber& number) noexcept {
 }
 
 void TestReporter::color(bool enable) noexcept {
-    for (auto writter : m_writters) {
-        if (writter) {
-            writter->color(enable);
+    for (auto writer : m_writers) {
+        if (writer) {
+            writer->color(enable);
         }
     }
 }
 
 void TestReporter::color(TestColor c) noexcept {
-    for (auto writter : m_writters) {
-        if (writter) {
-            writter->color(c);
+    for (auto writer : m_writers) {
+        if (writer) {
+            writer->color(c);
         }
     }
 }

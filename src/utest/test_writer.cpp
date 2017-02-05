@@ -34,19 +34,19 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @file utest/test_writter.cpp
+ * @file utest/test_writer.cpp
  *
- * @brief Test writter implementation
+ * @brief Test writer implementation
  */
 
-#include <utest/test_writter.hpp>
-#include <utest/test_writter/generic.hpp>
+#include <utest/test_writer.hpp>
+#include <utest/test_writer/generic.hpp>
 
-using utest::TestWritter;
+using utest::TestWriter;
 
-TestWritter& TestWritter::get_default() noexcept {
-    static test_writter::Generic instance;
+TestWriter& TestWriter::get_default() noexcept {
+    static test_writer::Generic instance;
     return instance;
 }
 
-TestWritter::~TestWritter() noexcept { }
+TestWriter::~TestWriter() noexcept { }
