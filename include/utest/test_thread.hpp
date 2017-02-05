@@ -34,19 +34,31 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @file utest/test_writter.cpp
+ * @file utest/test_thread.hpp
  *
- * @brief Test writter implementation
+ * @brief Test thread interface
  */
 
-#include <utest/test_writter.hpp>
-#include <utest/test_writter/default.hpp>
+#ifndef UTEST_TEST_THREAD_HPP
+#define UTEST_TEST_THREAD_HPP
 
-using utest::TestWritter;
+namespace utest {
 
-TestWritter& TestWritter::get_default() noexcept {
-    static test_writter::Default instance;
-    return instance;
+class TestCase;
+class TestParams;
+
+class TestThread {
+public:
+    using TestCaseRun = void(TestCase::*)(TestParams& test_params);
+
+    static TestThread& get_default() noexcept;
+
+    virtual void run(TestCase& test_case, TestCaseRun test_run,
+            TestParams& test_params) noexcept = 0;
+
+    virtual ~TestThread() noexcept;
+};
+
 }
 
-TestWritter::~TestWritter() noexcept { }
+#endif /* UTEST_TEST_THREAD_HPP */

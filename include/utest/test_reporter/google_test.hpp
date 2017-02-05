@@ -61,7 +61,7 @@ public:
 
     virtual void report(const TestMessage& message) noexcept override;
 
-    virtual ~GoogleTest() noexcept;
+    virtual ~GoogleTest() noexcept override;
 private:
     using TestReporter::write;
 

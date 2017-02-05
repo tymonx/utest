@@ -34,19 +34,54 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @file utest/test_writter.cpp
+ * @file utest/test_writter/default.cpp
  *
- * @brief Test writter implementation
+ * @brief Test writter default implementation
  */
 
-#include <utest/test_writter.hpp>
 #include <utest/test_writter/default.hpp>
 
-using utest::TestWritter;
+#include <cstdio>
 
-TestWritter& TestWritter::get_default() noexcept {
-    static test_writter::Default instance;
-    return instance;
+using utest::test_writter::Default;
+
+void Default::write(const TestString& str) noexcept {
+    std::fwrite(str.data(), sizeof(TestString::value_type),
+            str.length(), stdout);
 }
 
-TestWritter::~TestWritter() noexcept { }
+void Default::color(TestColor c) noexcept {
+    switch (c) {
+    case TestColor::BLACK:
+        write("\x1B[30m");
+        break;
+    case TestColor::RED:
+        write("\x1B[31m");
+        break;
+    case TestColor::GREEN:
+        write("\x1B[32m");
+        break;
+    case TestColor::YELLOW:
+        write("\x1B[33m");
+        break;
+    case TestColor::BLUE:
+        write("\x1B[34m");
+        break;
+    case TestColor::MAGENTA:
+        write("\x1B[35m");
+        break;
+    case TestColor::CYAN:
+        write("\x1B[36m");
+        break;
+    case TestColor::WHITE:
+        write("\x1B[37m");
+        break;
+    case TestColor::DEFAULT:
+        write("\x1B[39m");
+        break;
+    default:
+        break;
+    }
+}
+
+Default::~Default() noexcept { }

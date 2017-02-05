@@ -54,6 +54,7 @@ class TestParams;
 class TestParams;
 class TestMessage;
 class TestReporter;
+class TestThread;
 
 class TestCase {
 public:
@@ -114,16 +115,20 @@ private:
 
     void run_teardown(TestParams& test_params) noexcept;
 
+    void run_test(TestParams& test_params) noexcept;
+
     void test_execute(TestParams& test_params, TestFunction test_run);
 
     TestSize passed() const noexcept;
 
     TestSize failed() const noexcept;
 
+    TestThread& m_thread;
     TestReporters m_reporters{};
     TestContext m_context{};
     TestFunction m_setup{};
     TestFunction m_teardown{};
+    TestFunction m_test{};
     TestString m_name{};
     TestString m_file{};
     TestSize m_line{};

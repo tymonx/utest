@@ -27,6 +27,18 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-add_library(utest-writters OBJECT
-    default.cpp
-)
+if (THREADS)
+    set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
+    find_package(Threads)
+
+    if (CMAKE_THREAD_LIBS_INIT)
+        add_definitions(-DUTEST_USE_THREADS)
+        set(CMAKE_EXE_LINKER_FLAGS
+            "${CMAKE_EXE_LINKER_FLAGS} ${CMAKE_THREAD_LIBS_INIT}")
+        message(STATUS "Threads are enabled")
+    else()
+        message(WARNING "Threads aren't found")
+    endif()
+else()
+    message(STATUS "Threads are disabled")
+endif()

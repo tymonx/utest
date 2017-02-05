@@ -34,54 +34,28 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @file utest/test_writter/standard_output.cpp
+ * @file utest/test_thread/default.hpp
  *
- * @brief Test writter standard output implementation
+ * @brief Test thread interface
  */
 
-#include <utest/test_writter/standard_output.hpp>
+#ifndef UTEST_TEST_THREAD_DEFAULT_HPP
+#define UTEST_TEST_THREAD_DEFAULT_HPP
 
-#include <cstdio>
+#include <utest/test_thread.hpp>
 
-using utest::test_writter::StandardOutput;
+namespace utest {
+namespace test_thread {
 
-void StandardOutput::write(const TestString& str) noexcept {
-    std::fwrite(str.data(), sizeof(TestString::value_type),
-            str.length(), stdout);
+class Default final : public TestThread {
+public:
+    virtual void run(TestCase& test_case, TestCaseRun test_run,
+            TestParams& test_params) noexcept override;
+
+    virtual ~Default() noexcept override;
+};
+
+}
 }
 
-void StandardOutput::color(TestColor c) noexcept {
-    switch (c) {
-    case TestColor::BLACK:
-        write("\x1B[30m");
-        break;
-    case TestColor::RED:
-        write("\x1B[31m");
-        break;
-    case TestColor::GREEN:
-        write("\x1B[32m");
-        break;
-    case TestColor::YELLOW:
-        write("\x1B[33m");
-        break;
-    case TestColor::BLUE:
-        write("\x1B[34m");
-        break;
-    case TestColor::MAGENTA:
-        write("\x1B[35m");
-        break;
-    case TestColor::CYAN:
-        write("\x1B[36m");
-        break;
-    case TestColor::WHITE:
-        write("\x1B[37m");
-        break;
-    case TestColor::DEFAULT:
-        write("\x1B[39m");
-        break;
-    default:
-        break;
-    }
-}
-
-StandardOutput::~StandardOutput() noexcept { }
+#endif /* UTEST_TEST_THREAD_DEFAULT_HPP */

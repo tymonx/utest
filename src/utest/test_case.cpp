@@ -44,10 +44,18 @@
 #include <utest/test_params.hpp>
 #include <utest/test_reporter.hpp>
 #include <utest/test_exception.hpp>
+#include <utest/test_thread.hpp>
 
 #include <utest/test_message/test_case.hpp>
 
 using utest::TestCase;
+
+TestCase::TestCase(const TestSuite& test_suite) noexcept :
+    m_thread{test_suite.m_thread},
+    m_reporters{test_suite.m_reporters},
+    m_file{test_suite.m_file},
+    m_non_fatal{test_suite.m_non_fatal}
+{ }
 
 void TestCase::test_execute(TestParams& test_params, TestFunction test_run) {
     if (test_run) {
@@ -62,12 +70,6 @@ void TestCase::test_execute(TestParams& test_params, TestFunction test_run) {
         }
     }
 }
-
-TestCase::TestCase(const TestSuite& test_suite) noexcept :
-    m_reporters{test_suite.m_reporters},
-    m_file{test_suite.m_file},
-    m_non_fatal{test_suite.m_non_fatal}
-{ }
 
 void TestCase::report(const TestMessage& test_message) noexcept {
     for (auto reporter : m_reporters) {
@@ -93,7 +95,6 @@ void TestCase::run_setup(TestParams& test_params) noexcept {
 #else
     test_execute(test_params, m_setup);
 #endif
-    report(test_message::TestCaseSetup{*this});
 }
 
 void TestCase::run_teardown(TestParams& test_params) noexcept {
@@ -112,35 +113,42 @@ void TestCase::run_teardown(TestParams& test_params) noexcept {
 #else
     test_execute(test_params, m_teardown);
 #endif
-    report(test_message::TestCaseTeardown{*this});
+}
+
+void TestCase::run_test(TestParams& test_params) noexcept {
+#if defined(UTEST_USE_EXCEPTIONS)
+    try {
+        test_execute(test_params, m_test);
+    }
+    catch (const std::exception& e) {
+        m_status = TestStatus::FAIL;
+        report(test_message::TestCaseException{*this, e.what()});
+    }
+    catch (...) {
+        m_status = TestStatus::FAIL;
+        report(test_message::TestCaseException{*this});
+    }
+#else
+    test_execute(test_params, m_test);
+#endif
 }
 
 TestCase& TestCase::run(TestFunction test_run) noexcept {
+    m_test = test_run;
     m_status = TestStatus::PASS;
     TestParams test_params{*this};
 
     report(test_message::TestCaseBegin{*this});
-    run_setup(test_params);
+
+    m_thread.run(*this, &TestCase::run_setup, test_params);
+    report(test_message::TestCaseSetup{*this});
 
     if (TestStatus::PASS == m_status) {
-#if defined(UTEST_USE_EXCEPTIONS)
-        try {
-            test_execute(test_params, test_run);
-        }
-        catch (const std::exception& e) {
-            m_status = TestStatus::FAIL;
-            report(test_message::TestCaseException{*this, e.what()});
-        }
-        catch (...) {
-            m_status = TestStatus::FAIL;
-            report(test_message::TestCaseException{*this});
-        }
-#else
-        test_execute(test_params, test_run);
-#endif
+        m_thread.run(*this, &TestCase::run_test, test_params);
     }
 
-    run_teardown(test_params);
+    m_thread.run(*this, &TestCase::run_teardown, test_params);
+    report(test_message::TestCaseTeardown{*this});
 
     if (TestStatus::PASS == m_status) {
         ++m_passed;

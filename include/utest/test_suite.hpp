@@ -54,6 +54,7 @@ class TestCase;
 class TestRunner;
 class TestMessage;
 class TestReporter;
+class TestThread;
 
 class TestSuite {
 public:
@@ -94,6 +95,7 @@ private:
 
     TestSize test_cases_failed() const noexcept;
 
+    TestThread& m_thread;
     TestReporters m_reporters{};
     TestString m_name{};
     TestString m_file{};

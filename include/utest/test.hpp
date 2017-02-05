@@ -50,6 +50,7 @@ namespace utest {
 class TestSuite;
 class TestMessage;
 class TestReporter;
+class TestThread;
 
 class Test {
 public:
@@ -69,14 +70,10 @@ private:
 
     void report(const TestMessage& test_message) noexcept;
 
+    TestThread& m_thread;
     TestReporters m_reporters{};
     TestStatus m_status{TestStatus::PASS};
 };
-
-inline
-Test::Test(const TestReporters& test_reporters) noexcept :
-    m_reporters{test_reporters}
-{ }
 
 inline auto
 Test::status() const noexcept -> TestStatus {

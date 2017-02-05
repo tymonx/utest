@@ -29,6 +29,7 @@
 
 add_subdirectory(test_reporter)
 add_subdirectory(test_writter)
+add_subdirectory(test_thread)
 
 add_library(utest-core OBJECT
     test.cpp
@@ -36,6 +37,7 @@ add_library(utest-core OBJECT
     test_case.cpp
     test_exception.cpp
     test_list.cpp
+    test_thread.cpp
     test_number.cpp
     test_value.cpp
     test_params.cpp
@@ -49,6 +51,7 @@ add_library(utest-core OBJECT
 
 add_library(utest STATIC
     $<TARGET_OBJECTS:utest-core>
+    $<TARGET_OBJECTS:utest-threads>
     $<TARGET_OBJECTS:utest-reporters>
     $<TARGET_OBJECTS:utest-writters>
 )

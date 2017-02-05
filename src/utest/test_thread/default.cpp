@@ -34,19 +34,51 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @file utest/test_writter.cpp
+ * @file utest/test_thread/default.cpp
  *
- * @brief Test writter implementation
+ * @brief Test thread implementation
  */
 
-#include <utest/test_writter.hpp>
-#include <utest/test_writter/default.hpp>
+#include <utest/test_thread/default.hpp>
+#include <utest/test_exception.hpp>
+#include <utest/test_case.hpp>
 
-using utest::TestWritter;
+#if defined(UTEST_USE_THREADS)
+#include <thread>
+#include <functional>
+#endif
 
-TestWritter& TestWritter::get_default() noexcept {
-    static test_writter::Default instance;
-    return instance;
+using utest::test_thread::Default;
+
+#if defined(UTEST_USE_THREADS) && defined(UTEST_USE_EXCEPTIONS)
+
+void Default::run(TestCase& test_case, TestCaseRun test_run,
+        TestParams& test_params) noexcept {
+    try {
+        std::thread test{test_run, std::ref(test_case), std::ref(test_params)};
+        try {
+            test.join();
+        } catch (...) { }
+    } catch (...) {
+        (test_case.*test_run)(test_params);
+    }
 }
 
-TestWritter::~TestWritter() noexcept { }
+#elif defined(UTEST_USE_THREADS)
+
+void Default::run(TestCase& test_case, TestCaseRun test_run,
+        TestParams& test_params) noexcept {
+    std::thread test{test_run, std::ref(test_case), std::ref(test_params)};
+    test.join();
+}
+
+#else
+
+void Default::run(TestCase& test_case, TestCaseRun test_run,
+        TestParams& test_params) noexcept {
+    (test_case.*test_run)(test_params);
+}
+
+#endif
+
+Default::~Default() noexcept { }

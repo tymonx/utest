@@ -44,6 +44,7 @@
 #include <utest/test_runner.hpp>
 #include <utest/test_reporter.hpp>
 #include <utest/test_size.hpp>
+#include <utest/test_thread.hpp>
 
 #include <utest/test_message/test.hpp>
 
@@ -55,7 +56,13 @@ using utest::TestStatus;
 static utest::TestReporter* g_default[1] {&utest::TestReporter::get_default()};
 
 Test::Test() noexcept :
+    m_thread{TestThread::get_default()},
     m_reporters{g_default}
+{ }
+
+Test::Test(const TestReporters& test_reporters) noexcept :
+    m_thread{TestThread::get_default()},
+    m_reporters{test_reporters}
 { }
 
 void Test::report(const TestMessage& test_message) noexcept {

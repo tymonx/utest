@@ -35,9 +35,11 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_LIST_DIR}/cmake)
 if (CMAKE_TOOLCHAIN_FILE AND CMAKE_SYSTEM_NAME MATCHES "Generic")
     option(EXCEPTIONS "Enable/disable exceptions" OFF)
     option(RTTI "Enable/disable rtti" OFF)
+    option(THREADS "Enable/disable threads" OFF)
 else()
     option(EXCEPTIONS "Enable/disable exceptions" ON)
     option(RTTI "Enable/disable rtti" ON)
+    option(THREADS "Enable/disable threads" ON)
 endif()
 
 if (CMAKE_BUILD_TYPE MATCHES "MinSizeRel")
@@ -48,6 +50,7 @@ endif()
 
 include(AddGnuCompiler)
 include(AddClangCompiler)
+include(AddThreads)
 
 include_directories(include)
 

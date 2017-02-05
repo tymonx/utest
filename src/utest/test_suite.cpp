@@ -50,6 +50,7 @@
 using utest::TestSuite;
 
 TestSuite::TestSuite(const Test& test) noexcept :
+    m_thread{test.m_thread},
     m_reporters{test.m_reporters},
     m_file{}
 { }

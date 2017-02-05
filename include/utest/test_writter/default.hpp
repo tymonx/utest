@@ -34,29 +34,29 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @file utest/test_writter/standard_output.hpp
+ * @file utest/test_writter/default.hpp
  *
- * @brief Test writter standard output interface
+ * @brief Test writter interface
  */
 
-#ifndef UTEST_TEST_WRITTER_STANDARD_OUTPUT_HPP
-#define UTEST_TEST_WRITTER_STANDARD_OUTPUT_HPP
+#ifndef UTEST_TEST_WRITTER_DEFAULT_HPP
+#define UTEST_TEST_WRITTER_DEFAULT_HPP
 
 #include <utest/test_writter.hpp>
 
 namespace utest {
 namespace test_writter {
 
-class StandardOutput final : public TestWritter {
+class Default final : public TestWritter {
 public:
     virtual void write(const TestString& str) noexcept override;
 
     virtual void color(TestColor c) noexcept override;
 
-    virtual ~StandardOutput() noexcept;
+    virtual ~Default() noexcept override;
 };
 
 }
 }
 
-#endif /* UTEST_TEST_WRITTER_STANDARD_OUTPUT_HPP */
+#endif /* UTEST_TEST_WRITTER_DEFAULT_HPP */
