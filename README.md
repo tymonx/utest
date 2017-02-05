@@ -36,7 +36,7 @@ cmake -DCMAKE_INSTALL_PREFIX=<where_to_install_utest> ..
 make install
 ```
 
-## Hot to use it
+## How to use it
 
 * [Build for ARM targets](docs/arm-target.md)
 
