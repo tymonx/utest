@@ -1,5 +1,5 @@
 # µTest
-Lightweight unit tests framework mainly for C++ and also for C projects. Target for embedded devices.
+Lightweight unit tests framework mainly for C++ and also for C projects. Suitable for embedded devices.
 
 ## Key Features
 
