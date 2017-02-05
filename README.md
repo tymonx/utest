@@ -21,10 +21,19 @@ Lightweight unit tests framework mainly for C++ and also for C projects. Suitabl
 ## Build
 
 ```
-mkdir build
-cd build
+mkdir build && cd build
 cmake ..
 make
+```
+
+## Install
+
+Install libraries and headers under given directory:
+
+```
+mkdir build && cd build
+cmake -DCMAKE_INSTALL_PREFIX=<where_to_install_utest> ..
+make install
 ```
 
 ## Hot to use it
