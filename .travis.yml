@@ -1,0 +1,17 @@
+# Enable C++ support
+language: cpp
+
+# Compiler selection
+compiler:
+ - clang
+ - gcc
+
+# OS selection
+os:
+ - linux
+
+# Build steps
+script:
+ - mkdir build
+ - cd build
+ - cmake .. && make
