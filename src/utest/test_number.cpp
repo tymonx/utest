@@ -57,10 +57,6 @@ static_assert(TestNumber::MAX_ADDRESS_BUFFER <= TestNumber::MAX_STRING_BUFFER,
 
 static constexpr TestString STRING_BASE{"0123456789abcdef"};
 
-static bool equal(Double lhs, Double rhs) noexcept {
-    return std::abs(lhs - rhs) < std::numeric_limits<Double>::epsilon();
-}
-
 static bool is_signed(const TestNumber& number) noexcept {
     return number.is_signed() || (number.is_unsigned()
         && (Uint(number) <= std::numeric_limits<Int>::max()));
@@ -100,7 +96,7 @@ bool utest::operator==(const TestNumber& lhs, const TestNumber& rhs) noexcept {
     bool ok{false};
 
     if (lhs.is_floating() || rhs.is_floating()) {
-        ok = equal(lhs.get<Double>(), rhs.get<Double>());
+        ok = std::abs(lhs.get<Double>() - rhs.get<Double>()) < lhs.epsilon();
     }
     else if (is_signed(lhs) && is_signed(rhs)) {
         ok = Int(lhs) == Int(rhs);
@@ -183,7 +179,7 @@ static void floating_to_string(const TestNumber& number,
             ++size;
         }
 
-        if (value < std::numeric_limits<Double>::epsilon()) {
+        if (value < number.epsilon()) {
             *(ptr++) = '0';
             *(ptr++) = '.';
             *(ptr++) = '0';
@@ -214,7 +210,7 @@ static void floating_to_string(const TestNumber& number,
                 fractional = std::modf(value, &integral);
                 *(ptr++) = STRING_BASE[TestString::size_type(integral) % 10];
                 ++size;
-            } while (fractional >= std::numeric_limits<Double>::epsilon());
+            } while (fractional >= number.epsilon());
 
             if (0 != exp) {
                 *(ptr++) = 'e';

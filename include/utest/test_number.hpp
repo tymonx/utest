@@ -117,6 +117,8 @@ public:
     constexpr bool is_signed() const noexcept;
 
     constexpr bool is_unsigned() const noexcept;
+
+    constexpr Double epsilon() const noexcept;
 private:
     union {
         Double m_double;
@@ -237,6 +239,11 @@ TestNumber::TestNumber(unsigned long long value) noexcept :
     m_is_floating{false},
     m_size{sizeof(unsigned long long)}
 { }
+
+inline constexpr auto
+TestNumber::epsilon() const noexcept -> Double {
+    return std::numeric_limits<Double>::epsilon();
+}
 
 inline constexpr
 TestNumber::operator Double() const noexcept {

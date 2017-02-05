@@ -70,13 +70,33 @@ static void test_case_execution(TestCase& test_case) {
         str = "Text";
         TestAssert{p}.equal(str, str);
         TestAssert{p}.equal("Text", str);
-        TestAssert{p}.fatal(false).equal(0, 1) << 0 << " != " << 1;
+        TestAssert{p}.equal(0, 1) << 0 << " != " << 1;
         TestAssert{p}.equal(str, "Test") << str << " != Test";
+        TestAssert{p}.equal(TestString{"TEXT"}.ignore_case(), str);
+        TestAssert{p}.not_equal(TestString{"TEXT"}.ignore_case(), str);
+        TestAssert{p}.fail();
+
+        TestAssert{p}.no_throw([] (TestParams& pp) {
+            pp.context<string>().at(10);
+        });
+
+        TestAssert{p}.any_throw([] (TestParams& pp) {
+            pp.context<string>().at(0);
+        });
+
+        TestAssert{p}.expected_throw<std::out_of_range>([] (TestParams& pp) {
+            pp.context<string>().at(0);
+        });
+
+        TestAssert{p}.expected_throw<std::runtime_error>([] (TestParams& pp) {
+            pp.context<string>().at(10);
+        });
     });
 }
 
 static TestRunner g([] (TestSuite& test_suite) {
     test_suite.file(__FILE__)
+    .fatal(false)
 
     .name("string - dynamic allocation").run([] (TestCase& test_case) {
         test_case.setup([] (TestParams& p) {
