@@ -58,12 +58,13 @@ TestSize TestString::length(const_pointer str) noexcept {
     return size;
 }
 
-bool TestString::operator==(const TestString& other) const noexcept {
+bool utest::operator==(const TestString& str1,
+        const TestString& str2) noexcept {
     bool status{false};
 
-    if (size() == other.size()) {
-        if (m_ignore_case) {
-            status = std::equal(cbegin(), cend(), other.cbegin(),
+    if (str1.size() == str2.size()) {
+        if (str1.ignoring_case()) {
+            status = std::equal(str1.cbegin(), str1.cend(), str2.cbegin(),
                 [] (const TestString::value_type& ch1,
                         const TestString::value_type& ch2) {
                     return std::tolower(ch1) == std::tolower(ch2);
@@ -71,7 +72,7 @@ bool TestString::operator==(const TestString& other) const noexcept {
             );
         }
         else {
-            status = std::equal(cbegin(), cend(), other.cbegin());
+            status = std::equal(str1.cbegin(), str1.cend(), str2.cbegin());
         }
     }
 

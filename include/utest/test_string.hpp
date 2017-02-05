@@ -61,12 +61,10 @@ public:
 
     TestString& ignore_case(bool enable = true) noexcept;
 
+    constexpr bool ignoring_case() const noexcept;
+
     template<TestSize N>
     constexpr TestString(value_type (&arr)[N]) noexcept;
-
-    bool operator==(const TestString& other) const noexcept;
-
-    bool operator!=(const TestString& other) const noexcept;
 
     static TestSize length(const_pointer str) noexcept;
 private:
@@ -78,15 +76,23 @@ TestString::TestString(value_type (&arr)[N]) noexcept :
     TestSpan{arr, N - 1}
 { }
 
+inline constexpr auto
+TestString::ignoring_case() const noexcept -> bool {
+    return m_ignore_case;
+}
+
 inline auto
 TestString::ignore_case(bool enable) noexcept -> TestString& {
     m_ignore_case = enable;
     return *this;
 }
 
-inline auto
-TestString::operator!=(const TestString& other) const noexcept -> bool {
-    return !(*this == other);
+auto
+operator==(const TestString& str1, const TestString& str2) noexcept -> bool;
+
+static inline auto
+operator!=(const TestString& str1, const TestString& str2) noexcept -> bool {
+    return !(str1 == str2);
 }
 
 }
