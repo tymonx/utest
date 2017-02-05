@@ -58,8 +58,6 @@ public:
 
     Test() noexcept;
 
-    Test(TestReporter& test_reporter) noexcept;
-
     Test(const TestReporters& test_reporters) noexcept;
 
     Test& run() noexcept;
