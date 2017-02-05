@@ -75,6 +75,8 @@ public:
     TestStatus status() const noexcept;
 
     TestSuite& run(TestRun test_run) noexcept;
+
+    TestSuite& fatal(bool test_fatal = true) noexcept;
 private:
     friend class Test;
     friend class TestCase;
@@ -95,12 +97,13 @@ private:
     TestReporters m_reporters{};
     TestString m_name{};
     TestString m_file{};
-    TestSize m_line{};
+    TestSize m_line{0};
     TestSize m_passed{0};
     TestSize m_failed{0};
     TestSize m_test_cases_passed{0};
     TestSize m_test_cases_failed{0};
     TestStatus m_status{TestStatus::PASS};
+    bool m_non_fatal{false};
 };
 
 inline auto
@@ -159,6 +162,12 @@ TestSuite::test_cases_passed() const noexcept -> TestSize {
 inline auto
 TestSuite::test_cases_failed() const noexcept -> TestSize {
     return m_test_cases_failed;
+}
+
+inline auto
+TestSuite::fatal(bool test_fatal) noexcept -> TestSuite& {
+    m_non_fatal = !test_fatal;
+    return *this;
 }
 
 }

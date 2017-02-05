@@ -148,11 +148,6 @@ private:
     bool m_non_fatal{false};
 };
 
-inline
-TestAssert::TestAssert(TestParams& params) noexcept :
-    m_params{params}
-{ }
-
 inline auto
 TestAssert::line(TestSize test_line) noexcept -> TestAssert& {
     m_line = test_line;
@@ -200,7 +195,7 @@ TestAssert::operator<<(double value) noexcept -> TestAssert& {
     return operator<<(TestNumber{value});
 }
 
-template<typename T1, typename T2> inline auto
+template<typename T1, typename T2> auto
 TestAssert::equal(const T1& lhs, const T2& rhs) noexcept -> TestAssert& {
     if (!(lhs == rhs)) {
         equal(TestValue{lhs}, TestValue{rhs});
@@ -208,7 +203,7 @@ TestAssert::equal(const T1& lhs, const T2& rhs) noexcept -> TestAssert& {
     return *this;
 }
 
-template<typename T1, typename T2> inline auto
+template<typename T1, typename T2> auto
 TestAssert::not_equal(const T1& lhs, const T2& rhs) noexcept -> TestAssert& {
     if (!(lhs != rhs)) {
         not_equal(TestValue{lhs}, TestValue{rhs});
@@ -216,7 +211,7 @@ TestAssert::not_equal(const T1& lhs, const T2& rhs) noexcept -> TestAssert& {
     return *this;
 }
 
-template<typename T1, typename T2> inline auto
+template<typename T1, typename T2> auto
 TestAssert::greater_than(const T1& lhs, const T2& rhs) noexcept -> TestAssert& {
     if (!(lhs > rhs)) {
         greater_than(TestValue{lhs}, TestValue{rhs});
@@ -224,7 +219,7 @@ TestAssert::greater_than(const T1& lhs, const T2& rhs) noexcept -> TestAssert& {
     return *this;
 }
 
-template<typename T1, typename T2> inline auto
+template<typename T1, typename T2> auto
 TestAssert::greater_than_or_equal(const T1& lhs,
         const T2& rhs) noexcept -> TestAssert& {
     if (!(lhs > rhs)) {
@@ -233,7 +228,7 @@ TestAssert::greater_than_or_equal(const T1& lhs,
     return *this;
 }
 
-template<typename T1, typename T2> inline auto
+template<typename T1, typename T2> auto
 TestAssert::less_than(const T1& lhs, const T2& rhs) noexcept -> TestAssert& {
     if (!(lhs < rhs)) {
         less_than(TestValue{lhs}, TestValue{rhs});
@@ -241,7 +236,7 @@ TestAssert::less_than(const T1& lhs, const T2& rhs) noexcept -> TestAssert& {
     return *this;
 }
 
-template<typename T1, typename T2> inline auto
+template<typename T1, typename T2> auto
 TestAssert::less_than_or_equal(const T1& lhs,
         const T2& rhs) noexcept -> TestAssert& {
     if (!(lhs < rhs)) {
@@ -252,7 +247,7 @@ TestAssert::less_than_or_equal(const T1& lhs,
 
 #if defined(UTEST_USE_EXCEPTIONS)
 
-template<typename T> inline auto
+template<typename T> auto
 TestAssert::expected_throw(TestRun test_run) noexcept -> TestAssert& {
     if (test_run) {
         try {
@@ -271,7 +266,7 @@ TestAssert::expected_throw(TestRun test_run) noexcept -> TestAssert& {
 
 #else
 
-template<typename T> inline auto
+template<typename T> auto
 TestAssert::expected_throw(TestRun test_run) noexcept -> TestAssert& {
     if (test_run) {
         test_run(m_params);

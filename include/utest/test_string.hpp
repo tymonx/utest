@@ -59,16 +59,35 @@ public:
 
     constexpr TestString() noexcept = default;
 
+    TestString& ignore_case(bool enable = true) noexcept;
+
     template<TestSize N>
     constexpr TestString(value_type (&arr)[N]) noexcept;
 
+    bool operator==(const TestString& other) const noexcept;
+
+    bool operator!=(const TestString& other) const noexcept;
+
     static TestSize length(const_pointer str) noexcept;
+private:
+    bool m_ignore_case{false};
 };
 
 template<TestSize N> inline constexpr
 TestString::TestString(value_type (&arr)[N]) noexcept :
     TestSpan{arr, N - 1}
 { }
+
+inline auto
+TestString::ignore_case(bool enable) noexcept -> TestString& {
+    m_ignore_case = enable;
+    return *this;
+}
+
+inline auto
+TestString::operator!=(const TestString& other) const noexcept -> bool {
+    return !(*this == other);
+}
 
 }
 

@@ -100,6 +100,8 @@ public:
     TestStatus status() const noexcept;
 
     TestCase& run(TestFunction test_run) noexcept;
+
+    TestCase& fatal(bool test_fatal = true) noexcept;
 private:
     friend class TestSuite;
     friend class TestParams;
@@ -128,6 +130,7 @@ private:
     TestSize m_passed{};
     TestSize m_failed{};
     TestStatus m_status{TestStatus::PASS};
+    bool m_non_fatal{false};
 };
 
 template<typename T> inline auto
@@ -230,6 +233,12 @@ TestCase::passed() const noexcept -> TestSize {
 inline auto
 TestCase::failed() const noexcept -> TestSize {
     return m_failed;
+}
+
+inline auto
+TestCase::fatal(bool test_fatal) noexcept -> TestCase& {
+    m_non_fatal = !test_fatal;
+    return *this;
 }
 
 }

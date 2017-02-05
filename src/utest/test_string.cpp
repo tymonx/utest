@@ -40,6 +40,7 @@
  */
 
 #include <utest/test_string.hpp>
+#include <cctype>
 
 using utest::TestSize;
 using utest::TestString;
@@ -55,4 +56,24 @@ TestSize TestString::length(const_pointer str) noexcept {
     }
 
     return size;
+}
+
+bool TestString::operator==(const TestString& other) const noexcept {
+    bool status{false};
+
+    if (size() == other.size()) {
+        if (m_ignore_case) {
+            status = std::equal(cbegin(), cend(), other.cbegin(),
+                [] (const TestString::value_type& ch1,
+                        const TestString::value_type& ch2) {
+                    return std::tolower(ch1) == std::tolower(ch2);
+                }
+            );
+        }
+        else {
+            status = std::equal(cbegin(), cend(), other.cbegin());
+        }
+    }
+
+    return status;
 }

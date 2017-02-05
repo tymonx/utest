@@ -46,8 +46,9 @@ using utest::TestParams;
 
 TestParams::TestParams(TestCase& test_case) noexcept :
     m_reporters{test_case.m_reporters},
-    m_context{test_case.m_context},
-    m_file{test_case.m_file}
+    m_context{&test_case.m_context},
+    m_file{test_case.m_file},
+    m_non_fatal{test_case.m_non_fatal}
 { }
 
 bool TestParams::set_jump() noexcept {

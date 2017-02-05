@@ -55,6 +55,11 @@ static constexpr TestString STRING_NULL{"null"};
 static constexpr TestString STRING_TRUE{"true"};
 static constexpr TestString STRING_FALSE{"false"};
 
+TestAssert::TestAssert(TestParams& params) noexcept :
+    m_params{params},
+    m_non_fatal{params.m_non_fatal}
+{ }
+
 TestAssert::~TestAssert() noexcept {
     if (TestStatus::FAIL == m_status) {
         m_params.status(TestStatus::FAIL);

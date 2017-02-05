@@ -65,7 +65,8 @@ void TestCase::test_execute(TestParams& test_params, TestFunction test_run) {
 
 TestCase::TestCase(const TestSuite& test_suite) noexcept :
     m_reporters{test_suite.m_reporters},
-    m_file{test_suite.m_file}
+    m_file{test_suite.m_file},
+    m_non_fatal{test_suite.m_non_fatal}
 { }
 
 void TestCase::report(const TestMessage& test_message) noexcept {
@@ -94,7 +95,6 @@ void TestCase::run_setup(TestParams& test_params) noexcept {
 #else
     test_execute(test_params, m_setup);
 #endif
-    m_context = test_params.context();
     report(test_message::TestCaseSetup{*this});
 }
 
@@ -116,7 +116,6 @@ void TestCase::run_teardown(TestParams& test_params) noexcept {
 #else
     test_execute(test_params, m_teardown);
 #endif
-    m_context = test_params.context();
     report(test_message::TestCaseTeardown{*this});
 }
 
@@ -145,7 +144,6 @@ TestCase& TestCase::run(TestFunction test_run) noexcept {
 #else
         test_execute(test_params, test_run);
 #endif
-        m_context = test_params.context();
     }
 
     run_teardown(test_params);

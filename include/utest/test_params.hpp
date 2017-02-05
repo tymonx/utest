@@ -105,39 +105,40 @@ private:
 
     TestJumpBuffer m_jump_buffer{};
     TestReporters m_reporters{};
-    TestContext m_context{};
+    TestContext* m_context{};
     TestString m_file{};
     TestStatus m_status{TestStatus::PASS};
+    bool m_non_fatal{false};
 };
 
 template<typename T> inline void
 TestParams::context(T& test_context) noexcept {
-    m_context = static_cast<TestContext&>(&test_context);
+    *m_context = static_cast<TestContext&>(&test_context);
 }
 
 template<typename T> inline void
 TestParams::context(T* test_context) noexcept {
-    m_context = static_cast<TestContext>(test_context);
+    *m_context = static_cast<TestContext>(test_context);
 }
 
 template<typename T> inline auto
 TestParams::context() noexcept -> context_pointer<T> {
-    return static_cast<T>(m_context);
+    return static_cast<T>(*m_context);
 }
 
 template<typename T> inline auto
 TestParams::context() const noexcept -> const context_pointer<T> {
-    return static_cast<T>(m_context);
+    return static_cast<T>(*m_context);
 }
 
 template<typename T> inline auto
 TestParams::context() noexcept -> context_reference<T> {
-    return *static_cast<T*>(m_context);
+    return *static_cast<T*>(*m_context);
 }
 
 template<typename T> inline auto
 TestParams::context() const noexcept -> const context_reference<T> {
-    return *static_cast<const T*>(m_context);
+    return *static_cast<const T*>(*m_context);
 }
 
 inline auto
