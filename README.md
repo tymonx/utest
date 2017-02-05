@@ -27,6 +27,10 @@ cmake ..
 make
 ```
 
+## Hot to use it
+
+* [Build for ARM targets](docs/arm-target.md)
+
 ## Examples
 
 Link example with utest and utest-main libraries.
