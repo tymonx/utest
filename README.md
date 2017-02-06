@@ -1,5 +1,6 @@
 # µTest
 
+[![Join the chat at https://gitter.im/utest-embedded/Lobby](https://badges.gitter.im/utest-embedded/Lobby.svg)](https://gitter.im/utest-embedded/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![License (3-Clause BSD)](https://img.shields.io/badge/license-BSD%203--Clause-blue.svg?style=flat-square)](http://opensource.org/licenses/BSD-3-Clause)
 [![Build Status](https://travis-ci.org/tymonx/utest.svg?branch=master)](https://travis-ci.org/tymonx/utest)
 
