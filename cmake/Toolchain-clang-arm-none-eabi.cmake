@@ -27,54 +27,71 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-if (__GCC_AVR)
+if (__CLANG_ARM_NONE_EABI)
     return()
 endif()
-set(__GCC_AVR 1)
+set(__CLANG_ARM_NONE_EABI 1)
 
 set(CMAKE_SYSTEM_NAME Generic)
 
 set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
-set(CMAKE_C_COMPILER avr-gcc)
-set(CMAKE_CXX_COMPILER avr-g++)
+set(CMAKE_C_COMPILER clang)
+set(CMAKE_CXX_COMPILER clang++)
 
-set(CMAKE_LINKER avr-ld CACHE STRING "GNU AVR linker")
-set(CMAKE_AR avr-ar CACHE STRING "GNU AVR archiver")
+set(CMAKE_LINKER arm-none-eabi-ld CACHE STRING "GNU ARM linker")
+set(CMAKE_AR arm-none-eabi-ar CACHE STRING "GNU ARM archiver")
 
 execute_process(
-    COMMAND ${CMAKE_C_COMPILER} -print-sysroot
-    OUTPUT_VARIABLE GCC_AVR_ROOT
+    COMMAND arm-none-eabi-gcc -print-sysroot
+    OUTPUT_VARIABLE GCC_ARM_NONE_EABI_ROOT
     OUTPUT_STRIP_TRAILING_WHITESPACE
 )
 
-execute_process(
-    COMMAND ${CMAKE_C_COMPILER} -print-file-name=liblto_plugin.so
-    OUTPUT_VARIABLE GCC_AVR_LTO_PLUGIN
-    OUTPUT_STRIP_TRAILING_WHITESPACE
+get_filename_component(GCC_ARM_NONE_EABI_ROOT
+    "${GCC_ARM_NONE_EABI_ROOT}"
+    REALPATH
 )
 
-get_filename_component(GCC_AVR_ROOT "${GCC_AVR_ROOT}" REALPATH)
-get_filename_component(GCC_AVR_LTO_PLUGIN "${GCC_AVR_LTO_PLUGIN}" REALPATH)
+file(GLOB_RECURSE GCC_ARM_NONE_EABI_INCLUDE
+    "${GCC_ARM_NONE_EABI_ROOT}/include/c++/*/cstddef")
 
-set(CMAKE_FIND_ROOT_PATH ${GCC_AVR_ROOT})
+get_filename_component(GCC_ARM_NONE_EABI_INCLUDE
+    "${GCC_ARM_NONE_EABI_INCLUDE}" DIRECTORY)
+
+set(CMAKE_FIND_ROOT_PATH ${GCC_ARM_NONE_EABI_ROOT})
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 
 if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "MinSizeRel" CACHE STRING "Build type")
+    option(LTO "Enable/disable LTO" OFF)
 endif()
 
 if (NOT CMAKE_SYSTEM_PROCESSOR)
-    set(CMAKE_SYSTEM_PROCESSOR "avr4" CACHE STRING "AVR processor type")
+    set(CMAKE_SYSTEM_PROCESSOR "cortex-m3" CACHE STRING "ARM processor type")
 endif()
 
 message(STATUS "CMAKE_SYSTEM_PROCESSOR=${CMAKE_SYSTEM_PROCESSOR}")
 
-set(GCC_AVR_FLAGS "-D__AVR_ATmega8__ -mmcu=${CMAKE_SYSTEM_PROCESSOR}")
+set(CLANG_ARM_NONE_EABI_FLAGS
+    -target arm-none-eabi
+    -ccc-gcc-name arm-none-eabi-g++
+    -mthumb
+    -mcpu=${CMAKE_SYSTEM_PROCESSOR}
+    --sysroot=${GCC_ARM_NONE_EABI_ROOT}
+    -isystem${GCC_ARM_NONE_EABI_INCLUDE}
+    -isystem${GCC_ARM_NONE_EABI_INCLUDE}/arm-none-eabi
+    -isystem${GCC_ARM_NONE_EABI_INCLUDE}/arm-none-eabi/include
+    -isystem${GCC_ARM_NONE_EABI_ROOT}/include
+    -fshort-enums
+)
 
-set(CMAKE_C_FLAGS "${GCC_AVR_FLAGS}")
-set(CMAKE_CXX_FLAGS "${GCC_AVR_FLAGS}")
+string(REPLACE ";" " " CLANG_ARM_NONE_EABI_FLAGS
+    "${CLANG_ARM_NONE_EABI_FLAGS}")
+
+set(CMAKE_C_FLAGS "${CLANG_ARM_NONE_EABI_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CLANG_ARM_NONE_EABI_FLAGS}")
 set(CMAKE_EXE_LINKER_FLAGS "")
 
 if (STARTUP_CODE)
@@ -161,7 +178,6 @@ set(CMAKE_C_LINK_EXECUTABLE
 set(CMAKE_C_CREATE_STATIC_LIBRARY
     <CMAKE_AR>
     qc
-    --plugin ${GCC_AVR_LTO_PLUGIN}
     <TARGET>
     <LINK_FLAGS>
     <OBJECTS>

@@ -1,7 +1,8 @@
+# µTest
+
 [![License (3-Clause BSD)](https://img.shields.io/badge/license-BSD%203--Clause-blue.svg?style=flat-square)](http://opensource.org/licenses/BSD-3-Clause)
 [![Build Status](https://travis-ci.org/tymonx/utest.svg?branch=master)](https://travis-ci.org/tymonx/utest)
 
-# µTest
 Lightweight unit tests framework mainly for C++ and also for C projects. Suitable for embedded devices.
 
 ## Key Features
@@ -24,7 +25,7 @@ Lightweight unit tests framework mainly for C++ and also for C projects. Suitabl
 ## Build
 
 ```
-mkdir build && cd build
+mkdir -p build && cd build
 cmake ..
 make
 ```
@@ -34,7 +35,7 @@ make
 Install libraries and headers under given directory:
 
 ```
-mkdir build && cd build
+mkdir -p build && cd build
 cmake -DCMAKE_INSTALL_PREFIX=<where_to_install_utest> ..
 make install
 ```

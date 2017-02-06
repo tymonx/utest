@@ -7,11 +7,19 @@ Download and unpack [gcc-arm-none-eabi][arm-toolchain] toolchain. Add
 
 ## Build examples for QEMU
 
-Build:
+Build using gcc-arm-none-eabi toolchain:
 
 ```
-mkdir build && cd build
+mkdir -p build && cd build
 cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-gcc-arm-none-eabi.cmake -DCMAKE_SYSTEM_PROCESSOR=cortex-m3 -DSEMIHOSTING=ON ..
+make
+```
+
+Or build using Clang for compilation and linker from gcc-arm-none-eabi toolchain:
+
+```
+mkdir -p build && cd build
+cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-clang-arm-none-eabi.cmake -DCMAKE_SYSTEM_PROCESSOR=cortex-m3 -DSEMIHOSTING=ON ..
 make
 ```
 
@@ -31,8 +39,8 @@ target you can find all necessary files under
 Build:
 
 ```
-mkdir build && cd build
-cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-gcc-arm-none-eabi.cmake -DCMAKE_SYSTEM_PROCESSOR=cortex-m3 -DSEMIHOSTING=OFF -DLINKER_SCRIPT=<linker_script_file> -DSTARTUP_CODE=<startup_code_file> ..
+mkdir -p build && cd build
+cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-gcc-arm-none-eabi.cmake -DCMAKE_SYSTEM_PROCESSOR=cortex-m3 -DSEMIHOSTING=ON -DLINKER_SCRIPT=<linker_script_file> -DSTARTUP_CODE=<startup_code_file> ..
 make
 ```
 

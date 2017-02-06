@@ -42,7 +42,7 @@ set(CMAKE_LINKER arm-none-eabi-ld CACHE STRING "GNU ARM linker")
 set(CMAKE_AR arm-none-eabi-ar CACHE STRING "GNU ARM archiver")
 
 execute_process(
-    COMMAND ${CMAKE_C_COMPILER} -print-file-name=libc.a
+    COMMAND ${CMAKE_C_COMPILER} -print-sysroot
     OUTPUT_VARIABLE GCC_ARM_NONE_EABI_ROOT
     OUTPUT_STRIP_TRAILING_WHITESPACE
 )
@@ -54,12 +54,12 @@ execute_process(
 )
 
 get_filename_component(GCC_ARM_NONE_EABI_ROOT
-    "${GCC_ARM_NONE_EABI_DIR}"
-    PATH
+    "${GCC_ARM_NONE_EABI_ROOT}"
+    REALPATH
 )
 
-get_filename_component(GCC_ARM_NONE_EABI_ROOT
-    "${GCC_ARM_NONE_EABI_DIR}/.."
+get_filename_component(GCC_ARM_NONE_EABI_LTO_PLUGIN
+    "${GCC_ARM_NONE_EABI_LTO_PLUGIN}"
     REALPATH
 )
 
@@ -80,12 +80,10 @@ message(STATUS "CMAKE_SYSTEM_PROCESSOR=${CMAKE_SYSTEM_PROCESSOR}")
 
 set(GCC_ARM_NONE_EABI_FLAGS "-mthumb -mcpu=${CMAKE_SYSTEM_PROCESSOR}")
 
-set(CMAKE_C_FLAGS "")
-set(CMAKE_CXX_FLAGS "")
-set(CMAKE_EXE_LINKER_FLAGS "")
 
-set(CMAKE_C_FLAGS "${GCC_ARM_NONE_EABI_FLAGS} ${CMAKE_C_FLAGS}")
-set(CMAKE_CXX_FLAGS "${GCC_ARM_NONE_EABI_FLAGS} ${CMAKE_CXX_FLAGS}")
+set(CMAKE_C_FLAGS "${GCC_ARM_NONE_EABI_FLAGS}")
+set(CMAKE_CXX_FLAGS "${GCC_ARM_NONE_EABI_FLAGS}")
+set(CMAKE_EXE_LINKER_FLAGS "")
 
 if (STARTUP_CODE)
     get_filename_component(STARTUP_CODE "${STARTUP_CODE}" REALPATH)
@@ -152,7 +150,6 @@ endif()
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}" CACHE STRING "C compile flags")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}" CACHE STRING "C++ compile flags")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}"
     CACHE STRING "Linker flags")
 
