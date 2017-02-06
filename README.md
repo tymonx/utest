@@ -46,7 +46,7 @@ make install
 
 ## Examples
 
-Link example with utest and utest-main libraries.
+Create factorial.cpp file:
 
 ```c++
 #include <utest/utest.hpp>
@@ -69,3 +69,35 @@ static TestRunner g([] (TestSuite& test_suite) {
     });
 });
  ```
+
+Build example using GCC:
+
+```
+g++ -std=c++11 -I<utest_include_dir> -L<utest_libraries_dir> factorial.cpp -o factorial -pthread -lutest-main -lutest
+```
+
+Build example using Clang:
+
+```
+clang++ -std=c++11 -I<utest_include_dir> -L<utest_libraries_dir> factorial.cpp -o factorial -pthread -lutest-main -lutest
+```
+
+Run example:
+
+```
+./factorial
+```
+
+Factorial output:
+
+```
+[==========] Running 1 registered test(s).
+[----------] Running tests from Factorial
+[ RUN      ] computed
+[       OK ] computed
+[----------] 1 test(s) from Factorial
+[  PASSED  ] 1 test(s).
+
+[==========] 1 test(s) from 1 test suite(s) ran.
+[  PASSED  ] 1 test(s).
+```

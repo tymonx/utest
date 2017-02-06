@@ -15,7 +15,7 @@ cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-gcc-arm-none-eabi.cmake -DCMAKE_
 make
 ```
 
-Or build using Clang for compilation and linker from gcc-arm-none-eabi toolchain:
+Build using Clang compiler and GCC linker from gcc-arm-none-eabi toolchain:
 
 ```
 mkdir -p build && cd build
