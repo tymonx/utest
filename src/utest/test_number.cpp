@@ -59,7 +59,7 @@ static constexpr TestString STRING_BASE{"0123456789abcdef"};
 
 static bool is_signed(const TestNumber& number) noexcept {
     return number.is_signed() || (number.is_unsigned()
-        && (Uint(number) <= std::numeric_limits<Int>::max()));
+        && (Uint(number) <= Uint(std::numeric_limits<Int>::max())));
 }
 
 static bool is_unsigned(const TestNumber& number) noexcept {
@@ -68,7 +68,7 @@ static bool is_unsigned(const TestNumber& number) noexcept {
 
 static bool overflow(const TestNumber& number) noexcept {
     return number.is_unsigned()
-        && (Uint(number) > std::numeric_limits<Int>::max());
+        && (Uint(number) > Uint(std::numeric_limits<Int>::max()));
 }
 
 static bool underflow(const TestNumber& number) noexcept {

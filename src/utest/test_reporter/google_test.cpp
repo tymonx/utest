@@ -71,12 +71,6 @@ static constexpr TestString EXPECTED    {"Expected: "};
 static constexpr TestString TRUE        {"true"};
 static constexpr TestString FALSE       {"false"};
 
-static constexpr TestString EXCEPTION_BEGIN
-    {"C++ exception with description \""};
-
-static constexpr TestString EXCEPTION_END
-    {"\" thrown in the "};
-
 namespace utest {
 namespace test_reporter {
 
@@ -425,7 +419,7 @@ void GoogleTest::report(const TestMessage& message) noexcept {
 
 void GoogleTest::write_exception(const TestString& message) noexcept {
 #if defined(UTEST_USE_EXCEPTIONS)
-    write(EXCEPTION_BEGIN, message, EXCEPTION_END);
+    write("C++ exception with description \"", message, "\" thrown in the ");
 #else
     (void)message;
 #endif
