@@ -48,6 +48,8 @@ else()
     option(LTO "Enable/disable link time optimization" OFF)
 endif()
 
+option(EXAMPLES "Enable/disable examples" OFF)
+
 include(AddGnuCompiler)
 include(AddClangCompiler)
 include(AddThreads)
@@ -57,4 +59,7 @@ include_directories(include)
 install(DIRECTORY include/ DESTINATION include FILES_MATCHING PATTERN "*.hpp")
 
 add_subdirectory(src)
-add_subdirectory(examples)
+
+if (EXAMPLES)
+    add_subdirectory(examples)
+endif()

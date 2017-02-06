@@ -11,7 +11,7 @@ Build using gcc-arm-none-eabi toolchain:
 
 ```
 mkdir -p build && cd build
-cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-gcc-arm-none-eabi.cmake -DCMAKE_SYSTEM_PROCESSOR=cortex-m3 -DSEMIHOSTING=ON ..
+cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-gcc-arm-none-eabi.cmake -DCMAKE_SYSTEM_PROCESSOR=cortex-m3 -DSEMIHOSTING=ON -DEXAMPLES=ON ..
 make
 ```
 
@@ -19,7 +19,7 @@ Or build using Clang for compilation and linker from gcc-arm-none-eabi toolchain
 
 ```
 mkdir -p build && cd build
-cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-clang-arm-none-eabi.cmake -DCMAKE_SYSTEM_PROCESSOR=cortex-m3 -DSEMIHOSTING=ON ..
+cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-clang-arm-none-eabi.cmake -DCMAKE_SYSTEM_PROCESSOR=cortex-m3 -DSEMIHOSTING=ON -DEXAMPLES=ON ..
 make
 ```
 
@@ -40,7 +40,7 @@ Build:
 
 ```
 mkdir -p build && cd build
-cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-gcc-arm-none-eabi.cmake -DCMAKE_SYSTEM_PROCESSOR=cortex-m3 -DSEMIHOSTING=ON -DLINKER_SCRIPT=<linker_script_file> -DSTARTUP_CODE=<startup_code_file> ..
+cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-gcc-arm-none-eabi.cmake -DCMAKE_SYSTEM_PROCESSOR=cortex-m3 -DSEMIHOSTING=ON -DEXAMPLES=ON -DLINKER_SCRIPT=<linker_script_file> -DSTARTUP_CODE=<startup_code_file> ..
 make
 ```
 
