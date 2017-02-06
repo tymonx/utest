@@ -19,6 +19,7 @@ matrix:
           - cmake-data
           - gcc-6
           - g++-6
+          - gdb
      env: C_COMPILER=gcc-6 CXX_COMPILER=g++-6
    - os: linux
      compiler: clang
@@ -32,6 +33,7 @@ matrix:
           - cmake
           - cmake-data
           - clang-3.9
+          - gdb
      env: C_COMPILER=clang-3.9 CXX_COMPILER=clang++-3.9
 
 # Build steps
