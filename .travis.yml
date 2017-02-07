@@ -1,5 +1,5 @@
 # Common settings
-dist: trusty
+dist: precise
 sudo: required
 
 # Enable C++ support
@@ -44,7 +44,7 @@ matrix:
           - cmake
           - cmake-data
           - lib32z1
-          - libbz2-1.0:i386
+          - lib32bz2-1.0
           - lib32ncurses5
      env: TARGET=gcc-arm-none-eabi
 #   - os: linux
