@@ -41,28 +41,39 @@ function install_toolchain {
     fi
 }
 
-TOOLCHAIN_ROOT=$HOME/toolchains
+case $TOOLCHAIN in
+gcc-arm-none-eabi)
+    ;&
+clang-arm-none-eabi)
+    TOOLCHAIN_ROOT=$HOME/toolchains
+    TOOLCHAIN_DIR=/tmp/gcc-arm-none-eabi
 
-mkdir -p $TOOLCHAIN_ROOT
-mkdir -p $HOME/gcc-arm-none-eabi
+    mkdir -p $TOOLCHAIN_ROOT
 
-TOOLCHAIN_URL=https://launchpad.net/gcc-arm-embedded/4.8/4.8-2014-q3-update/+download
-TOOLCHAIN_TAR=gcc-arm-none-eabi-4_8-2014q3-20140805-linux.tar.bz2
-TOOLCHAIN_DIR=$HOME/gcc-arm-none-eabi/4.8
+    case $VERSION in
+    4.8*)
+        TOOLCHAIN_URL=https://launchpad.net/gcc-arm-embedded/4.8/4.8-2014-q3-update/+download
+        TOOLCHAIN_TAR=gcc-arm-none-eabi-4_8-2014q3-20140805-linux.tar.bz2
 
-download_toolchain
-install_toolchain
+        download_toolchain
+        install_toolchain
+        ;;
+    4.9*)
+        TOOLCHAIN_URL=https://launchpad.net/gcc-arm-embedded/4.9/4.9-2015-q3-update/+download
+        TOOLCHAIN_TAR=gcc-arm-none-eabi-4_9-2015q3-20150921-linux.tar.bz2
 
-TOOLCHAIN_URL=https://launchpad.net/gcc-arm-embedded/4.9/4.9-2015-q3-update/+download
-TOOLCHAIN_TAR=gcc-arm-none-eabi-4_9-2015q3-20150921-linux.tar.bz2
-TOOLCHAIN_DIR=$HOME/gcc-arm-none-eabi/4.9
+        download_toolchain
+        install_toolchain
+        ;;
+    *)
+        TOOLCHAIN_URL=https://launchpad.net/gcc-arm-embedded/5.0/5-2016-q3-update/+download
+        TOOLCHAIN_TAR=gcc-arm-none-eabi-5_4-2016q3-20160926-linux.tar.bz2
 
-download_toolchain
-install_toolchain
-
-TOOLCHAIN_URL=https://launchpad.net/gcc-arm-embedded/5.0/5-2016-q3-update/+download
-TOOLCHAIN_TAR=gcc-arm-none-eabi-5_4-2016q3-20160926-linux.tar.bz2
-TOOLCHAIN_DIR=$HOME/gcc-arm-none-eabi/5.4
-
-download_toolchain
-install_toolchain
+        download_toolchain
+        install_toolchain
+        ;;
+    esac
+    ;;
+*)
+    ;;
+esac

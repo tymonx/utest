@@ -6,7 +6,6 @@ os: linux
 cache:
   directories:
    - $HOME/toolchains
-   - $HOME/gcc-arm-none-eabi
 
 addons:
   apt:
@@ -32,7 +31,7 @@ env:
 
 before_script:
  - ./.travis/setup.sh
- - export PATH=$HOME/gcc-arm-none-eabi/$VERSION/bin:$PATH
+ - export PATH=/tmp/gcc-arm-none-eabi/bin:$PATH
 
 script:
  - ./.travis/build.sh
