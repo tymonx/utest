@@ -1,6 +1,6 @@
 # Common settings
+dist: trusty
 sudo: required
-dist: precise
 
 # Enable C++ support
 language: cpp
