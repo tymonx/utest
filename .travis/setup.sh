@@ -32,41 +32,18 @@ if [ -z ${TARGET+x} ]; then
     TARGET=gcc
 fi
 
-if [ -z ${C_COMPILER+x} ]; then
-    C_COMPILER=gcc
-fi
-
-if [ -z ${CXX_COMPILER+x} ]; then
-    CXX_COMPILER=g++
+if [ -z ${TOOLCHAIN_TAR+x} ]; then
+    TOOLCHAIN_TAR=https://launchpad.net/gcc-arm-embedded/5.0/5-2016-q3-update/+download/gcc-arm-none-eabi-5_4-2016q3-20160926-linux.tar.bz2
 fi
 
 case $TARGET in
-gcc)
-    mkdir build
-    cd build
-    cmake -DCMAKE_C_COMPILER=$C_COMPILER -DCMAKE_CXX_COMPILER=$CXX_COMPILER \
-        -DEXAMPLES=ON -DTHREADS=OFF .. && make
-    ./bin/simple
-    ;;
-clang)
-    mkdir build
-    cd build
-    cmake -DCMAKE_C_COMPILER=$C_COMPILER -DCMAKE_CXX_COMPILER=$CXX_COMPILER \
-        -DEXAMPLES=ON .. && make
-    ./bin/simple
-    ;;
 gcc-arm-none-eabi)
-    mkdir build
-    cd build
-    cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-gcc-arm-none-eabi.cmake \
-        -DEXAMPLES=ON -DSEMIHOSTING=ON .. && make
-    ;;
+    ;&
 clang-arm-none-eabi)
-    mkdir build
-    cd build
-    cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-clang-arm-none-eabi.cmake \
-        -DCMAKE_C_COMPILER=$C_COMPILER -DCMAKE_CXX_COMPILER=$CXX_COMPILER \
-        -DEXAMPLES=ON -DSEMIHOSTING=ON .. && make
+    wget ${TOOLCHAIN_TAR} -O /tmp/gcc-arm-none-eabi.tar.bz2
+
+    mkdir /tmp/gcc-arm-none-eabi && tar xvf /tmp/gcc-arm-none-eabi.tar.bz2 \
+        -C /tmp/gcc-arm-none-eabi --strip-components 1
     ;;
 *)
     ;;
