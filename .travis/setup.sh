@@ -40,10 +40,10 @@ case $TARGET in
 gcc-arm-none-eabi)
     ;&
 clang-arm-none-eabi)
-    wget ${TOOLCHAIN_TAR} -O /tmp/gcc-arm-none-eabi.tar.bz2
+    wget ${TOOLCHAIN_TAR} -O ${HOME}/gcc-arm-none-eabi.tar.bz2
 
-    mkdir /tmp/gcc-arm-none-eabi && tar xvf /tmp/gcc-arm-none-eabi.tar.bz2 \
-        -C /tmp/gcc-arm-none-eabi --strip-components 1
+    mkdir ${HOME}/gcc-arm-none-eabi && tar xvf ${HOME}/gcc-arm-none-eabi.tar.bz2 \
+        -C ${HOME}/gcc-arm-none-eabi --strip-components 1
     ;;
 *)
     ;;

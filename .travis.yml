@@ -33,17 +33,17 @@ matrix:
           - cmake-data
           - clang-3.9
      env: TARGET=clang C_COMPILER=clang-3.9 CXX_COMPILER=clang++-3.9
-#   - os: linux
-#     compiler: gcc
-#     addons:
-#       apt:
-#         sources:
-#          - george-edison55-precise-backports
-#          - ubuntu-toolchain-r-test
-#         packages:
-#          - cmake
-#          - cmake-data
-#     env: TARGET=gcc-arm-none-eabi
+   - os: linux
+     compiler: gcc
+     addons:
+       apt:
+         sources:
+          - george-edison55-precise-backports
+          - ubuntu-toolchain-r-test
+         packages:
+          - cmake
+          - cmake-data
+     env: TARGET=gcc-arm-none-eabi
 #   - os: linux
 #     compiler: clang
 #     addons:
@@ -58,9 +58,9 @@ matrix:
 #          - clang-3.9
 #     env: TARGET=clang-arm-none-eabi C_COMPILER=clang-3.9 CXX_COMPILER=clang++-3.9
 
-#before_script:
-# - ./.travis/setup.sh
-# - export PATH=$PATH:/tmp/gcc-arm-none-eabi/bin
+before_script:
+ - ./.travis/setup.sh
+ - export PATH="${HOME}/gcc-arm-none-eabi/bin":$PATH
 
 script:
  - ./.travis/build.sh
