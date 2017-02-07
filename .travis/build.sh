@@ -60,6 +60,8 @@ gcc-arm-none-eabi)
     cd build
     cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-gcc-arm-none-eabi.cmake \
         -DEXAMPLES=ON -DSEMIHOSTING=ON .. && make
+    cat /home/travis/build/tymonx/utest/build/CMakeFiles/CMakeOutput.log
+    cat /home/travis/build/tymonx/utest/build/CMakeFiles/CMakeError.log
     ;;
 clang-arm-none-eabi)
     mkdir build
