@@ -28,23 +28,41 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-if [ -z ${TARGET+x} ]; then
-    TARGET=gcc
-fi
+function download_toolchain {
+    if [ ! -e "$TOOLCHAIN_ROOT/$TOOLCHAIN_TAR" ]; then
+        wget $TOOLCHAIN_URL/$TOOLCHAIN_TAR -O $TOOLCHAIN_ROOT/$TOOLCHAIN_TAR
+    fi
+}
 
-if [ -z ${TOOLCHAIN_TAR+x} ]; then
-    TOOLCHAIN_TAR=https://launchpad.net/gcc-arm-embedded/5.0/5-2016-q3-update/+download/gcc-arm-none-eabi-5_4-2016q3-20160926-linux.tar.bz2
-fi
+function install_toolchain {
+    if [ ! -d "$TOOLCHAIN_DIR" ]; then
+        mkdir -p $TOOLCHAIN_DIR && tar -xf $TOOLCHAIN_ROOT/$TOOLCHAIN_TAR \
+            -C $TOOLCHAIN_DIR --strip-components 1
+    fi
+}
 
-case $TARGET in
-gcc-arm-none-eabi)
-    ;&
-clang-arm-none-eabi)
-    wget ${TOOLCHAIN_TAR} -O ${HOME}/gcc-arm-none-eabi.tar.bz2
+TOOLCHAIN_ROOT=$HOME/toolchains
 
-    mkdir ${HOME}/gcc-arm-none-eabi && tar -xf ${HOME}/gcc-arm-none-eabi.tar.bz2 \
-        -C ${HOME}/gcc-arm-none-eabi --strip-components 1
-    ;;
-*)
-    ;;
-esac
+mkdir -p $TOOLCHAIN_ROOT
+mkdir -p $HOME/gcc-arm-none-eabi
+
+TOOLCHAIN_URL=https://launchpad.net/gcc-arm-embedded/4.8/4.8-2014-q3-update/+download
+TOOLCHAIN_TAR=gcc-arm-none-eabi-4_8-2014q3-20140805-linux.tar.bz2
+TOOLCHAIN_DIR=$HOME/gcc-arm-none-eabi/4.8
+
+download_toolchain
+install_toolchain
+
+TOOLCHAIN_URL=https://launchpad.net/gcc-arm-embedded/4.9/4.9-2015-q3-update/+download
+TOOLCHAIN_TAR=gcc-arm-none-eabi-4_9-2015q3-20150921-linux.tar.bz2
+TOOLCHAIN_DIR=$HOME/gcc-arm-none-eabi/4.9
+
+download_toolchain
+install_toolchain
+
+TOOLCHAIN_URL=https://launchpad.net/gcc-arm-embedded/5.0/5-2016-q3-update/+download
+TOOLCHAIN_TAR=gcc-arm-none-eabi-5_4-2016q3-20160926-linux.tar.bz2
+TOOLCHAIN_DIR=$HOME/gcc-arm-none-eabi/5.4
+
+download_toolchain
+install_toolchain

@@ -28,19 +28,23 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-if [ -z ${TARGET+x} ]; then
-    TARGET=gcc
+if [ -z ${TOOLCHAIN+x} ]; then
+    TOOLCHAIN=gcc
 fi
 
 if [ -z ${C_COMPILER+x} ]; then
-    C_COMPILER=gcc
+    C_COMPILER=gcc-6
 fi
 
 if [ -z ${CXX_COMPILER+x} ]; then
-    CXX_COMPILER=g++
+    CXX_COMPILER=g++-6
 fi
 
-case $TARGET in
+if [ -z ${VERSION+x} ]; then
+    VERSION=5.4
+fi
+
+case $TOOLCHAIN in
 gcc)
     mkdir build
     cd build
@@ -58,13 +62,15 @@ clang)
 gcc-arm-none-eabi)
     mkdir build
     cd build
-    cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-gcc-arm-none-eabi.cmake \
+    env PATH="$HOME/gcc-arm-none-eabi/$VERSION/bin":$PATH cmake \
+        -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-gcc-arm-none-eabi.cmake \
         -DEXAMPLES=ON -DSEMIHOSTING=ON .. && make
     ;;
 clang-arm-none-eabi)
     mkdir build
     cd build
-    cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-clang-arm-none-eabi.cmake \
+    env PATH="$HOME/gcc-arm-none-eabi/$VERSION/bin":$PATH cmake \
+        -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-clang-arm-none-eabi.cmake \
         -DCMAKE_C_COMPILER=$C_COMPILER -DCMAKE_CXX_COMPILER=$CXX_COMPILER \
         -DEXAMPLES=ON -DSEMIHOSTING=ON .. && make
     ;;

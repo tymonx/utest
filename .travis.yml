@@ -1,72 +1,38 @@
-# Common settings
 dist: precise
 sudo: required
-
-# Enable C++ support
 language: cpp
+
+cache:
+  directories:
+   - $HOME/toolchains
+   - $HOME/gcc-arm-none-eabi
 
 matrix:
   include:
    - os: linux
-     compiler: gcc
      addons:
        apt:
          sources:
           - george-edison55-precise-backports
+          - llvm-toolchain-precise-3.9
           - ubuntu-toolchain-r-test
          packages:
           - cmake
           - cmake-data
           - gcc-6
           - g++-6
-     env: TARGET=gcc C_COMPILER=gcc-6 CXX_COMPILER=g++-6
-   - os: linux
-     compiler: clang
-     addons:
-       apt:
-         sources:
-          - george-edison55-precise-backports
-          - ubuntu-toolchain-r-test
-          - llvm-toolchain-precise-3.9
-         packages:
-          - cmake
-          - cmake-data
-          - clang-3.9
-     env: TARGET=clang C_COMPILER=clang-3.9 CXX_COMPILER=clang++-3.9
-   - os: linux
-     compiler: gcc
-     addons:
-       apt:
-         sources:
-          - george-edison55-precise-backports
-          - ubuntu-toolchain-r-test
-         packages:
-          - cmake
-          - cmake-data
-          - lib32z1
-          - lib32bz2-1.0
-          - lib32ncurses5
-     env: TARGET=gcc-arm-none-eabi
-   - os: linux
-     compiler: clang
-     addons:
-       apt:
-         sources:
-          - george-edison55-precise-backports
-          - ubuntu-toolchain-r-test
-          - llvm-toolchain-precise-3.9
-         packages:
-          - cmake
-          - cmake-data
           - clang-3.9
           - lib32z1
           - lib32bz2-1.0
           - lib32ncurses5
-     env: TARGET=clang-arm-none-eabi C_COMPILER=clang-3.9 CXX_COMPILER=clang++-3.9
+     env:
+      - TOOLCHAIN=gcc C_COMPILER=gcc-6 CXX_COMPILER=g++-6
+      - TOOLCHAIN=clang C_COMPILER=clang-3.9 CXX_COMPILER=clang++-3.9
+      - TOOLCHAIN=gcc-arm-none-eabi VERSION=5.4
+      - TOOLCHAIN=clang-arm-none-eabi VERSION=5.4 C_COMPILER=clang-3.9 CXX_COMPILER=clang++-3.9
 
 before_script:
  - ./.travis/setup.sh
- - export PATH="${HOME}/gcc-arm-none-eabi/bin":$PATH
 
 script:
  - ./.travis/build.sh
