@@ -59,6 +59,8 @@ matrix:
 #     env: TARGET=clang-arm-none-eabi C_COMPILER=clang-3.9 CXX_COMPILER=clang++-3.9
 
 before_script:
+ - sudo apt-get update -qq
+ - sudo apt-get install libgd2-xpm ia32-libs ia32-libs-multiarch lib32ncurses5 -qq
  - ./.travis/setup.sh
  - export PATH="${HOME}/gcc-arm-none-eabi/bin":$PATH
 
