@@ -24,7 +24,7 @@ addons:
      - lib32z1
      - lib32bz2-1.0
      - lib32ncurses5
-     - qemu-arm-static
+     - binfmt-support qemu-user-static
 
 env:
  - TOOLCHAIN=gcc C_COMPILER=gcc-6 CXX_COMPILER=g++-6
