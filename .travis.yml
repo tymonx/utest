@@ -43,9 +43,8 @@ matrix:
          packages:
           - cmake
           - cmake-data
-          - libgd2-xpm
-          - ia32-libs
-          - ia32-libs-multiarch
+          - lib32z1
+          - lib32z2-1.0
           - lib32ncurses5
      env: TARGET=gcc-arm-none-eabi
 #   - os: linux
