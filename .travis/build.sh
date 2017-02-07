@@ -33,46 +33,44 @@ if [ -z ${TOOLCHAIN+x} ]; then
 fi
 
 if [ -z ${C_COMPILER+x} ]; then
-    C_COMPILER=gcc-6
+    C_COMPILER=gcc
 fi
 
 if [ -z ${CXX_COMPILER+x} ]; then
-    CXX_COMPILER=g++-6
-fi
-
-if [ -z ${VERSION+x} ]; then
-    VERSION=5.4
+    CXX_COMPILER=g++
 fi
 
 case $TOOLCHAIN in
 gcc)
-    mkdir build
+    mkdir -p build
     cd build
     cmake -DCMAKE_C_COMPILER=$C_COMPILER -DCMAKE_CXX_COMPILER=$CXX_COMPILER \
         -DEXAMPLES=ON -DTHREADS=OFF .. && make
     ./bin/simple
+    cd -
     ;;
 clang)
-    mkdir build
+    mkdir -p build
     cd build
     cmake -DCMAKE_C_COMPILER=$C_COMPILER -DCMAKE_CXX_COMPILER=$CXX_COMPILER \
         -DEXAMPLES=ON .. && make
     ./bin/simple
+    cd -
     ;;
 gcc-arm-none-eabi)
-    mkdir build
+    mkdir -p build
     cd build
-    env PATH="$HOME/gcc-arm-none-eabi/$VERSION/bin":$PATH cmake \
-        -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-gcc-arm-none-eabi.cmake \
+    cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-gcc-arm-none-eabi.cmake \
         -DEXAMPLES=ON -DSEMIHOSTING=ON .. && make
+    cd -
     ;;
 clang-arm-none-eabi)
-    mkdir build
+    mkdir -p build
     cd build
-    env PATH="$HOME/gcc-arm-none-eabi/$VERSION/bin":$PATH cmake \
-        -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-clang-arm-none-eabi.cmake \
+    cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-clang-arm-none-eabi.cmake \
         -DCMAKE_C_COMPILER=$C_COMPILER -DCMAKE_CXX_COMPILER=$CXX_COMPILER \
         -DEXAMPLES=ON -DSEMIHOSTING=ON .. && make
+    cd -
     ;;
 *)
     ;;

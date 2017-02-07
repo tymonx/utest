@@ -1,38 +1,38 @@
 dist: precise
 sudo: required
 language: cpp
+os: linux
 
 cache:
   directories:
    - $HOME/toolchains
    - $HOME/gcc-arm-none-eabi
 
-matrix:
-  include:
-   - os: linux
-     addons:
-       apt:
-         sources:
-          - george-edison55-precise-backports
-          - llvm-toolchain-precise-3.9
-          - ubuntu-toolchain-r-test
-         packages:
-          - cmake
-          - cmake-data
-          - gcc-6
-          - g++-6
-          - clang-3.9
-          - lib32z1
-          - lib32bz2-1.0
-          - lib32ncurses5
-     env:
-      - TOOLCHAIN=gcc C_COMPILER=gcc-6 CXX_COMPILER=g++-6
-      - TOOLCHAIN=clang C_COMPILER=clang-3.9 CXX_COMPILER=clang++-3.9
-      - TOOLCHAIN=gcc-arm-none-eabi VERSION=5.4
-      - TOOLCHAIN=clang-arm-none-eabi VERSION=5.4 C_COMPILER=clang-3.9 CXX_COMPILER=clang++-3.9
+addons:
+  apt:
+    sources:
+     - george-edison55-precise-backports
+     - llvm-toolchain-precise-3.9
+     - ubuntu-toolchain-r-test
+    packages:
+     - cmake
+     - cmake-data
+     - gcc-6
+     - g++-6
+     - clang-3.9
+     - lib32z1
+     - lib32bz2-1.0
+     - lib32ncurses5
+
+env:
+ - TOOLCHAIN=gcc C_COMPILER=gcc-6 CXX_COMPILER=g++-6
+ - TOOLCHAIN=clang C_COMPILER=clang-3.9 CXX_COMPILER=clang++-3.9
+ - TOOLCHAIN=gcc-arm-none-eabi VERSION=5.4
+ - TOOLCHAIN=clang-arm-none-eabi VERSION=5.4 C_COMPILER=clang-3.9 CXX_COMPILER=clang++-3.9
 
 before_script:
  - ./.travis/setup.sh
+ - export PATH=$HOME/gcc-arm-none-eabi/$VERSION/bin:$PATH
 
 script:
  - ./.travis/build.sh
