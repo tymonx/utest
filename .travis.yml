@@ -5,10 +5,6 @@ sudo: required
 # Enable C++ support
 language: cpp
 
-cache:
-  directories:
-  - ${HOME}/gcc-arm-none-eabi
-
 matrix:
   include:
    - os: linux
