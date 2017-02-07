@@ -56,15 +56,10 @@ clang)
     ./bin/simple
     ;;
 gcc-arm-none-eabi)
-    echo $PATH
-    ${HOME}/gcc-arm-none-eabi/bin/arm-none-eabi-g++ -v
-
     mkdir build
     cd build
     cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-gcc-arm-none-eabi.cmake \
         -DEXAMPLES=ON -DSEMIHOSTING=ON .. && make
-    cat /home/travis/build/tymonx/utest/build/CMakeFiles/CMakeOutput.log
-    cat /home/travis/build/tymonx/utest/build/CMakeFiles/CMakeError.log
     ;;
 clang-arm-none-eabi)
     mkdir build

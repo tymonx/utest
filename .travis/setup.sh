@@ -44,17 +44,6 @@ clang-arm-none-eabi)
 
     mkdir ${HOME}/gcc-arm-none-eabi && tar -xf ${HOME}/gcc-arm-none-eabi.tar.bz2 \
         -C ${HOME}/gcc-arm-none-eabi --strip-components 1
-
-    echo "${HOME}"
-    ls -al ${HOME}
-
-    echo "${HOME}/gcc-arm-none-eabi"
-    ls -al ${HOME}/gcc-arm-none-eabi
-
-    echo "${HOME}/gcc-arm-none-eabi/bin"
-    ls -al ${HOME}/gcc-arm-none-eabi/bin
-
-    ${HOME}/gcc-arm-none-eabi/bin/arm-none-eabi-g++ -v
     ;;
 *)
     ;;

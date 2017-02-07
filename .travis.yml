@@ -5,6 +5,10 @@ sudo: required
 # Enable C++ support
 language: cpp
 
+cache:
+  directories:
+  - ${HOME}/gcc-arm-none-eabi
+
 matrix:
   include:
    - os: linux
@@ -47,19 +51,22 @@ matrix:
           - lib32bz2-1.0
           - lib32ncurses5
      env: TARGET=gcc-arm-none-eabi
-#   - os: linux
-#     compiler: clang
-#     addons:
-#       apt:
-#         sources:
-#          - george-edison55-precise-backports
-#          - ubuntu-toolchain-r-test
-#          - llvm-toolchain-precise-3.9
-#         packages:
-#          - cmake
-#          - cmake-data
-#          - clang-3.9
-#     env: TARGET=clang-arm-none-eabi C_COMPILER=clang-3.9 CXX_COMPILER=clang++-3.9
+   - os: linux
+     compiler: clang
+     addons:
+       apt:
+         sources:
+          - george-edison55-precise-backports
+          - ubuntu-toolchain-r-test
+          - llvm-toolchain-precise-3.9
+         packages:
+          - cmake
+          - cmake-data
+          - clang-3.9
+          - lib32z1
+          - lib32bz2-1.0
+          - lib32ncurses5
+     env: TARGET=clang-arm-none-eabi C_COMPILER=clang-3.9 CXX_COMPILER=clang++-3.9
 
 before_script:
  - ./.travis/setup.sh
