@@ -18,6 +18,7 @@ addons:
      - cmake-data
      - gcc-6
      - g++-6
+     - clang-3.8
      - clang-3.9
      - lib32z1
      - lib32bz2-1.0
@@ -25,8 +26,11 @@ addons:
 
 env:
  - TOOLCHAIN=gcc C_COMPILER=gcc-6 CXX_COMPILER=g++-6
+ - TOOLCHAIN=clang C_COMPILER=clang-3.8 CXX_COMPILER=clang++-3.8
  - TOOLCHAIN=clang C_COMPILER=clang-3.9 CXX_COMPILER=clang++-3.9
+ - TOOLCHAIN=gcc-arm-none-eabi VERSION=4.9
  - TOOLCHAIN=gcc-arm-none-eabi VERSION=5.4
+ - TOOLCHAIN=clang-arm-none-eabi VERSION=4.9 C_COMPILER=clang-3.9 CXX_COMPILER=clang++-3.9
  - TOOLCHAIN=clang-arm-none-eabi VERSION=5.4 C_COMPILER=clang-3.9 CXX_COMPILER=clang++-3.9
 
 before_script:
