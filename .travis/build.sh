@@ -65,13 +65,10 @@ gcc-arm-none-eabi)
     mkdir /tmp/gcc-arm-none-eabi && tar xvf /tmp/gcc-arm-none-eabi.tar.bz2 \
         -C /tmp/gcc-arm-none-eabi --strip-components 1
 
-    if [[ ! $PATH =~ /tmp/gcc-arm-none-eabi/bin ]]; then
-        export PATH=/tmp/gcc-arm-none-eabi/bin:$PATH
-    fi
-
     mkdir build
     cd build
-    cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-gcc-arm-none-eabi.cmake \
+    env PATH=/tmp/gcc-arm-none-eabi/bin:$PATH cmake \
+        -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-gcc-arm-none-eabi.cmake \
         -DEXAMPLES=ON -DSEMIHOSTING=ON .. && make
     ;;
 clang-arm-none-eabi)
@@ -80,13 +77,13 @@ clang-arm-none-eabi)
     mkdir /tmp/gcc-arm-none-eabi && tar xvf /tmp/gcc-arm-none-eabi.tar.bz2 \
         -C /tmp/gcc-arm-none-eabi --strip-components 1
 
-    if [[ ! $PATH =~ /tmp/gcc-arm-none-eabi/bin ]]; then
-        export PATH=/tmp/gcc-arm-none-eabi/bin:$PATH
-    fi
+    ls /tmp/gcc-arm-none-eabi
+    ls /tmp/gcc-arm-none-eabi/bin
 
     mkdir build
     cd build
-    cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-clang-arm-none-eabi.cmake \
+    env PATH=/tmp/gcc-arm-none-eabi/bin:$PATH cmake \
+        -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-clang-arm-none-eabi.cmake \
         -DCMAKE_C_COMPILER=$C_COMPILER -DCMAKE_CXX_COMPILER=$CXX_COMPILER \
         -DEXAMPLES=ON -DSEMIHOSTING=ON .. && make
     ;;
