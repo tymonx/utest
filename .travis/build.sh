@@ -77,8 +77,8 @@ clang-arm-none-eabi)
     mkdir /tmp/gcc-arm-none-eabi && tar xvf /tmp/gcc-arm-none-eabi.tar.bz2 \
         -C /tmp/gcc-arm-none-eabi --strip-components 1
 
-    ls /tmp/gcc-arm-none-eabi
-    ls /tmp/gcc-arm-none-eabi/bin
+    ls -al /tmp/gcc-arm-none-eabi
+    ls -al /tmp/gcc-arm-none-eabi/bin
 
     mkdir build
     cd build
