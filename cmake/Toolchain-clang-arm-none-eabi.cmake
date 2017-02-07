@@ -34,14 +34,20 @@ set(__CLANG_ARM_NONE_EABI 1)
 
 set(CMAKE_SYSTEM_NAME Generic)
 
-set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
-
 if (NOT CMAKE_C_COMPILER OR NOT ${CMAKE_C_COMPILER} MATCHES "clang*")
     set(CMAKE_C_COMPILER clang)
 endif()
 
 if (NOT CMAKE_CXX_COMPILER OR NOT ${CMAKE_CXX_COMPILER} MATCHES "clang*")
     set(CMAKE_CXX_COMPILER clang++)
+endif()
+
+if(CMAKE_VERSION VERSION_LESS "3.6.0")
+    include(CMakeForceCompiler)
+    cmake_force_c_compiler(${CMAKE_C_COMPILER} Clang)
+    cmake_force_cxx_compiler(${CMAKE_CXX_COMPILER} Clang)
+else()
+    set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
 endif()
 
 set(CMAKE_LINKER arm-none-eabi-ld CACHE STRING "GNU ARM linker")
