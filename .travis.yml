@@ -11,11 +11,14 @@ addons:
   apt:
     sources:
      - george-edison55-precise-backports
+     - llvm-toolchain-precise-3.8
      - llvm-toolchain-precise-3.9
      - ubuntu-toolchain-r-test
     packages:
      - cmake
      - cmake-data
+     - gcc-4.9
+     - g++-4.9
      - gcc-6
      - g++-6
      - clang-3.8
@@ -25,6 +28,7 @@ addons:
      - lib32ncurses5
 
 env:
+ - TOOLCHAIN=gcc C_COMPILER=gcc-4.9 CXX_COMPILER=g++-4.9
  - TOOLCHAIN=gcc C_COMPILER=gcc-6 CXX_COMPILER=g++-6
  - TOOLCHAIN=clang C_COMPILER=clang-3.8 CXX_COMPILER=clang++-3.8
  - TOOLCHAIN=clang C_COMPILER=clang-3.9 CXX_COMPILER=clang++-3.9

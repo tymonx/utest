@@ -136,9 +136,6 @@ set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS}
     -Wstrict-overflow=2
     -Wsuggest-attribute=noreturn
     -Wsuggest-attribute=format
-    -Wsuggest-final-methods
-    -Wsuggest-final-types
-    -Wsuggest-override
     -Wswitch-default
     -Wswitch-enum
     -Wtrampolines
@@ -158,6 +155,14 @@ if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 6.3)
         -Wnull-dereference
         -Wplacement-new=2
         -Wvirtual-inheritance
+    )
+endif()
+
+if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 5.0)
+    set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS}
+        -Wsuggest-final-methods
+        -Wsuggest-final-types
+        -Wsuggest-override
     )
 endif()
 
