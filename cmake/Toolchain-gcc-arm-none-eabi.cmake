@@ -34,9 +34,15 @@ set(__GCC_ARM_NONE_EABI 1)
 
 set(CMAKE_SYSTEM_NAME Generic)
 
-set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
-set(CMAKE_C_COMPILER arm-none-eabi-gcc)
-set(CMAKE_CXX_COMPILER arm-none-eabi-g++)
+if(CMAKE_VERSION VERSION_LESS "3.6.0")
+    include(CMakeForceCompiler)
+    cmake_force_c_compiler(arm-none-eabi-gcc GNU)
+    cmake_force_cxx_compiler(arm-none-eabi-g++ GNU)
+else()
+    set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
+    set(CMAKE_C_COMPILER arm-none-eabi-gcc)
+    set(CMAKE_CXX_COMPILER arm-none-eabi-g++)
+endif()
 
 set(CMAKE_LINKER arm-none-eabi-ld CACHE STRING "GNU ARM linker")
 set(CMAKE_AR arm-none-eabi-ar CACHE STRING "GNU ARM archiver")
