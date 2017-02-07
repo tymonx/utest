@@ -11,31 +11,33 @@ addons:
   apt:
     sources:
      - george-edison55-precise-backports
-     - llvm-toolchain-precise-3.8
      - llvm-toolchain-precise-3.9
      - ubuntu-toolchain-r-test
     packages:
      - cmake
      - cmake-data
-     - gcc-4.9
-     - g++-4.9
      - gcc-6
      - g++-6
-     - clang-3.8
      - clang-3.9
      - lib32z1
      - lib32bz2-1.0
      - lib32ncurses5
 
 env:
- - TOOLCHAIN=gcc C_COMPILER=gcc-4.9 CXX_COMPILER=g++-4.9
  - TOOLCHAIN=gcc C_COMPILER=gcc-6 CXX_COMPILER=g++-6
- - TOOLCHAIN=clang C_COMPILER=clang-3.8 CXX_COMPILER=clang++-3.8
  - TOOLCHAIN=clang C_COMPILER=clang-3.9 CXX_COMPILER=clang++-3.9
- - TOOLCHAIN=gcc-arm-none-eabi VERSION=4.9
  - TOOLCHAIN=gcc-arm-none-eabi VERSION=5.4
  - TOOLCHAIN=clang-arm-none-eabi VERSION=4.9 C_COMPILER=clang-3.9 CXX_COMPILER=clang++-3.9
  - TOOLCHAIN=clang-arm-none-eabi VERSION=5.4 C_COMPILER=clang-3.9 CXX_COMPILER=clang++-3.9
+
+matrix:
+  include:
+    - apt:
+        sources:
+         - llvm-toolchain-precise-3.8
+        packages:
+         - clang-3.8
+    - env: TOOLCHAIN=clang C_COMPILER=clang-3.8 CXX_COMPILER=clang++-3.8
 
 before_script:
  - ./.travis/setup.sh
