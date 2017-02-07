@@ -28,41 +28,35 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-WORKSPACE_DIR=$(realpath $SCRIPT_DIR/..)
-BUILD_DIR=$WORKSPACE_DIR/build
-
-if [ -z "${!TARGET}" ]; then
+if [ -z ${TARGET+x} ]; then
     TARGET=gcc
 fi
 
-if [ -z "${!C_COMPILER}" ]; then
+if [ -z ${C_COMPILER+x} ]; then
     C_COMPILER=gcc
 fi
 
-if [ -z "${!CXX_COMPILER}" ]; then
+if [ -z ${CXX_COMPILER+x} ]; then
     CXX_COMPILER=g++
 fi
 
-if [ -z "${!TOOLCHAIN_TAR}"]; then
+if [ -z ${TOOLCHAIN_TAR+x} ]; then
     TOOLCHAIN_TAR=https://launchpad.net/gcc-arm-embedded/5.0/5-2016-q3-update/+download/gcc-arm-none-eabi-5_4-2016q3-20160926-linux.tar.bz2
 fi
 
 case $TARGET in
 gcc)
-    mkdir $BUILD_DIR
-    cd $BUILD_DIR
+    mkdir build
+    cd build
     cmake -DCMAKE_C_COMPILER=$C_COMPILER -DCMAKE_CXX_COMPILER=$CXX_COMPILER \
-        -DEXAMPLES=ON -DTHREADS=OFF ..
-    make
+        -DEXAMPLES=ON -DTHREADS=OFF .. && make
     ./bin/simple
     ;;
 clang)
-    mkdir $BUILD_DIR
-    cd $BUILD_DIR
+    mkdir build
+    cd build
     cmake -DCMAKE_C_COMPILER=$C_COMPILER -DCMAKE_CXX_COMPILER=$CXX_COMPILER \
-        -DEXAMPLES=ON ..
-    make
+        -DEXAMPLES=ON .. && make
     ./bin/simple
     ;;
 gcc-arm-none-eabi)
@@ -75,11 +69,10 @@ gcc-arm-none-eabi)
         export PATH=/tmp/gcc-arm-none-eabi/bin:$PATH
     fi
 
-    mkdir $BUILD_DIR
-    cd $BUILD_DIR
+    mkdir build
+    cd build
     cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-gcc-arm-none-eabi.cmake \
-        -DEXAMPLES=ON -DSEMIHOSTING=ON ..
-    make
+        -DEXAMPLES=ON -DSEMIHOSTING=ON .. && make
     ;;
 clang-arm-none-eabi)
     wget ${TOOLCHAIN_TAR} -O /tmp/gcc-arm-none-eabi.tar.bz2
@@ -91,11 +84,10 @@ clang-arm-none-eabi)
         export PATH=/tmp/gcc-arm-none-eabi/bin:$PATH
     fi
 
-    mkdir $BUILD_DIR
-    cd $BUILD_DIR
+    mkdir build
+    cd build
     cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-clang-arm-none-eabi.cmake \
-        -DEXAMPLES=ON -DSEMIHOSTING=ON ..
-    make
+        -DEXAMPLES=ON -DSEMIHOSTING=ON .. && make
     ;;
 *)
     ;;
