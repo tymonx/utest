@@ -56,6 +56,9 @@ clang)
     ./bin/simple
     ;;
 gcc-arm-none-eabi)
+    echo $PATH
+    ${HOME}/gcc-arm-none-eabi/bin/arm-none-eabi-g++ -v
+
     mkdir build
     cd build
     cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-gcc-arm-none-eabi.cmake \
