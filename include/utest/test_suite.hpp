@@ -83,7 +83,7 @@ private:
     friend class TestCase;
     friend class TestRunner;
 
-    TestSuite(const Test& test) noexcept;
+    TestSuite(Test& test) noexcept;
 
     void report(const TestMessage& test_message) noexcept;
 
@@ -95,8 +95,7 @@ private:
 
     TestSize test_cases_failed() const noexcept;
 
-    TestThread& m_thread;
-    TestReporters m_reporters{};
+    Test& m_test;
     TestString m_name{};
     TestString m_file{};
     TestSize m_line{0};

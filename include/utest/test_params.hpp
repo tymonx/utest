@@ -50,6 +50,7 @@
 
 namespace utest {
 
+class Test;
 class TestCase;
 class TestAssert;
 class TestReporter;
@@ -103,8 +104,8 @@ private:
 
     [[noreturn]] void jump() noexcept;
 
+    Test& m_test;
     TestJumpBuffer m_jump_buffer{};
-    TestReporters m_reporters{};
     TestContext* m_context{};
     TestString m_file{};
     TestStatus m_status{TestStatus::PASS};

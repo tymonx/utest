@@ -49,6 +49,7 @@
 
 namespace utest {
 
+class Test;
 class TestSuite;
 class TestParams;
 class TestParams;
@@ -107,7 +108,7 @@ private:
     friend class TestSuite;
     friend class TestParams;
 
-    TestCase(const TestSuite& test_suite) noexcept;
+    TestCase(TestSuite& test_suite) noexcept;
 
     void report(const TestMessage& test_message) noexcept;
 
@@ -123,12 +124,11 @@ private:
 
     TestSize failed() const noexcept;
 
-    TestThread& m_thread;
-    TestReporters m_reporters{};
+    Test& m_test;
     TestContext m_context{};
     TestFunction m_setup{};
     TestFunction m_teardown{};
-    TestFunction m_test{};
+    TestFunction m_run{};
     TestString m_name{};
     TestString m_file{};
     TestSize m_line{};

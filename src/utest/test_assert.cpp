@@ -42,6 +42,7 @@
 #include <utest/test_assert.hpp>
 #include <utest/test_params.hpp>
 #include <utest/test_reporter.hpp>
+#include <utest/test.hpp>
 
 #include <utest/test_message/test_assert.hpp>
 
@@ -74,11 +75,7 @@ TestAssert::~TestAssert() noexcept {
 }
 
 void TestAssert::report(const TestMessage& test_message) noexcept {
-    for (auto reporter : m_params.m_reporters) {
-        if (reporter) {
-            reporter->report(test_message);
-        }
-    }
+    m_params.m_test.report(test_message);
 }
 
 TestAssert& TestAssert::operator<<(std::nullptr_t) noexcept {

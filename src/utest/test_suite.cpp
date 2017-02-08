@@ -49,18 +49,13 @@
 
 using utest::TestSuite;
 
-TestSuite::TestSuite(const Test& test) noexcept :
-    m_thread{test.m_thread},
-    m_reporters{test.m_reporters},
+TestSuite::TestSuite(Test& test) noexcept :
+    m_test{test},
     m_file{}
 { }
 
 void TestSuite::report(const TestMessage& test_message) noexcept {
-    for (auto reporter : m_reporters) {
-        if (reporter) {
-            reporter->report(test_message);
-        }
-    }
+    m_test.report(test_message);
 }
 
 TestSuite& TestSuite::run(TestRun test_run) noexcept {

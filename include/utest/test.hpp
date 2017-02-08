@@ -48,6 +48,8 @@
 namespace utest {
 
 class TestSuite;
+class TestCase;
+class TestAssert;
 class TestMessage;
 class TestReporter;
 class TestThread;
@@ -67,6 +69,8 @@ public:
     Test& color(bool enable = true) noexcept;
 private:
     friend class TestSuite;
+    friend class TestCase;
+    friend class TestAssert;
 
     void report(const TestMessage& test_message) noexcept;
 
