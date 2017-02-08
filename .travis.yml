@@ -35,6 +35,7 @@ matrix:
         apt:
           sources:
            - george-edison55-precise-backports
+           - ubuntu-toolchain-r-test
            - llvm-toolchain-precise-3.8
           packages:
            - cmake cmake-data
@@ -45,6 +46,7 @@ matrix:
         apt:
           sources:
            - george-edison55-precise-backports
+           - ubuntu-toolchain-r-test
            - llvm-toolchain-precise-3.9
           packages:
            - cmake cmake-data
@@ -73,6 +75,7 @@ matrix:
         apt:
           sources:
            - george-edison55-precise-backports
+           - ubuntu-toolchain-r-test
            - llvm-toolchain-precise-3.9
           packages:
            - lib32z1 lib32bz2-1.0 lib32ncurses5
