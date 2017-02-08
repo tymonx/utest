@@ -94,7 +94,7 @@ void GoogleTest::report<TestMessage::TEST_BEGIN>(
     const auto& msg = get<TestBegin>(message);
 
     write<true>(ENTRY);
-    write("Running ", msg.tests_registered(), " registered test(s).\n");
+    write("Running ", msg.tests_registered(), " registered test runner(s).\n");
 }
 
 template<>

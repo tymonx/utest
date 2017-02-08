@@ -57,7 +57,7 @@ static TestRunner g([] (TestSuite& test_suite) {
 Test output example:
 
 ```
-[==========] Running 1 registered test(s).
+[==========] Running 1 registered test runner(s).
 [----------] Running test(s) from Factorial
 [ RUN      ] computed
 [       OK ] computed
