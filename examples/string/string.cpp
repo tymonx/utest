@@ -42,6 +42,7 @@
 #include <utest/utest.hpp>
 
 #include <string>
+#include <stdexcept>
 
 using std::string;
 using namespace utest;
