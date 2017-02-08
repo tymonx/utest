@@ -82,10 +82,10 @@ public:
         typename U::pointer, pointer>::value>::type> constexpr
     TestSpan(const U& other) noexcept;
 
-    constexpr TestSpan(pointer data, size_type size) noexcept;
+    constexpr TestSpan(pointer ptr, size_type n) noexcept;
 
     template<typename InputIt>
-    TestSpan(InputIt first, InputIt last) noexcept;
+    TestSpan(InputIt input_first, InputIt input_last) noexcept;
 
     template<TestSize N> constexpr
     TestSpan(value_type (&arr)[N]) noexcept;
@@ -174,13 +174,13 @@ TestSpan<T>::TestSpan(const U& other) noexcept :
 { }
 
 template<typename T> inline constexpr
-TestSpan<T>::TestSpan(pointer data, size_type size) noexcept :
-    m_data{data}, m_size{size}
+TestSpan<T>::TestSpan(pointer ptr, size_type n) noexcept :
+    m_data{ptr}, m_size{n}
 { }
 
 template<typename T> template<typename InputIt> inline
-TestSpan<T>::TestSpan(InputIt first, InputIt last) noexcept :
-    m_data{&(*first)}, m_size{std::distance(first, last)}
+TestSpan<T>::TestSpan(InputIt input_first, InputIt input_last) noexcept :
+    m_data{&(*input_first)}, m_size{std::distance(input_first, input_last)}
 { }
 
 template<typename T> template<TestSize N> inline constexpr

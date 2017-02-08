@@ -92,6 +92,12 @@ if (CMAKE_CXX_COMPILER_ID MATCHES Clang)
         PROPERTIES
         COMPILE_FLAGS "-Wno-global-constructors -Wno-exit-time-destructors"
     )
+
+    set_source_files_properties(
+        test_params.cpp
+        PROPERTIES
+        COMPILE_FLAGS "-Wno-disabled-macro-expansion"
+    )
 endif()
 
 if (CMAKE_CXX_COMPILER_ID MATCHES GNU)

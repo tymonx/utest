@@ -50,7 +50,8 @@ namespace test_message {
 
 class TestSuiteBase : public TestMessage {
 protected:
-    TestSuiteBase(TestMessage::Type type, const TestSuite& test_suite) noexcept;
+    TestSuiteBase(TestMessage::Type message_type,
+            const TestSuite& test_suite) noexcept;
 
     const TestString& name() const noexcept;
 
@@ -64,9 +65,9 @@ private:
 };
 
 inline
-TestSuiteBase::TestSuiteBase(TestMessage::Type type,
+TestSuiteBase::TestSuiteBase(TestMessage::Type message_type,
         const TestSuite& test_suite) noexcept :
-    TestMessage{type}, m_test_suite{test_suite}
+    TestMessage{message_type}, m_test_suite{test_suite}
 { }
 
 inline auto

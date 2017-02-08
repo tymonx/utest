@@ -55,7 +55,7 @@ TestRunner::TestRunner(Run run) noexcept :
 }
 
 auto TestRunner::operator()(TestSuite& test_suite) noexcept -> TestStatus {
-    auto status{TestStatus::PASS};
+    auto status = TestStatus::PASS;
 
     if (m_run) {
 #if defined(UTEST_USE_EXCEPTIONS)

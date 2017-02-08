@@ -56,15 +56,16 @@ public:
 
     TestStatus status() const noexcept;
 protected:
-    TestAssertBase(TestMessage::Type type, const TestAssert& test_assert) noexcept;
+    TestAssertBase(TestMessage::Type message_type,
+            const TestAssert& test_assert) noexcept;
 private:
     const TestAssert& m_test_assert;
 };
 
 inline
-TestAssertBase::TestAssertBase(TestMessage::Type type,
+TestAssertBase::TestAssertBase(TestMessage::Type message_type,
         const TestAssert& test_assert) noexcept :
-    TestMessage{type}, m_test_assert{test_assert}
+    TestMessage{message_type}, m_test_assert{test_assert}
 { }
 
 inline auto

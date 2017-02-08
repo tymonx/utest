@@ -53,7 +53,7 @@ public:
     template<int N>
     const TestValue& get() const noexcept;
 protected:
-    TestAssertCompare(TestMessage::Type type,
+    TestAssertCompare(TestMessage::Type message_type,
             const TestAssert& test_assert, const TestValue& lhs,
             const TestValue& rhs) noexcept;
 private:
@@ -62,10 +62,10 @@ private:
 };
 
 inline
-TestAssertCompare::TestAssertCompare(TestMessage::Type type,
+TestAssertCompare::TestAssertCompare(TestMessage::Type message_type,
         const TestAssert& test_assert, const TestValue& lhs,
         const TestValue& rhs) noexcept :
-    TestAssertBase{type, test_assert}, m_lhs{lhs}, m_rhs{rhs}
+    TestAssertBase{message_type, test_assert}, m_lhs{lhs}, m_rhs{rhs}
 { }
 
 template<> inline auto

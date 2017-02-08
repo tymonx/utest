@@ -78,14 +78,14 @@ public:
 
     Type type() const noexcept;
 protected:
-    TestMessage(Type type) noexcept;
+    TestMessage(Type message_type) noexcept;
 private:
     Type m_type;
 };
 
 inline
-TestMessage::TestMessage(Type type) noexcept :
-    m_type{type}
+TestMessage::TestMessage(Type message_type) noexcept :
+    m_type{message_type}
 { }
 
 inline auto
