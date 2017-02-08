@@ -103,10 +103,8 @@ set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS}
     -Wall
     -Wcast-qual
     -Wcomments
-    -Wconditionally-supported
     -Wconversion
     -Wctor-dtor-privacy
-    -Wdate-time
     -Wdisabled-optimization
     -Wdouble-promotion
     -Weffc++
@@ -123,7 +121,6 @@ set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS}
     -Wmissing-include-dirs
     -Wnoexcept
     -Wold-style-cast
-    -Wopenmp-simd
     -Woverloaded-virtual
     -Wpacked
     -Wpedantic
@@ -163,6 +160,14 @@ if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 5.0)
         -Wsuggest-final-methods
         -Wsuggest-final-types
         -Wsuggest-override
+    )
+endif()
+
+if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 4.9)
+    set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS}
+        -Wconditionally-supported
+        -Wdate-time
+        -Wopenmp-simd
     )
 endif()
 
