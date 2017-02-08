@@ -14,7 +14,9 @@ addons:
     sources:
      - george-edison55-precise-backports
      - ubuntu-toolchain-r-test
-    packages: cmake cmake-data gcc-6 g++-6
+    packages:
+     - cmake cmake-data
+     - gcc-6 g++-6
 
 matrix:
   include:
@@ -24,7 +26,9 @@ matrix:
           sources:
            - george-edison55-precise-backports
            - ubuntu-toolchain-r-test
-          packages: cmake cmake-data gcc-4.9 g++-4.9
+          packages:
+           - cmake cmake-data
+           - gcc-4.9 g++-4.9
 
     - env: TOOLCHAIN=clang C_COMPILER=clang-3.8 CXX_COMPILER=clang++-3.8
       addons:
@@ -32,7 +36,9 @@ matrix:
           sources:
            - george-edison55-precise-backports
            - llvm-toolchain-precise-3.8
-          packages: cmake cmake-data clang-3.8
+          packages:
+           - cmake cmake-data
+           - clang-3.8
 
     - env: TOOLCHAIN=clang C_COMPILER=clang-3.9 CXX_COMPILER=clang++-3.9
       addons:
@@ -40,21 +46,27 @@ matrix:
           sources:
            - george-edison55-precise-backports
            - llvm-toolchain-precise-3.9
-          packages: cmake cmake-data clang-3.9
+          packages:
+           - cmake cmake-data
+           - clang-3.9
 
     - env: TOOLCHAIN=gcc-arm-none-eabi VERSION=4.9
       addons:
         apt:
           sources:
            - george-edison55-precise-backports
-          packages: cmake cmake-data lib32z1 lib32bz2-1.0 lib32ncurses5
+          packages:
+           - lib32z1 lib32bz2-1.0 lib32ncurses5
+           - cmake cmake-data
 
     - env: TOOLCHAIN=gcc-arm-none-eabi VERSION=5.4
       addons:
         apt:
           sources:
            - george-edison55-precise-backports
-          packages: cmake cmake-data lib32z1 lib32bz2-1.0 lib32ncurses5
+          packages:
+           - lib32z1 lib32bz2-1.0 lib32ncurses5
+           - cmake cmake-data
 
     - env: TOOLCHAIN=clang-arm-none-eabi VERSION=5.4 C_COMPILER=clang-3.9 CXX_COMPILER=clang++-3.9
       addons:
@@ -62,7 +74,10 @@ matrix:
           sources:
            - george-edison55-precise-backports
            - llvm-toolchain-precise-3.9
-          packages: cmake cmake-data clang-3.9 lib32z1 lib32bz2-1.0 lib32ncurses5
+          packages:
+           - lib32z1 lib32bz2-1.0 lib32ncurses5
+           - cmake cmake-data
+           - clang-3.9
 
 before_script:
  - ./.travis/setup.sh
