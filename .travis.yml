@@ -1,6 +1,6 @@
 dist: precise
 sudo: false
-language: c++
+language: cpp
 os: linux
 
 cache:
