@@ -70,7 +70,6 @@ static void test_case_execution(TestCase& test_case) {
         TestAssert{p}.not_equal(TestString{"TEXT"}.ignore_case(), str);
         TestAssert{p}.fail();
 
-#if defined(UTEST_USE_EXCEPTIONS)
         TestAssert{p}.no_throw([] (TestParams& pp) {
             pp.context<string>().at(10);
         });
@@ -86,7 +85,6 @@ static void test_case_execution(TestCase& test_case) {
         TestAssert{p}.expected_throw<std::runtime_error>([] (TestParams& pp) {
             pp.context<string>().at(10);
         });
-#endif
     });
 }
 

@@ -57,6 +57,7 @@ static constexpr TestString STRING_FALSE{"false"};
 
 TestAssert::TestAssert(TestParams& params) noexcept :
     m_params{params},
+    m_file{params.m_file},
     m_non_fatal{params.m_non_fatal}
 { }
 
@@ -70,10 +71,6 @@ TestAssert::~TestAssert() noexcept {
             m_params.jump();
         }
     }
-}
-
-const TestString& TestAssert::file() const noexcept {
-    return m_params.file();
 }
 
 void TestAssert::report(const TestMessage& test_message) noexcept {
@@ -196,9 +193,8 @@ void TestAssert::less_than_or_equal(const TestValue& lhs,
     report(TestAssertLessThanOrEqual{*this, lhs, rhs});
 }
 
-#if defined(UTEST_USE_EXCEPTIONS)
-
 TestAssert& TestAssert::any_throw(TestRun test_run) noexcept {
+#if defined(UTEST_USE_EXCEPTIONS)
     if (test_run) {
         try {
             test_run(m_params);
@@ -206,10 +202,14 @@ TestAssert& TestAssert::any_throw(TestRun test_run) noexcept {
             report(TestAssertAnyThrow{*this});
         } catch (...) { }
     }
+#else
+    (void)test_run;
+#endif
     return *this;
 }
 
 TestAssert& TestAssert::no_throw(TestRun test_run) noexcept {
+#if defined(UTEST_USE_EXCEPTIONS)
     if (test_run) {
         try {
             test_run(m_params);
@@ -223,30 +223,18 @@ TestAssert& TestAssert::no_throw(TestRun test_run) noexcept {
             report(TestAssertNoThrow{*this, {}});
         }
     }
+#else
+    (void)test_run;
+#endif
     return *this;
 }
 
 void TestAssert::expected_throw(bool throws, const TestString& str) noexcept {
+#if defined(UTEST_USE_EXCEPTIONS)
     m_status = TestStatus::FAIL;
     report(TestAssertExpectedThrow{*this, throws, str});
-}
-
 #else
-
-TestAssert& TestAssert::any_throw(TestRun test_run) noexcept {
-    if (test_run) {
-        test_run(m_params);
-    }
-    return *this;
-}
-
-TestAssert& TestAssert::no_throw(TestRun test_run) noexcept {
-    if (test_run) {
-        test_run(m_params);
-    }
-    return *this;
-}
-
-void TestAssert::expected_throw(bool, const TestString&) noexcept { }
-
+    (void)throws;
+    (void)str;
 #endif
+}

@@ -28,5 +28,8 @@
 *.out
 *.app
 
-build/*
+*.swp
+*.tar
+*.tar.bz2
+
 build*/*

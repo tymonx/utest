@@ -65,6 +65,8 @@ public:
 
     TestSize line() const noexcept;
 
+    TestAssert& file(const TestString& test_file) noexcept;
+
     const TestString& file() const noexcept;
 
     TestStatus status() const noexcept;
@@ -142,11 +144,23 @@ private:
     void expected_throw(bool throws, const TestString& str = {}) noexcept;
 
     TestParams& m_params;
+    TestString m_file{};
     TestSize m_line{0};
     TestStatus m_status{TestStatus::PASS};
     bool m_explanation{false};
     bool m_non_fatal{false};
 };
+
+inline auto
+TestAssert::file(const TestString& test_file) noexcept -> TestAssert& {
+    m_file = test_file;
+    return *this;
+}
+
+inline auto
+TestAssert::file() const noexcept -> const TestString& {
+    return m_file;
+}
 
 inline auto
 TestAssert::line(TestSize test_line) noexcept -> TestAssert& {
@@ -245,10 +259,9 @@ TestAssert::less_than_or_equal(const T1& lhs,
     return *this;
 }
 
-#if defined(UTEST_USE_EXCEPTIONS)
-
 template<typename T> auto
 TestAssert::expected_throw(TestRun test_run) noexcept -> TestAssert& {
+#if defined(UTEST_USE_EXCEPTIONS)
     if (test_run) {
         try {
             test_run(m_params);
@@ -264,12 +277,16 @@ TestAssert::expected_throw(TestRun test_run) noexcept -> TestAssert& {
             expected_throw(true);
         }
     }
+#else
+    (void)test_run;
+#endif
     return *this;
 }
 
 template<> auto inline
 TestAssert::expected_throw<std::exception>(
         TestRun test_run) noexcept -> TestAssert& {
+#if defined(UTEST_USE_EXCEPTIONS)
     if (test_run) {
         try {
             test_run(m_params);
@@ -282,20 +299,11 @@ TestAssert::expected_throw<std::exception>(
             expected_throw(true);
         }
     }
-    return *this;
-}
-
 #else
-
-template<typename T> auto
-TestAssert::expected_throw(TestRun test_run) noexcept -> TestAssert& {
-    if (test_run) {
-        test_run(m_params);
-    }
+    (void)test_run;
+#endif
     return *this;
 }
-
-#endif
 
 }
 

@@ -121,7 +121,7 @@ void GoogleTest::report<TestMessage::TEST_SUITE_BEGIN>(
     const auto& msg = get<TestSuiteBegin>(message);
 
     write<true>(SECTION);
-    write("Running tests from ", msg.name(), ENDL);
+    write("Running test(s) from ", msg.name(), ENDL);
 }
 
 template<>
@@ -130,8 +130,7 @@ void GoogleTest::report<TestMessage::TEST_SUITE_END>(
     const auto& msg = get<TestSuiteEnd>(message);
 
     write<true>(SECTION);
-    write(msg.tests_passed() + msg.tests_failed(), TEST_FROM,
-            msg.name(), ENDL);
+    write(msg.tests(), TEST_FROM, msg.name(), ENDL);
 
     write<true>(PASSED);
     write(msg.tests_passed(), TEST);
@@ -416,7 +415,6 @@ void GoogleTest::report(const TestMessage& message) noexcept {
     }
 }
 
-
 void GoogleTest::write_exception(const TestString& message) noexcept {
 #if defined(UTEST_USE_EXCEPTIONS)
     write("C++ exception with description \"", message, "\" thrown in the ");
@@ -467,7 +465,8 @@ void GoogleTest::write(const TestString& str,
 void GoogleTest::report(const TestAssertCompare& message,
         const TestString& str) noexcept {
     failure(message);
-    write(EXPECTED, message.get<0>(), str, message.get<1>(), ENDL);
+    write(EXPECTED, "(lhs)", str, "(rhs)", ENDL);
+    write(ACTUAL, message.get<0>(), str, message.get<1>(), ENDL);
 }
 
 GoogleTest::~GoogleTest() noexcept { }

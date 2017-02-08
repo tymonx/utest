@@ -57,6 +57,8 @@ public:
     TestSize tests_passed() const noexcept;
 
     TestSize tests_failed() const noexcept;
+
+    TestSize tests() const noexcept;
 private:
     friend class utest::TestSuite;
 
@@ -82,6 +84,11 @@ TestSuiteEnd::tests_passed() const noexcept -> TestSize {
 inline auto
 TestSuiteEnd::tests_failed() const noexcept -> TestSize {
     return m_tests_failed;
+}
+
+inline auto
+TestSuiteEnd::tests() const noexcept -> TestSize {
+    return m_tests_passed + m_tests_failed;
 }
 
 template<> inline auto
