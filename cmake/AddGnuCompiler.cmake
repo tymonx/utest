@@ -54,6 +54,7 @@ if (CMAKE_BUILD_TYPE MATCHES "Release" OR NOT CMAKE_BUILD_TYPE)
         -DNDEBUG
         -fdata-sections
         -ffunction-sections
+        -fstack-protector-all
         -fstack-protector-strong
     )
 
@@ -100,30 +101,35 @@ elseif (CMAKE_BUILD_TYPE MATCHES "Debug")
 endif()
 
 set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS}
+    -fstrict-aliasing
+    -pedantic
     -Wall
     -Wcast-qual
     -Wcomments
     -Wconversion
     -Wctor-dtor-privacy
     -Wdisabled-optimization
-    -Wdouble-promotion
     -Weffc++
     -Wendif-labels
     -Wenum-compare
     -Wextra
     -Wfloat-equal
     -Wformat=2
+    -Wformat-nonliteral
+    -Winit-self
     -Winline
     -Winvalid-pch
     -Wlogical-op
-    -Wno-long-long
     -Wmissing-declarations
     -Wmissing-include-dirs
-    -Wnoexcept
+    -Wno-long-long
+    -Wnon-virtual-dtor
     -Wold-style-cast
     -Woverloaded-virtual
     -Wpacked
+    -Wparentheses
     -Wpedantic
+    -Wpointer-arith
     -Wredundant-decls
     -Wshadow
     -Wsign-conversion
@@ -131,35 +137,42 @@ set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS}
     -Wstack-protector
     -Wstrict-null-sentinel
     -Wstrict-overflow=2
-    -Wsuggest-attribute=noreturn
     -Wsuggest-attribute=format
+    -Wsuggest-attribute=noreturn
     -Wswitch-default
     -Wswitch-enum
-    -Wtrampolines
     -Wundef
     -Wuninitialized
     -Wunknown-pragmas
     -Wunused
-    -Wvector-operation-performance
-    -Wzero-as-null-pointer-constant
+    -Wunused-function
+    -Wwrite-strings
 )
 
-if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 6.3)
+if (NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 6.0)
     set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS}
         -Wduplicated-cond
         -Whsa
         -Wignored-attributes
+        -Wmisleading-indentation
         -Wnull-dereference
         -Wplacement-new=2
+        -Wshift-negative-value
+        -Wshift-overflow=2
         -Wvirtual-inheritance
     )
 endif()
 
 if (NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5.0)
     set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS}
+        -Wdouble-promotion
+        -Wsized-deallocation
         -Wsuggest-final-methods
         -Wsuggest-final-types
         -Wsuggest-override
+        -Wtrampolines
+        -Wvector-operation-performance
+        -Wzero-as-null-pointer-constant
     )
 endif()
 
@@ -168,6 +181,12 @@ if (NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.9)
         -Wconditionally-supported
         -Wdate-time
         -Wopenmp-simd
+    )
+endif()
+
+if (NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.6)
+    set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS}
+        -Wnoexcept
     )
 endif()
 
