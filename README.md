@@ -23,31 +23,14 @@ Lightweight unit tests framework mainly for C++ and also for C projects. Suitabl
 * Friendly for embedded target like Cortex-Mx microcontrollers
 * Small footprint, single self-registered method takes very small memory
 
-## Build
-
-```
-mkdir -p build && cd build
-cmake ..
-make
-```
-
-## Install
-
-Install libraries and headers under given directory:
-
-```
-mkdir -p build && cd build
-cmake -DCMAKE_INSTALL_PREFIX=<where_to_install_utest> ..
-make install
-```
-
 ## How to use it
 
-* [Build for ARM targets](docs/arm-target.md)
+* [Build under Linux](docs/build-linux.md)
+* [Build for ARM target](docs/build-arm.md)
 
 ## Examples
 
-Create factorial.cpp file:
+Test source example:
 
 ```c++
 #include <utest/utest.hpp>
@@ -71,29 +54,11 @@ static TestRunner g([] (TestSuite& test_suite) {
 });
  ```
 
-Build example using GCC:
-
-```
-g++ -std=c++11 -I<utest_include_dir> -L<utest_libraries_dir> factorial.cpp -o factorial -pthread -lutest-main -lutest
-```
-
-Build example using Clang:
-
-```
-clang++ -std=c++11 -I<utest_include_dir> -L<utest_libraries_dir> factorial.cpp -o factorial -pthread -lutest-main -lutest
-```
-
-Run example:
-
-```
-./factorial
-```
-
-Factorial output:
+Test output example:
 
 ```
 [==========] Running 1 registered test(s).
-[----------] Running tests from Factorial
+[----------] Running test(s) from Factorial
 [ RUN      ] computed
 [       OK ] computed
 [----------] 1 test(s) from Factorial
