@@ -44,6 +44,7 @@ function install_toolchain {
     fi
 }
 
+
 case $TOOLCHAIN in
 gcc-arm-none-eabi)
     ;&
@@ -75,9 +76,16 @@ clang-arm-none-eabi)
         download_toolchain
         install_toolchain
         ;;
-    *)
+    5.4*)
         TOOLCHAIN_URL=https://launchpad.net/gcc-arm-embedded/5.0/5-2016-q3-update/+download
         TOOLCHAIN_TAR=gcc-arm-none-eabi-5_4-2016q3-20160926-linux.tar.bz2
+
+        download_toolchain
+        install_toolchain
+        ;;
+    *)
+        TOOLCHAIN_URL=https://developer.arm.com/-/media/Files/downloads/gnu-rm/6-2016q4
+        TOOLCHAIN_TAR=gcc-arm-none-eabi-6_2-2016q4-20161216-linux.tar.bz2
 
         download_toolchain
         install_toolchain
