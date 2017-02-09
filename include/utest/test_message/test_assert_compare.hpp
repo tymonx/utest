@@ -65,7 +65,7 @@ inline
 TestAssertCompare::TestAssertCompare(TestMessage::Type message_type,
         const TestAssert& test_assert, const TestValue& lhs,
         const TestValue& rhs) noexcept :
-    TestAssertBase{message_type, test_assert}, m_lhs{lhs}, m_rhs{rhs}
+    TestAssertBase{message_type, test_assert}, m_lhs(lhs), m_rhs(rhs)
 { }
 
 template<> inline auto

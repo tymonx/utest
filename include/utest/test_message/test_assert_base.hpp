@@ -65,7 +65,7 @@ private:
 inline
 TestAssertBase::TestAssertBase(TestMessage::Type message_type,
         const TestAssert& test_assert) noexcept :
-    TestMessage{message_type}, m_test_assert{test_assert}
+    TestMessage{message_type}, m_test_assert(test_assert)
 { }
 
 inline auto

@@ -67,7 +67,7 @@ private:
 inline
 TestCaseBase::TestCaseBase(TestMessage::Type message_type,
         const TestCase& test_case) noexcept :
-    TestMessage{message_type}, m_test_case{test_case}
+    TestMessage{message_type}, m_test_case(test_case)
 { }
 
 inline auto

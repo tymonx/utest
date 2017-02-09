@@ -63,7 +63,7 @@ inline
 TestAssertExplanation::TestAssertExplanation(const TestAssert& test_assert,
         const TestString& str) noexcept :
     TestAssertBase{TestMessage::TEST_ASSERT_EXPLANATION, test_assert},
-    m_explanation{str}
+    m_explanation(str)
 { }
 
 inline auto

@@ -67,7 +67,7 @@ private:
 inline
 TestSuiteBase::TestSuiteBase(TestMessage::Type message_type,
         const TestSuite& test_suite) noexcept :
-    TestMessage{message_type}, m_test_suite{test_suite}
+    TestMessage{message_type}, m_test_suite(test_suite)
 { }
 
 inline auto
