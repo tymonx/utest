@@ -57,7 +57,7 @@ static constexpr TestString STRING_TRUE{"true"};
 static constexpr TestString STRING_FALSE{"false"};
 
 TestAssert::TestAssert(TestParams& params) noexcept :
-    m_params{params},
+    m_params(params),
     m_file{params.m_file},
     m_non_fatal{params.m_non_fatal}
 { }

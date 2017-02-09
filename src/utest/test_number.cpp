@@ -252,7 +252,8 @@ TestSpan<char> utest::to_string(const void* ptr,
         integer_to_string_base(std::uintptr_t(ptr), tmp, 16);
 
         auto it1 = tmp.cend() - 1;
-        auto it2 = tmp.begin() + 2*sizeof(std::uintptr_t) - 1;
+        auto it2 = tmp.begin() +
+            TestString::difference_type(2*sizeof(std::uintptr_t)) - 1;
 
         if (it1 < it2) {
             while (it1 >= tmp.cbegin()) {

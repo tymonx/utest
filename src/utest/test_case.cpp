@@ -52,7 +52,7 @@
 using utest::TestCase;
 
 TestCase::TestCase(TestSuite& test_suite) noexcept :
-    m_test{test_suite.m_test},
+    m_test(test_suite.m_test),
     m_file{test_suite.m_file},
     m_non_fatal{test_suite.m_non_fatal}
 { }

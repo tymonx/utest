@@ -109,15 +109,12 @@ set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS}
     -Wconversion
     -Wctor-dtor-privacy
     -Wdisabled-optimization
-    -Weffc++
     -Wendif-labels
     -Wenum-compare
-    -Wextra
     -Wfloat-equal
     -Wformat=2
     -Wformat-nonliteral
     -Winit-self
-    -Winline
     -Winvalid-pch
     -Wlogical-op
     -Wmissing-declarations
@@ -128,7 +125,6 @@ set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS}
     -Woverloaded-virtual
     -Wpacked
     -Wparentheses
-    -Wpedantic
     -Wpointer-arith
     -Wredundant-decls
     -Wshadow
@@ -137,7 +133,6 @@ set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS}
     -Wstack-protector
     -Wstrict-null-sentinel
     -Wstrict-overflow=2
-    -Wsuggest-attribute=format
     -Wsuggest-attribute=noreturn
     -Wswitch-default
     -Wswitch-enum
@@ -180,7 +175,17 @@ if (NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.9)
     set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS}
         -Wconditionally-supported
         -Wdate-time
+        -Weffc++
+        -Wextra
+        -Winline
         -Wopenmp-simd
+    )
+endif()
+
+if (NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.8)
+    set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS}
+        -Wpedantic
+        -Wsuggest-attribute=format
     )
 endif()
 

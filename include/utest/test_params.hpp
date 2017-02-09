@@ -147,11 +147,6 @@ TestParams::file() const noexcept -> const TestString& {
     return m_file;
 }
 
-inline void
-TestParams::jump() noexcept {
-    std::longjmp(m_jump_buffer, 1);
-}
-
 inline auto
 TestParams::status() const noexcept -> TestStatus {
     return m_status;

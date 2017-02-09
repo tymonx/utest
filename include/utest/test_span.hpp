@@ -80,6 +80,10 @@ public:
 
     template<typename U, typename = typename std::enable_if<std::is_convertible<
         typename U::pointer, pointer>::value>::type> constexpr
+    TestSpan(U& other) noexcept;
+
+    template<typename U, typename = typename std::enable_if<std::is_convertible<
+        typename U::pointer, pointer>::value>::type> constexpr
     TestSpan(const U& other) noexcept;
 
     constexpr TestSpan(pointer ptr, size_type n) noexcept;
@@ -170,6 +174,11 @@ TestSpan<T>::TestSpan(const TestSpan<
 
 template<typename T> template<typename U, typename> inline constexpr
 TestSpan<T>::TestSpan(const U& other) noexcept :
+    m_data{other.data()}, m_size{other.size()}
+{ }
+
+template<typename T> template<typename U, typename> inline constexpr
+TestSpan<T>::TestSpan(U& other) noexcept :
     m_data{other.data()}, m_size{other.size()}
 { }
 

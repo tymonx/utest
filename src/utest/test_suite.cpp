@@ -50,7 +50,7 @@
 using utest::TestSuite;
 
 TestSuite::TestSuite(Test& test) noexcept :
-    m_test{test},
+    m_test(test),
     m_file{}
 { }
 

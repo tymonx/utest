@@ -45,7 +45,7 @@
 using utest::TestParams;
 
 TestParams::TestParams(TestCase& test_case) noexcept :
-    m_test{test_case.m_test},
+    m_test(test_case.m_test),
     m_context{&test_case.m_context},
     m_file{test_case.m_file},
     m_non_fatal{test_case.m_non_fatal}
@@ -53,4 +53,8 @@ TestParams::TestParams(TestCase& test_case) noexcept :
 
 bool TestParams::set_jump() noexcept {
     return !setjmp(m_jump_buffer);
+}
+
+void TestParams::jump() noexcept {
+    std::longjmp(m_jump_buffer, 1);
 }

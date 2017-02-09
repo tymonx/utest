@@ -54,6 +54,13 @@ clang-arm-none-eabi)
     mkdir -p $TOOLCHAIN_ROOT
 
     case $VERSION in
+    4.7*)
+        TOOLCHAIN_URL=https://launchpad.net/gcc-arm-embedded/4.7/4.7-2014-q2-update/+download
+        TOOLCHAIN_TAR=gcc-arm-none-eabi-4_7-2014q2-20140408-linux.tar.bz2
+
+        download_toolchain
+        install_toolchain
+        ;;
     4.8*)
         TOOLCHAIN_URL=https://launchpad.net/gcc-arm-embedded/4.8/4.8-2014-q3-update/+download
         TOOLCHAIN_TAR=gcc-arm-none-eabi-4_8-2014q3-20140805-linux.tar.bz2

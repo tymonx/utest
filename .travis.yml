@@ -52,6 +52,15 @@ matrix:
            - cmake cmake-data
            - clang-3.9
 
+    - env: TOOLCHAIN=gcc-arm-none-eabi VERSION=4.8
+      addons:
+        apt:
+          sources:
+           - george-edison55-precise-backports
+          packages:
+           - lib32z1 lib32bz2-1.0 lib32ncurses5
+           - cmake cmake-data
+
     - env: TOOLCHAIN=gcc-arm-none-eabi VERSION=4.9
       addons:
         apt:
