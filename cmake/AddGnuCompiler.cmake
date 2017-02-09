@@ -54,9 +54,14 @@ if (CMAKE_BUILD_TYPE MATCHES "Release" OR NOT CMAKE_BUILD_TYPE)
         -DNDEBUG
         -fdata-sections
         -ffunction-sections
-        -fstack-protector-strong
         -fstack-protector-all
     )
+
+    if (NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.9)
+        set(CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE}
+            -fstack-protector-strong
+        )
+    endif()
 
     set(CMAKE_EXE_LINKER_FLAGS_RELEASE
         -Wl,--gc-sections
