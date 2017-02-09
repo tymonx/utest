@@ -30,6 +30,17 @@ matrix:
            - cmake cmake-data
            - gcc-4.9 g++-4.9
 
+    - env: TOOLCHAIN=clang C_COMPILER=clang-3.5 CXX_COMPILER=clang++-3.5
+      addons:
+        apt:
+          sources:
+           - george-edison55-precise-backports
+           - ubuntu-toolchain-r-test
+           - llvm-toolchain-precise-3.5
+          packages:
+           - cmake cmake-data
+           - clang-3.5
+
     - env: TOOLCHAIN=clang C_COMPILER=clang-3.6 CXX_COMPILER=clang++-3.6
       addons:
         apt:
