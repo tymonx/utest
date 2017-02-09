@@ -1,44 +1,25 @@
 dist: precise
 sudo: false
 language: cpp
-compiler: clang
 os: linux
 
 cache:
   directories:
    - $HOME/toolchains
 
-env: TOOLCHAIN=clang C_COMPILER=clang CXX_COMPILER=clang++
+env: TOOLCHAIN=gcc C_COMPILER=gcc-6 CXX_COMPILER=g++-6
 
 addons:
   apt:
     sources:
      - george-edison55-precise-backports
+     - ubuntu-toolchain-r-test
     packages:
      - cmake cmake-data
+     - gcc-6 g++-6
 
 matrix:
   include:
-    - env: TOOLCHAIN=gcc C_COMPILER=gcc-4.8 CXX_COMPILER=g++-4.8
-      addons:
-        apt:
-          sources:
-           - george-edison55-precise-backports
-           - ubuntu-toolchain-r-test
-          packages:
-           - cmake cmake-data
-           - gcc-4.8 g++-4.8
-
-    - env: TOOLCHAIN=gcc C_COMPILER=gcc-4.9 CXX_COMPILER=g++-4.9
-      addons:
-        apt:
-          sources:
-           - george-edison55-precise-backports
-           - ubuntu-toolchain-r-test
-          packages:
-           - cmake cmake-data
-           - gcc-4.9 g++-4.9
-
     - env: TOOLCHAIN=gcc C_COMPILER=gcc-5 CXX_COMPILER=g++-5
       addons:
         apt:
@@ -49,7 +30,7 @@ matrix:
            - cmake cmake-data
            - gcc-5 g++-5
 
-    - env: TOOLCHAIN=gcc C_COMPILER=gcc-6 CXX_COMPILER=g++-6
+    - env: TOOLCHAIN=gcc C_COMPILER=gcc-4.9 CXX_COMPILER=g++-4.9
       addons:
         apt:
           sources:
@@ -57,51 +38,7 @@ matrix:
            - ubuntu-toolchain-r-test
           packages:
            - cmake cmake-data
-           - gcc-6 g++-6
-
-    - env: TOOLCHAIN=clang C_COMPILER=clang-3.5 CXX_COMPILER=clang++-3.5
-      addons:
-        apt:
-          sources:
-           - george-edison55-precise-backports
-           - ubuntu-toolchain-r-test
-           - llvm-toolchain-precise-3.5
-          packages:
-           - cmake cmake-data
-           - clang-3.5
-
-    - env: TOOLCHAIN=clang C_COMPILER=clang-3.6 CXX_COMPILER=clang++-3.6
-      addons:
-        apt:
-          sources:
-           - george-edison55-precise-backports
-           - ubuntu-toolchain-r-test
-           - llvm-toolchain-precise-3.6
-          packages:
-           - cmake cmake-data
-           - clang-3.6
-
-    - env: TOOLCHAIN=clang C_COMPILER=clang-3.7 CXX_COMPILER=clang++-3.7
-      addons:
-        apt:
-          sources:
-           - george-edison55-precise-backports
-           - ubuntu-toolchain-r-test
-           - llvm-toolchain-precise-3.7
-          packages:
-           - cmake cmake-data
-           - clang-3.7
-
-    - env: TOOLCHAIN=clang C_COMPILER=clang-3.8 CXX_COMPILER=clang++-3.8
-      addons:
-        apt:
-          sources:
-           - george-edison55-precise-backports
-           - ubuntu-toolchain-r-test
-           - llvm-toolchain-precise-3.8
-          packages:
-           - cmake cmake-data
-           - clang-3.8
+           - gcc-4.9 g++-4.9
 
     - env: TOOLCHAIN=clang C_COMPILER=clang-3.9 CXX_COMPILER=clang++-3.9
       addons:
@@ -114,7 +51,51 @@ matrix:
            - cmake cmake-data
            - clang-3.9
 
-    - env: TOOLCHAIN=gcc-arm-none-eabi VERSION=4.8
+    - env: TOOLCHAIN=clang C_COMPILER=clang-3.8 CXX_COMPILER=clang++-3.8
+      addons:
+        apt:
+          sources:
+           - george-edison55-precise-backports
+           - ubuntu-toolchain-r-test
+           - llvm-toolchain-precise-3.8
+          packages:
+           - cmake cmake-data
+           - clang-3.8
+
+    - env: TOOLCHAIN=clang C_COMPILER=clang-3.7 CXX_COMPILER=clang++-3.7
+      addons:
+        apt:
+          sources:
+           - george-edison55-precise-backports
+           - ubuntu-toolchain-r-test
+           - llvm-toolchain-precise-3.7
+          packages:
+           - cmake cmake-data
+           - clang-3.7
+
+    - env: TOOLCHAIN=clang C_COMPILER=clang-3.6 CXX_COMPILER=clang++-3.6
+      addons:
+        apt:
+          sources:
+           - george-edison55-precise-backports
+           - ubuntu-toolchain-r-test
+           - llvm-toolchain-precise-3.6
+          packages:
+           - cmake cmake-data
+           - clang-3.6
+
+    - env: TOOLCHAIN=clang C_COMPILER=clang-3.5 CXX_COMPILER=clang++-3.5
+      addons:
+        apt:
+          sources:
+           - george-edison55-precise-backports
+           - ubuntu-toolchain-r-test
+           - llvm-toolchain-precise-3.5
+          packages:
+           - cmake cmake-data
+           - clang-3.5
+
+    - env: TOOLCHAIN=gcc-arm-none-eabi VERSION=5.4
       addons:
         apt:
           sources:
@@ -124,15 +105,6 @@ matrix:
            - cmake cmake-data
 
     - env: TOOLCHAIN=gcc-arm-none-eabi VERSION=4.9
-      addons:
-        apt:
-          sources:
-           - george-edison55-precise-backports
-          packages:
-           - lib32z1 lib32bz2-1.0 lib32ncurses5
-           - cmake cmake-data
-
-    - env: TOOLCHAIN=gcc-arm-none-eabi VERSION=5.4
       addons:
         apt:
           sources:
