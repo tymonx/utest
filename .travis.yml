@@ -105,15 +105,6 @@ matrix:
            - cmake cmake-data
            - clang-3.5
 
-    - env: TOOLCHAIN=clang C_COMPILER=clang CXX_COMPILER=clang++
-      compiler: clang
-      addons:
-        apt:
-          sources:
-           - george-edison55-precise-backports
-          packages:
-           - cmake cmake-data
-
     - env: TOOLCHAIN=gcc-arm-none-eabi VERSION=5.4
       addons:
         apt:
