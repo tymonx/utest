@@ -49,17 +49,39 @@
 
 namespace utest {
 
+class TestAssert;
+
 class TestValue {
 public:
     template<typename T>
-    using enable_object = typename std::enable_if<
-            !std::is_convertible<typename T::pointer, char*>::value
+    using enable_string_object = typename std::enable_if<
+            std::is_same<typename std::remove_cv<typename T::pointer>::type,
+                char*>::value
         , int>::type;
+
+    template<typename T>
+    using enable_string_char = typename std::enable_if<
+            std::is_same<typename std::remove_cv<T>::type, char*>::value
+        , unsigned>::type;
+
+    template<typename T>
+    using enable_pointer = typename std::enable_if<
+            std::is_pointer<T>::value &&
+            !std::is_same<typename std::remove_cv<T>::type, char*>::value
+        , long>::type;
+
+    template<typename T>
+    using enable_object = typename std::enable_if<
+            !std::is_pointer<T>::value &&
+            !std::is_integral<T>::value &&
+            !std::is_floating_point<T>::value
+        , unsigned long>::type;
 
     enum Type {
         NUMBER,
         STRING,
-        OBJECT
+        OBJECT,
+        POINTER
     };
 
     Type type() const noexcept {
@@ -68,18 +90,27 @@ public:
 
     template<typename T>
     const T& get() const noexcept;
+private:
+    friend class TestAssert;
 
     TestValue(const TestNumber& value) noexcept;
 
     TestValue(const TestString& value) noexcept;
 
     template<TestSize N>
-    TestValue(const char (&str)[N]) noexcept;
+    TestValue(const char (&arr)[N]) noexcept;
 
-    template<typename T, enable_object<T> = 0>
+    template<typename T, enable_string_object<T>>
     TestValue(const T& value) noexcept;
-private:
-    TestValue(const void* value) noexcept;
+
+    template<typename T, enable_string_char<T>>
+    TestValue(const T& value) noexcept;
+
+    template<typename T, enable_pointer<T>>
+    TestValue(const T& value) noexcept;
+
+    template<typename T, enable_object<T>>
+    TestValue(const T& value) noexcept;
 
     Type m_type;
 
@@ -90,14 +121,34 @@ private:
     };
 };
 
-template<typename T, TestValue::enable_object<T>> inline
-TestValue::TestValue(const T& value) noexcept :
-    TestValue{static_cast<const void*>(&value)}
+inline
+TestValue::TestValue(const TestNumber& value) noexcept :
+    m_type{NUMBER}, m_number{value}
 { }
 
 template<TestSize N> inline
-TestValue::TestValue(const char (&str)[N]) noexcept :
-    TestValue{TestString{str}}
+TestValue::TestValue(const char (&arr)[N]) noexcept :
+    m_type{STRING}, m_string{arr}
+{ }
+
+template<typename T, TestValue::enable_string_object<T>> inline
+TestValue::TestValue(const T& value) noexcept :
+    m_type{STRING}, m_string{value}
+{ }
+
+template<typename T, TestValue::enable_string_char<T>> inline
+TestValue::TestValue(const T& value) noexcept :
+    m_type{STRING}, m_string{value}
+{ }
+
+template<typename T, TestValue::enable_pointer<T>> inline
+TestValue::TestValue(const T& value) noexcept :
+    m_type{POINTER}, m_object{value}
+{ }
+
+template<typename T, TestValue::enable_object<T>> inline
+TestValue::TestValue(const T& value) noexcept :
+    m_type{OBJECT}, m_object{value}
 { }
 
 template<> inline auto

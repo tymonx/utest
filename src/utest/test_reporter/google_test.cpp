@@ -454,8 +454,28 @@ void GoogleTest::write(const TestString& str,
         write("\"", value.get<TestString>(), "\"");
         break;
     case TestValue::OBJECT:
+    case TestValue::POINTER:
         char buffer[TestNumber::MAX_ADDRESS_BUFFER];
         write(to_string(value.get<const void*>(), buffer));
+        break;
+    default:
+        break;
+    }
+}
+
+void GoogleTest::write(TestValue::Type value_type) noexcept {
+    switch (value_type) {
+    case TestValue::NUMBER:
+        write("val");
+        break;
+    case TestValue::STRING:
+        write("str");
+        break;
+    case TestValue::OBJECT:
+        write("obj");
+        break;
+    case TestValue::POINTER:
+        write("ptr");
         break;
     default:
         break;
@@ -465,7 +485,10 @@ void GoogleTest::write(const TestString& str,
 void GoogleTest::report(const TestAssertCompare& message,
         const TestString& str) noexcept {
     failure(message);
-    write(EXPECTED, "(lhs)", str, "(rhs)", ENDL);
+
+    write(EXPECTED);
+    write(message.get<0>().type(), "1", str);
+    write(message.get<1>().type(), "2", ENDL);
     write(ACTUAL, message.get<0>(), str, message.get<1>(), ENDL);
 }
 

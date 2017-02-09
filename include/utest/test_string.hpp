@@ -54,7 +54,8 @@ class TestString : public TestSpan<const char> {
 public:
     template<typename T>
     using enable_null_terminated_string = typename std::enable_if<
-            std::is_convertible<T, const_pointer>::value &&
+            std::is_convertible<T, const char*>::value &&
+            std::is_pointer<T>::value &&
             !std::is_array<T>::value
         , int>::type;
 

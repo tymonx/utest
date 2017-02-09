@@ -44,10 +44,10 @@
 
 #include <utest/test_reporter.hpp>
 #include <utest/test_message.hpp>
+#include <utest/test_value.hpp>
 
 namespace utest {
 
-class TestValue;
 class TestNumber;
 class TestString;
 
@@ -74,6 +74,11 @@ private:
 
     void write_address(std::uintptr_t address) noexcept;
 
+    void write(TestValue::Type value_type) noexcept;
+
+    template<typename ...Args>
+    void write(TestValue::Type value_type, const Args&... args) noexcept;
+
     void write(const TestString& str, const TestValue& value) noexcept;
 
     template<typename ...Args>
@@ -99,6 +104,13 @@ template<typename ...Args> void
 GoogleTest::write(const TestString& str, const TestValue& value,
         const Args&... args) noexcept {
     write(str, value);
+    write(args...);
+}
+
+template<typename ...Args> inline
+void GoogleTest::write(TestValue::Type value_type,
+        const Args&... args) noexcept {
+    write(value_type);
     write(args...);
 }
 
