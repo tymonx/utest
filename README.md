@@ -20,8 +20,10 @@ Lightweight unit tests framework mainly for C++ and also for C projects. Suitabl
 * Working with/without exceptions and RTTI
 * Optionally running test case in isolate environment using thread
 * Minimal virtual methods usage
-* Friendly for embedded target like Cortex-Mx microcontrollers
-* Small footprint, single self-registered method takes very small memory
+* Small footprint, friendly for embedded target like Cortex-Mx microcontrollers
+* Clean from warnings even on the most aggressive levels
+* Support for Clang 3.5 and later
+* Support for GCC 4.9 and later
 
 ## How to use it
 
