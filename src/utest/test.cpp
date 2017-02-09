@@ -55,9 +55,9 @@
 using utest::Test;
 using utest::TestStatus;
 
-//static utest::TestReporter* g_default[1] {&utest::TestReporter::get_default()};
-
-static std::array<utest::TestReporter*, 1> g_default{{&utest::TestReporter::get_default()}};
+static std::array<utest::TestReporter*, 1> g_default{{
+    &utest::TestReporter::get_default()
+}};
 
 Test::Test() noexcept :
     m_thread(TestThread::get_default()),

@@ -44,9 +44,13 @@
 #include <utest/test_writer.hpp>
 #include <utest/test_number.hpp>
 
+#include <array>
+
 using utest::TestReporter;
 
-static utest::TestWriter* g_default[1] {&utest::TestWriter::get_default()};
+static std::array<utest::TestWriter*, 1> g_default{{
+    &utest::TestWriter::get_default()
+}};
 
 TestReporter& TestReporter::get_default() noexcept {
     static test_reporter::GoogleTest instance;
