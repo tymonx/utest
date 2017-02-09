@@ -4,7 +4,7 @@
 [![License (3-Clause BSD)](https://img.shields.io/badge/license-BSD%203--Clause-blue.svg?style=flat)](http://opensource.org/licenses/BSD-3-Clause)
 [![Build Status](https://travis-ci.org/tymonx/utest.svg?branch=master)](https://travis-ci.org/tymonx/utest)
 
-Lightweight unit tests framework mainly for C++ and also for C projects. Suitable for embedded devices.
+Lightweight unit testing framework mainly for C++ and also for C projects. Suitable for embedded devices.
 
 ## Key Features
 
