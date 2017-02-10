@@ -70,12 +70,11 @@ function install_qemu {
         cd -
 
         echo "Packing /tmp/qemu to $QEMU_ROOT/$QEMU_TAR..."
-        tar -czvf $QEMU_ROOT/$QEMU_TAR /tmp/qemu
+        cd /tmp && tar -czvf $QEMU_ROOT/$QEMU_TAR qemu && cd -
     else
         echo "Unpacking $QEMU_ROOT/$QEMU_TAR archive..."
         mkdir -p /tmp/qemu && \
-            tar -xvf $QEMU_ROOT/$QEMU_TAR -C /tmp/qemu --strip-components 1
-        ls -al /tmp/qemu
+            tar -xf $QEMU_ROOT/$QEMU_TAR -C /tmp/qemu --strip-components 1
     fi
 }
 
