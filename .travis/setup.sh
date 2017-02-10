@@ -32,44 +32,34 @@ set -e
 set -u
 
 function install_toolchain {
-    if [ ! -x "$TOOLCHAIN_ROOT/$TOOLCHAIN_VERSION/bin/arm-none-eabi-gcc" ]; then
-        echo "Removing $TOOLCHAIN_ROOT/$TOOLCHAIN_VERSION directory..."
-        rm -rf $TOOLCHAIN_ROOT/$TOOLCHAIN_VERSION
-
+    if [ ! -f "$TOOLCHAIN_ROOT/$TOOLCHAIN_TAR" ]; then
         echo "Downloading $TOOLCHAIN_URL/$TOOLCHAIN_TAR..."
-        wget $TOOLCHAIN_URL/$TOOLCHAIN_TAR -O /tmp/$TOOLCHAIN_TAR
-
-        echo "Creating $TOOLCHAIN_ROOT/$TOOLCHAIN_VERSION directory..."
-        mkdir -p $TOOLCHAIN_ROOT/$TOOLCHAIN_VERSION
-
-        echo "Unpacking /tmp/$TOOLCHAIN_TAR archive..."
-        tar -xf /tmp/$TOOLCHAIN_TAR -C $TOOLCHAIN_ROOT/$TOOLCHAIN_VERSION \
-            --strip-components 1
+        wget $TOOLCHAIN_URL/$TOOLCHAIN_TAR -O $TOOLCHAIN_ROOT/$TOOLCHAIN_TAR
     else
-        echo "Toolchain $TOOLCHAIN_ROOT/$TOOLCHAIN_VERSION already installed"
+        echo "Toolchain $TOOLCHAIN_URL/$TOOLCHAIN_TAR already downloaded"
     fi
+
+    echo "Unpacking $TOOLCHAIN_ROOT/$TOOLCHAIN_TAR archive..."
+    mkdir -p /tmp/$TOOLCHAIN && tar -xf $TOOLCHAIN_ROOT/$TOOLCHAIN_TAR \
+        -C /tmp/$TOOLCHAIN --strip-components 1
 }
 
 function install_qemu {
-    if [ ! -x "$QEMU_ROOT/$QEMU_VERSION/bin/qemu-arm" ]; then
-        echo "Removing $QEMU_ROOT/$QEMU_VERSION directory..."
-        rm -rf $QEMU_ROOT/$QEMU_VERSION
-
+    if [ ! -f "$QEMU_ROOT/$QEMU_TAR" ]; then
         echo "Downloading $QEMU_URL/$QEMU_TAR..."
         wget $QEMU_URL/$QEMU_TAR -O /tmp/$QEMU_TAR
 
-        echo "Creating $QEMU_ROOT/$QEMU_VERSION directory..."
-        mkdir -p $QEMU_ROOT/$QEMU_VERSION
-
         echo "Unpacking /tmp/$QEMU_TAR archive..."
-        mkdir -p /tmp/qemu && \
-            tar -xf /tmp/$QEMU_TAR -C /tmp/qemu --strip-components 1
+        mkdir -p /tmp/qemu-src && \
+            tar -xf /tmp/$QEMU_TAR -C /tmp/qemu-src --strip-components 1
 
-        cd /tmp/qemu
+        echo "Creating directory /tmp/qemu..."
+        mkdir -p /tmp/qemu
+
+        cd /tmp/qemu-src
 
         echo "Configuring qemu..."
-        ./configure --target-list=arm-linux-user \
-            --prefix=$QEMU_ROOT/$QEMU_VERSION
+        ./configure --target-list=arm-linux-user --prefix=/tmp/qemu
 
         echo "Compiling qemu..."
         make
@@ -78,8 +68,13 @@ function install_qemu {
         make install
 
         cd -
+
+        echo "Packing /tmp/qemu to $QEMU_ROOT/$QEMU_TAR..."
+        tar -czvf $QEMU_ROOT/$QEMU_TAR /tmp/qemu
     else
-        echo "Qemu $QEMU_ROOT/$QEMU_VERSION already installed"
+        echo "Unpacking $QEMU_ROOT/$QEMU_TAR archive..."
+        mkdir -p /tmp/qemu && \
+            tar -xf $QEMU_ROOT/$QEMU_TAR -C /tmp/qemu --strip-components 1
     fi
 }
 
