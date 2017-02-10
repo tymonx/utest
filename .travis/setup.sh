@@ -74,7 +74,8 @@ function install_qemu {
     else
         echo "Unpacking $QEMU_ROOT/$QEMU_TAR archive..."
         mkdir -p /tmp/qemu && \
-            tar -xf $QEMU_ROOT/$QEMU_TAR -C /tmp/qemu --strip-components 1
+            tar -xvf $QEMU_ROOT/$QEMU_TAR -C /tmp/qemu --strip-components 1
+        ls -al /tmp/qemu
     fi
 }
 
