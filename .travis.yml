@@ -6,6 +6,7 @@ os: linux
 cache:
   directories:
    - $HOME/toolchains
+   - $HOME/qemu
 
 env: TOOLCHAIN=gcc C_COMPILER=gcc-6 CXX_COMPILER=g++-6
 
@@ -155,6 +156,7 @@ matrix:
 
 before_script:
  - ./.travis/setup.sh
+ - export PATH=$HOME/qemu/2.8.0:$PATH
  - export PATH=/tmp/gcc-arm-none-eabi/bin:$PATH
 
 script:

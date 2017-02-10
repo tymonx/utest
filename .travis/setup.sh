@@ -31,7 +31,36 @@
 set -e
 set -u
 
+function download_qemu {
+    mkdir -p $QEMU_ROOT/archive
+
+    if [ ! -e "$QEMU_ROOT/archive/qemu-$QEMU_VERSION.tar.xz" ]; then
+        wget http://download.qemu-project.org/qemu-$QEMU_VERSION.tar.xz \
+            -O $QEMU_ROOT/archive/qemu-$QEMU_VERSION.tar.xz
+    fi
+}
+
+function unpack_qemu {
+    if [ ! -d "$QEMU_ROOT/$QEMU_VERSION" ]; then
+        mkdir -p $QEMU_ROOT/$QEMU_VERSION && tar \
+            -xf $QEMU_ROOT/archive/qemu-$QEMU_VERSION.tar.xz \
+            -C $QEMU_ROOT/$QEMU_VERSION --strip-components 1
+    fi
+}
+
+function build_qemu {
+    if [ -d "$QEMU_ROOT/$QEMU_VERSION" ]; then
+        cd $QEMU_ROOT/$QEMU_VERSION
+        ./configure --target-list=arm-linux-user --prefix=`pwd`
+        make
+        make install
+        cd -
+    fi
+}
+
 function download_toolchain {
+    mkdir -p $TOOLCHAIN_ROOT
+
     if [ ! -e "$TOOLCHAIN_ROOT/$TOOLCHAIN_TAR" ]; then
         wget $TOOLCHAIN_URL/$TOOLCHAIN_TAR -O $TOOLCHAIN_ROOT/$TOOLCHAIN_TAR
     fi
@@ -44,15 +73,19 @@ function install_toolchain {
     fi
 }
 
-
 case $TOOLCHAIN in
 gcc-arm-none-eabi)
     ;&
 clang-arm-none-eabi)
+    QEMU_ROOT=$HOME/qemu
+    QEMU_VERSION=2.8.0
+
     TOOLCHAIN_ROOT=$HOME/toolchains
     TOOLCHAIN_DIR=/tmp/gcc-arm-none-eabi
 
-    mkdir -p $TOOLCHAIN_ROOT
+    download_qemu
+    unpack_qemu
+    build_qemu
 
     case $VERSION in
     4.7*)
