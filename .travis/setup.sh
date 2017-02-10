@@ -37,6 +37,8 @@ function download_qemu {
     if [ ! -e "$QEMU_ROOT/archive/qemu-$QEMU_VERSION.tar.xz" ]; then
         wget http://download.qemu-project.org/qemu-$QEMU_VERSION.tar.xz \
             -O $QEMU_ROOT/archive/qemu-$QEMU_VERSION.tar.xz
+    else
+        echo "Qemu already downloaded"
     fi
 }
 
@@ -45,6 +47,8 @@ function unpack_qemu {
         mkdir -p $QEMU_ROOT/$QEMU_VERSION && tar \
             -xf $QEMU_ROOT/archive/qemu-$QEMU_VERSION.tar.xz \
             -C $QEMU_ROOT/$QEMU_VERSION --strip-components 1
+    else
+        echo "Qemu already unpacked"
     fi
 }
 
@@ -55,6 +59,8 @@ function build_qemu {
         make
         make install
         cd -
+    else
+        echo "Qemu already installed"
     fi
 }
 
@@ -75,6 +81,8 @@ function install_toolchain {
 
 case $TOOLCHAIN in
 *-arm-none-eabi)
+    echo "Prepare tools..."
+
     QEMU_ROOT=$HOME/qemu
     QEMU_VERSION=2.8.0
 
@@ -124,5 +132,6 @@ case $TOOLCHAIN in
     esac
     ;;
 *)
+    echo "Setup step omitted"
     ;;
 esac
