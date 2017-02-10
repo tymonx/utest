@@ -5,7 +5,7 @@ os: linux
 
 cache:
   directories:
-   - $HOME/toolchains
+   - $HOME/gcc-arm-none-eabi
    - $HOME/qemu
 
 env: TOOLCHAIN=gcc C_COMPILER=gcc-6 CXX_COMPILER=g++-6
