@@ -33,7 +33,7 @@ set -u
 
 function install_toolchain {
     if [ ! -x "$TOOLCHAIN_ROOT/$TOOLCHAIN_VERSION/bin/arm-none-eabi-gcc" ]; then
-        echo "Removing $TOOLCHAIN_URL/$TOOLCHAIN_VERSION directory..."
+        echo "Removing $TOOLCHAIN_ROOT/$TOOLCHAIN_VERSION directory..."
         rm -rf $TOOLCHAIN_ROOT/$TOOLCHAIN_VERSION
 
         echo "Downloading $TOOLCHAIN_URL/$TOOLCHAIN_TAR..."
@@ -52,7 +52,7 @@ function install_toolchain {
 
 function install_qemu {
     if [ ! -x "$QEMU_ROOT/$QEMU_VERSION/bin/qemu-arm" ]; then
-        echo "Removing $QEMU_URL/$QEMU_VERSION directory..."
+        echo "Removing $QEMU_ROOT/$QEMU_VERSION directory..."
         rm -rf $QEMU_ROOT/$QEMU_VERSION
 
         echo "Downloading $QEMU_URL/$QEMU_TAR..."
