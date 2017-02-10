@@ -31,102 +31,99 @@
 set -e
 set -u
 
-function download_qemu {
-    mkdir -p $QEMU_ROOT/archive
+function install_toolchain {
+    if [ ! -x "$TOOLCHAIN_ROOT/$TOOLCHAIN_VERSION/bin/arm-none-eabi-gcc" ]; then
+        echo "Removing $TOOLCHAIN_URL/$TOOLCHAIN_VERSION directory..."
+        rm -rf $TOOLCHAIN_ROOT/$TOOLCHAIN_VERSION
 
-    if [ ! -e "$QEMU_ROOT/archive/qemu-$QEMU_VERSION.tar.xz" ]; then
-        wget http://download.qemu-project.org/qemu-$QEMU_VERSION.tar.xz \
-            -O $QEMU_ROOT/archive/qemu-$QEMU_VERSION.tar.xz
+        echo "Downloading $TOOLCHAIN_URL/$TOOLCHAIN_TAR..."
+        wget $TOOLCHAIN_URL/$TOOLCHAIN_TAR -O /tmp/$TOOLCHAIN_TAR
+
+        echo "Creating $TOOLCHAIN_ROOT/$TOOLCHAIN_VERSION directory..."
+        mkdir -p $TOOLCHAIN_ROOT/$TOOLCHAIN_VERSION
+
+        echo "Unpacking $TOOLCHAIN_ROOT/$TOOLCHAIN_TAR archive..."
+        tar -xf /tmp/$TOOLCHAIN_TAR -C $TOOLCHAIN_ROOT/$TOOLCHAIN_VERSION \
+            --strip-components 1
     else
-        echo "Qemu already downloaded"
+        echo "Toolchain $TOOLCHAIN_ROOT/$TOOLCHAIN_VERSION already installed"
     fi
 }
 
-function unpack_qemu {
-    if [ ! -d "$QEMU_ROOT/$QEMU_VERSION" ]; then
-        mkdir -p $QEMU_ROOT/$QEMU_VERSION && tar \
-            -xf $QEMU_ROOT/archive/qemu-$QEMU_VERSION.tar.xz \
-            -C $QEMU_ROOT/$QEMU_VERSION --strip-components 1
-    else
-        echo "Qemu already unpacked"
-    fi
-}
+function install_qemu {
+    if [ ! -x "$QEMU_ROOT/$QEMU_VERSION/bin/qemu-arm" ]; then
+        echo "Removing $QEMU_URL/$QEMU_VERSION directory..."
+        rm -rf $QEMU_ROOT/$QEMU_VERSION
 
-function build_qemu {
-    if [ ! -f "$QEMU_ROOT/$QEMU_VERSION/bin/qemu-arm" ]; then
-        cd $QEMU_ROOT/$QEMU_VERSION
-        ./configure --target-list=arm-linux-user --prefix=`pwd`
+        echo "Downloading $QEMU_URL/$QEMU_TAR..."
+        wget $QEMU_URL/$QEMU_TAR -O /tmp/$QEMU_TAR
+
+        echo "Creating $QEMU_ROOT/$QEMU_VERSION directory..."
+        mkdir -p $QEMU_ROOT/$QEMU_VERSION
+
+        echo "Unpacking $QEMU_ROOT/$QEMU_TAR archive..."
+        tar -xf /tmp/$QEMU_TAR -C /tmp/qemu --strip-components 1
+
+        cd /tmp/qemu
+
+        echo "Configuring qemu..."
+        ./configure --target-list=arm-linux-user \
+            --prefix=$QEMU_ROOT/$QEMU_VERSION
+
+        echo "Compiling qemu..."
         make
+
+        echo "Installing qemu..."
         make install
+
         cd -
     else
-        echo "Qemu already installed"
-    fi
-}
-
-function download_toolchain {
-    mkdir -p $TOOLCHAIN_ROOT
-
-    if [ ! -e "$TOOLCHAIN_ROOT/$TOOLCHAIN_TAR" ]; then
-        wget $TOOLCHAIN_URL/$TOOLCHAIN_TAR -O $TOOLCHAIN_ROOT/$TOOLCHAIN_TAR
-    fi
-}
-
-function install_toolchain {
-    if [ ! -d "$TOOLCHAIN_DIR" ]; then
-        mkdir -p $TOOLCHAIN_DIR && tar -xf $TOOLCHAIN_ROOT/$TOOLCHAIN_TAR \
-            -C $TOOLCHAIN_DIR --strip-components 1
+        echo "Qemu $QEMU_ROOT/$QEMU_VERSION already installed"
     fi
 }
 
 case $TOOLCHAIN in
 *-arm-none-eabi)
-    echo "Prepare tools..."
+    echo "Preparing tools..."
 
     QEMU_ROOT=$HOME/qemu
     QEMU_VERSION=2.8.0
+    QEMU_URL=http://download.qemu-project.org
+    QEMU_TAR=qemu-$QEMU_VERSION.tar.xz
 
-    TOOLCHAIN_ROOT=$HOME/toolchains
-    TOOLCHAIN_DIR=/tmp/gcc-arm-none-eabi
+    TOOLCHAIN_ROOT=$HOME/gcc-arm-none-eabi
 
-    download_qemu
-    unpack_qemu
-    build_qemu
+    install_qemu
 
-    case $VERSION in
+    case $TOOLCHAIN_VERSION in
     4.7*)
         TOOLCHAIN_URL=https://launchpad.net/gcc-arm-embedded/4.7/4.7-2014-q2-update/+download
         TOOLCHAIN_TAR=gcc-arm-none-eabi-4_7-2014q2-20140408-linux.tar.bz2
 
-        download_toolchain
         install_toolchain
         ;;
     4.8*)
         TOOLCHAIN_URL=https://launchpad.net/gcc-arm-embedded/4.8/4.8-2014-q3-update/+download
         TOOLCHAIN_TAR=gcc-arm-none-eabi-4_8-2014q3-20140805-linux.tar.bz2
 
-        download_toolchain
         install_toolchain
         ;;
     4.9*)
         TOOLCHAIN_URL=https://launchpad.net/gcc-arm-embedded/4.9/4.9-2015-q3-update/+download
         TOOLCHAIN_TAR=gcc-arm-none-eabi-4_9-2015q3-20150921-linux.tar.bz2
 
-        download_toolchain
         install_toolchain
         ;;
     5.4*)
         TOOLCHAIN_URL=https://launchpad.net/gcc-arm-embedded/5.0/5-2016-q3-update/+download
         TOOLCHAIN_TAR=gcc-arm-none-eabi-5_4-2016q3-20160926-linux.tar.bz2
 
-        download_toolchain
         install_toolchain
         ;;
     *)
         TOOLCHAIN_URL=https://developer.arm.com/-/media/Files/downloads/gnu-rm/6-2016q4
         TOOLCHAIN_TAR=gcc-arm-none-eabi-6_2-2016q4-20161216-linux.tar.bz2
 
-        download_toolchain
         install_toolchain
         ;;
     esac

@@ -106,7 +106,7 @@ matrix:
            - cmake cmake-data
            - clang-3.5
 
-    - env: TOOLCHAIN=gcc-arm-none-eabi VERSION=6.2
+    - env: TOOLCHAIN=gcc-arm-none-eabi TOOLCHAIN_VERSION=6.2
       addons:
         apt:
           sources:
@@ -115,7 +115,7 @@ matrix:
            - lib32z1 lib32bz2-1.0 lib32ncurses5
            - cmake cmake-data
 
-    - env: TOOLCHAIN=gcc-arm-none-eabi VERSION=5.4
+    - env: TOOLCHAIN=gcc-arm-none-eabi TOOLCHAIN_VERSION=5.4
       addons:
         apt:
           sources:
@@ -124,7 +124,7 @@ matrix:
            - lib32z1 lib32bz2-1.0 lib32ncurses5
            - cmake cmake-data
 
-    - env: TOOLCHAIN=gcc-arm-none-eabi VERSION=4.9
+    - env: TOOLCHAIN=gcc-arm-none-eabi TOOLCHAIN_VERSION=4.9
       addons:
         apt:
           sources:
@@ -133,7 +133,7 @@ matrix:
            - lib32z1 lib32bz2-1.0 lib32ncurses5
            - cmake cmake-data
 
-    - env: TOOLCHAIN=gcc-arm-none-eabi VERSION=4.8
+    - env: TOOLCHAIN=gcc-arm-none-eabi TOOLCHAIN_VERSION=4.8
       addons:
         apt:
           sources:
@@ -142,7 +142,7 @@ matrix:
            - lib32z1 lib32bz2-1.0 lib32ncurses5
            - cmake cmake-data
 
-    - env: TOOLCHAIN=clang-arm-none-eabi VERSION=5.4 C_COMPILER=clang-3.9 CXX_COMPILER=clang++-3.9
+    - env: TOOLCHAIN=clang-arm-none-eabi TOOLCHAIN_VERSION=5.4 C_COMPILER=clang-3.9 CXX_COMPILER=clang++-3.9
       addons:
         apt:
           sources:
@@ -157,7 +157,7 @@ matrix:
 before_script:
  - ./.travis/setup.sh
  - export PATH=$HOME/qemu/2.8.0/bin:$PATH
- - export PATH=/tmp/gcc-arm-none-eabi/bin:$PATH
+ - export PATH=$HOME/gcc-arm-none-eabi/$TOOLCHAIN_VERSION/bin:$PATH
 
 script:
  - ./.travis/build.sh
