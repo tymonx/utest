@@ -156,7 +156,7 @@ matrix:
 
 before_script:
  - ./.travis/setup.sh
- - export PATH=$HOME/qemu/2.8.0:$PATH
+ - export PATH=$HOME/qemu/2.8.0/bin:$PATH
  - export PATH=/tmp/gcc-arm-none-eabi/bin:$PATH
 
 script:
