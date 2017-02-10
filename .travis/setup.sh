@@ -42,7 +42,7 @@ function install_toolchain {
         echo "Creating $TOOLCHAIN_ROOT/$TOOLCHAIN_VERSION directory..."
         mkdir -p $TOOLCHAIN_ROOT/$TOOLCHAIN_VERSION
 
-        echo "Unpacking $TOOLCHAIN_ROOT/$TOOLCHAIN_TAR archive..."
+        echo "Unpacking /tmp/$TOOLCHAIN_TAR archive..."
         tar -xf /tmp/$TOOLCHAIN_TAR -C $TOOLCHAIN_ROOT/$TOOLCHAIN_VERSION \
             --strip-components 1
     else
@@ -61,8 +61,9 @@ function install_qemu {
         echo "Creating $QEMU_ROOT/$QEMU_VERSION directory..."
         mkdir -p $QEMU_ROOT/$QEMU_VERSION
 
-        echo "Unpacking $QEMU_ROOT/$QEMU_TAR archive..."
-        tar -xf /tmp/$QEMU_TAR -C /tmp/qemu --strip-components 1
+        echo "Unpacking /tmp/$QEMU_TAR archive..."
+        mkdir -p /tmp/qemu && \
+            tar -xf /tmp/$QEMU_TAR -C /tmp/qemu --strip-components 1
 
         cd /tmp/qemu
 
