@@ -48,7 +48,7 @@ gcc)
     mkdir -p build
     cd build
     cmake -DCMAKE_C_COMPILER=$C_COMPILER -DCMAKE_CXX_COMPILER=$CXX_COMPILER \
-        -DEXAMPLES=ON -DTHREADS=OFF .. && make
+        -DEXAMPLES=ON .. && make
     ./bin/simple
     cd -
     ;;

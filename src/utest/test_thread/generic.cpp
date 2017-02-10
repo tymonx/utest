@@ -55,7 +55,7 @@ using utest::test_thread::Generic;
 void Generic::run(TestCase& test_case, TestCaseRun test_run,
         TestParams& test_params) noexcept {
     try {
-        std::thread test(test_run, std::ref(test_case), std::ref(test_params));
+        std::thread test{test_run, std::ref(test_case), std::ref(test_params)};
         try {
             test.join();
         } catch (...) { }
@@ -68,7 +68,7 @@ void Generic::run(TestCase& test_case, TestCaseRun test_run,
 
 void Generic::run(TestCase& test_case, TestCaseRun test_run,
         TestParams& test_params) noexcept {
-    std::thread test(test_run, std::ref(test_case), std::ref(test_params));
+    std::thread test{test_run, std::ref(test_case), std::ref(test_params)};
     test.join();
 }
 

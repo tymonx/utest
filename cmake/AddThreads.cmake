@@ -29,6 +29,7 @@
 
 if (THREADS)
     set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
+    set(THREADS_PREFER_PTHREAD_FLAG TRUE)
     find_package(Threads)
 
     if (CMAKE_THREAD_LIBS_INIT)
