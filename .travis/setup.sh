@@ -74,9 +74,7 @@ function install_toolchain {
 }
 
 case $TOOLCHAIN in
-gcc-arm-none-eabi)
-    ;&
-clang-arm-none-eabi)
+gcc-arm-none-eabi | clang-arm-none-eabi)
     QEMU_ROOT=$HOME/qemu
     QEMU_VERSION=2.8.0
 
