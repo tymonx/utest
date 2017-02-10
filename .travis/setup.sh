@@ -49,7 +49,7 @@ function unpack_qemu {
 }
 
 function build_qemu {
-    if [ -d "$QEMU_ROOT/$QEMU_VERSION" ]; then
+    if [ ! -f "$QEMU_ROOT/$QEMU_VERSION/bin/qemu-arm" ]; then
         cd $QEMU_ROOT/$QEMU_VERSION
         ./configure --target-list=arm-linux-user --prefix=`pwd`
         make
