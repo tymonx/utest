@@ -110,7 +110,7 @@ case $TOOLCHAIN in
 
         install_toolchain
         ;;
-    5.4*)
+    5*)
         TOOLCHAIN_URL=https://launchpad.net/gcc-arm-embedded/5.0/5-2016-q3-update/+download
         TOOLCHAIN_TAR=gcc-arm-none-eabi-5_4-2016q3-20160926-linux.tar.bz2
 
