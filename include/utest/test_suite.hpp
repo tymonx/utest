@@ -133,7 +133,6 @@ private:
     TestSize m_failed{0};
     TestSize m_test_cases_passed{0};
     TestSize m_test_cases_failed{0};
-    TestStatus m_status{TestStatus::PASS};
     bool m_non_fatal{false};
 };
 
@@ -226,7 +225,7 @@ TestSuite::line() const noexcept -> TestSize {
 
 inline auto
 TestSuite::status() const noexcept -> TestStatus {
-    return m_status;
+    return m_failed ? TestStatus::FAIL : TestStatus::PASS;
 }
 
 inline auto
