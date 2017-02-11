@@ -72,7 +72,7 @@ Test output example:
 
 Test example with evil macros extension:
 
-```
+```c++
 #include <utest/utest.hpp>
 #include <utest/test_extension/evil_defines.hpp>
 
