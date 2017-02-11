@@ -143,8 +143,8 @@
     UTEST_ASSERT_FATAL().greater_than_or_equal(val1, val2)
 
 #define UTEST_EXPECT_STREQ(str1, str2) \
-    UTEST_ASSERT_NON_FATAL()\
-        .equal(utest::TestString{str1}, utest::TestString{str2})
+    UTEST_ASSERT_NON_FATAL().equal(utest::TestString{str1},\
+            utest::TestString{str2})
 
 #define UTEST_EXPECT_STRNE(str1, str2) \
     UTEST_ASSERT_NON_FATAL()\.not_equal(utest::TestString{str1},\
@@ -198,15 +198,15 @@
 
 #define UTEST_ASSERT_THROW_END UTEST_END
 
-#define UTEST_ASSERT_ANY_THROW(exception_type) \
-    UTEST_ASSERT_FATAL()\
-        .any_throw([] (utest::TestParams& _test_params) {
+#define UTEST_ASSERT_ANY_THROW() \
+    UTEST_ASSERT_FATAL().any_throw(\
+            [] (utest::TestParams& _test_params) {
 
 #define UTEST_ASSERT_ANY_THROW_END UTEST_END
 
-#define UTEST_ASSERT_NO_THROW(exception_type) \
-    UTEST_ASSERT_FATAL()\
-        .no_throw([] (utest::TestParams& _test_params) {
+#define UTEST_ASSERT_NO_THROW() \
+    UTEST_ASSERT_FATAL().no_throw(\
+            [] (utest::TestParams& _test_params) {
 
 #define UTEST_ASSERT_NO_THROW_END UTEST_END
 
