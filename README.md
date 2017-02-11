@@ -69,3 +69,34 @@ Test output example:
 [==========] 1 test(s) from 1 test suite(s) ran.
 [  PASSED  ] 1 test(s).
 ```
+
+Test example with evil macros extension:
+
+```
+#include <utest/utest.hpp>
+#include <utest/test_extension/evil_defines.hpp>
+
+UTEST_RUNNER()
+    UTEST_SUITE("integer compare")
+        int x = 0;
+
+        UTEST_CASE_CONTEXT(x);
+
+        UTEST_CASE_SETUP()
+            UTEST_CONTEXT(int) = 5;
+        UTEST_CASE_SETUP_END
+
+        UTEST_CASE("equal")
+            UTEST_EXPECT_EQ(UTEST_CONTEXT(int), 5);
+        UTEST_CASE_END
+
+        UTEST_CASE_SETUP()
+            UTEST_CONTEXT(int) = 4;
+        UTEST_CASE_SETUP_END
+
+        UTEST_CASE("not equal")
+            UTEST_EXPECT_NE(UTEST_CONTEXT(int), 5);
+        UTEST_CASE_END
+    UTEST_SUITE_END
+UTEST_RUNNER_END
+ ```

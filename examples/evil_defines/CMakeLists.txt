@@ -27,9 +27,15 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+add_executable(example-evil-defines
+    evil_defines.cpp
+)
 
-add_subdirectory(simple)
-add_subdirectory(string)
-add_subdirectory(factorial)
-add_subdirectory(evil_defines)
+set_target_properties(example-evil-defines PROPERTIES OUTPUT_NAME evil_defines)
+target_link_libraries(example-evil-defines utest-main utest)
+
+if (CMAKE_CXX_COMPILER_ID MATCHES Clang)
+    set_source_files_properties(evil_defines.cpp PROPERTIES
+        COMPILE_FLAGS "-Wno-global-constructors"
+    )
+endif()
