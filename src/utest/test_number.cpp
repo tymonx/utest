@@ -43,6 +43,8 @@
 #include <utest/test_string.hpp>
 #include <utest/test_span.hpp>
 
+#include <cmath>
+
 using utest::TestNumber;
 using utest::TestString;
 using utest::TestSpan;
@@ -73,6 +75,11 @@ static bool overflow(const TestNumber& number) noexcept {
 
 static bool underflow(const TestNumber& number) noexcept {
     return number.is_signed() && (Int(number) < 0);
+}
+
+
+bool TestNumber::is_signed() const noexcept {
+    return is_integer() ? m_is_signed : std::signbit(m_double);
 }
 
 template<>

@@ -48,7 +48,6 @@
 #include <type_traits>
 #include <cstdint>
 #include <limits>
-#include <cmath>
 
 namespace utest {
 
@@ -117,9 +116,9 @@ public:
 
     constexpr bool is_integer() const noexcept;
 
-    constexpr bool is_signed() const noexcept;
+    bool is_signed() const noexcept;
 
-    constexpr bool is_unsigned() const noexcept;
+    bool is_unsigned() const noexcept;
 
     constexpr Double epsilon() const noexcept;
 private:
@@ -164,7 +163,7 @@ template<typename T, TestNumber::enable_floating<T>> inline constexpr
 TestNumber::TestNumber(T value) noexcept :
     m_double{Double(value)},
     m_is_floating{true},
-    m_is_signed{std::signbit(value)},
+    m_is_signed{false},
     m_size{sizeof(value)}
 { }
 
@@ -223,14 +222,9 @@ TestNumber::is_integer() const noexcept -> bool {
     return !m_is_floating;
 }
 
-inline constexpr auto
-TestNumber::is_signed() const noexcept -> bool {
-    return m_is_signed;
-}
-
-inline constexpr auto
+inline auto
 TestNumber::is_unsigned() const noexcept -> bool {
-    return !m_is_signed;
+    return !is_signed();
 }
 
 bool
