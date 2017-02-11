@@ -42,6 +42,8 @@
 #ifndef UTEST_TEST_COLOR_HPP
 #define UTEST_TEST_COLOR_HPP
 
+#include <utest/test_string.hpp>
+
 namespace utest {
 
 enum class TestColor {
@@ -55,6 +57,8 @@ enum class TestColor {
     CYAN,
     WHITE
 };
+
+TestString ansi_escape_code(TestColor color) noexcept;
 
 }
 

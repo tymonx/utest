@@ -34,31 +34,49 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @file utest/test_writer/file.cpp
+ * @file utest/test_color.cpp
  *
- * @brief Test writer file implementation
+ * @brief Test color implementation
  */
 
-#include <utest/test_writer/file.hpp>
+#include <utest/test_color.hpp>
 
-using utest::test_writer::File;
+using utest::TestString;
 
-void File::write(const TestString& str) noexcept {
-    if (m_file) {
-        std::fwrite(str.data(), sizeof(TestString::value_type),
-                str.length(), m_file);
+TestString utest::ansi_escape_code(TestColor color) noexcept {
+    TestString code;
+
+    switch (color) {
+    case TestColor::BLACK:
+        code = {"\x1B[30m"};
+        break;
+    case TestColor::RED:
+        code = {"\x1B[31m"};
+        break;
+    case TestColor::GREEN:
+        code = {"\x1B[32m"};
+        break;
+    case TestColor::YELLOW:
+        code = {"\x1B[33m"};
+        break;
+    case TestColor::BLUE:
+        code = {"\x1B[34m"};
+        break;
+    case TestColor::MAGENTA:
+        code = {"\x1B[35m"};
+        break;
+    case TestColor::CYAN:
+        code = {"\x1B[36m"};
+        break;
+    case TestColor::WHITE:
+        code = {"\x1B[37m"};
+        break;
+    case TestColor::DEFAULT:
+        code = {"\x1B[39m"};
+        break;
+    default:
+        break;
     }
-}
 
-void File::color(TestColor c) noexcept {
-    if (TestWriter::color()) {
-        write(ansi_escape_code(c));
-    }
-}
-
-File::~File() noexcept {
-    if (m_file && m_open) {
-        std::fclose(m_file);
-    }
-    m_file = nullptr;
+    return code;
 }

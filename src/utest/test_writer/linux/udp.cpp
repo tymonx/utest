@@ -102,7 +102,11 @@ void UDP::write(const TestString& str) noexcept {
     }
 }
 
-void UDP::color(TestColor) noexcept { }
+void UDP::color(TestColor c) noexcept {
+    if (TestWriter::color()) {
+        write(ansi_escape_code(c));
+    }
+}
 
 UDP::~UDP() noexcept {
     if (context()) {

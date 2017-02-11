@@ -41,6 +41,7 @@ add_library(utest-core OBJECT
     test_number.cpp
     test_value.cpp
     test_params.cpp
+    test_color.cpp
     test_register.cpp
     test_reporter.cpp
     test_runner.cpp

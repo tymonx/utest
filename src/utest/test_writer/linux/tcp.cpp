@@ -115,7 +115,11 @@ void TCP::write(const TestString& str) noexcept {
     }
 }
 
-void TCP::color(TestColor) noexcept { }
+void TCP::color(TestColor c) noexcept {
+    if (TestWriter::color()) {
+        write(ansi_escape_code(c));
+    }
+}
 
 TCP::~TCP() noexcept {
     if (context()) {
