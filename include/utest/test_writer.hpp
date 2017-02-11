@@ -61,17 +61,17 @@ public:
 
     bool color() const noexcept;
 private:
-    bool m_no_color{false};
+    bool m_color{false};
 };
 
 inline void
 TestWriter::color(bool enable) noexcept {
-    m_no_color = !enable;
+    m_color = enable;
 }
 
 inline auto
 TestWriter::color() const noexcept -> bool {
-    return !m_no_color;
+    return m_color;
 }
 
 }
