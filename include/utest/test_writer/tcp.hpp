@@ -34,41 +34,43 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @file utest/test_writer/udp.hpp
+ * @file utest/test_writer/tcp.hpp
  *
  * @brief Test writer interface
  */
 
-#ifndef UTEST_TEST_WRITER_UDP_HPP
-#define UTEST_TEST_WRITER_UDP_HPP
+#ifndef UTEST_TEST_WRITER_TCP_HPP
+#define UTEST_TEST_WRITER_TCP_HPP
 
 #include <utest/test_writer.hpp>
 
 namespace utest {
 namespace test_writer {
 
-class UDP final : public TestWriter {
+class TCP final : public TestWriter {
 public:
     static constexpr TestString DEFAULT_ADDRESS{"127.0.0.1"};
     static constexpr TestSize   DEFAULT_PORT{8080};
+    static constexpr TestSize   DEFAULT_TIMEOUT{0};
 
-    UDP(UDP&& other) noexcept;
+    TCP(TCP&& other) noexcept;
 
-    UDP& operator=(UDP&& other) noexcept;
+    TCP& operator=(TCP&& other) noexcept;
 
-    UDP(TestSize port) noexcept;
+    TCP(TestSize port, TestSize timeout = DEFAULT_TIMEOUT) noexcept;
 
-    UDP(const TestString& address = DEFAULT_ADDRESS,
-            TestSize port = DEFAULT_PORT) noexcept;
+    TCP(const TestString& address = DEFAULT_ADDRESS,
+            TestSize port = DEFAULT_PORT,
+            TestSize timeout = DEFAULT_TIMEOUT) noexcept;
 
     virtual void write(const TestString& str) noexcept override;
 
     virtual void color(TestColor c) noexcept override;
 
-    virtual ~UDP() noexcept override;
+    virtual ~TCP() noexcept override;
 private:
-    UDP(const UDP&) = delete;
-    UDP& operator=(const UDP&) = delete;
+    TCP(const TCP&) = delete;
+    TCP& operator=(const TCP&) = delete;
 
     template<typename T = void>
     void context(T* ptr) noexcept;
@@ -80,14 +82,14 @@ private:
 };
 
 inline
-UDP::UDP(UDP&& other) noexcept :
+TCP::TCP(TCP&& other) noexcept :
     m_context{other.context()}
 {
     other.context<void>(nullptr);
 }
 
 inline auto
-UDP::operator=(UDP&& other) noexcept -> UDP& {
+TCP::operator=(TCP&& other) noexcept -> TCP& {
     if (this != &other) {
         context(other.context());
         other.context<void>(nullptr);
@@ -96,21 +98,21 @@ UDP::operator=(UDP&& other) noexcept -> UDP& {
 }
 
 inline
-UDP::UDP(TestSize port) noexcept :
-    UDP{DEFAULT_ADDRESS, port}
+TCP::TCP(TestSize port, TestSize timeout) noexcept :
+    TCP{DEFAULT_ADDRESS, port, timeout}
 { }
 
 template<typename T> inline void
-UDP::context(T* ptr) noexcept {
+TCP::context(T* ptr) noexcept {
     m_context = static_cast<void*>(ptr);
 }
 
 template<typename T> inline auto
-UDP::context() noexcept -> T* {
+TCP::context() noexcept -> T* {
     return static_cast<T*>(m_context);
 }
 
 }
 }
 
-#endif /* UTEST_TEST_WRITER_UDP_HPP */
+#endif /* UTEST_TEST_WRITER_TCP_HPP */

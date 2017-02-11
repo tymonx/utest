@@ -33,5 +33,6 @@ endif()
 
 set(CXX_SOURCES ${CXX_SOURCES}
     linux/udp.cpp
+    linux/tcp.cpp
     PARENT_SCOPE
 )

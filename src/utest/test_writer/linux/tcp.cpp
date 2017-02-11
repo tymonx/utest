@@ -34,12 +34,12 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @file utest/test_writer/udp.cpp
+ * @file utest/test_writer/tcp.cpp
  *
- * @brief Test writer UDP implementation
+ * @brief Test writer TCP implementation
  */
 
-#include <utest/test_writer/udp.hpp>
+#include <utest/test_writer/tcp.hpp>
 
 #include <stdio.h>
 #include <unistd.h>
@@ -50,17 +50,17 @@
 #include <cstdint>
 #include <iostream>
 
-using utest::test_writer::UDP;
+using utest::test_writer::TCP;
 
 struct Socket {
     int fd;
-    sockaddr_in other;
 };
 
-UDP::UDP(const TestString& address, TestSize port) noexcept {
-    auto fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+TCP::TCP(const TestString& address, TestSize port, TestSize timeout) noexcept {
+    auto fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+
     if (-1 == fd) {
-        perror("UDP");
+        perror("TCP");
         return;
     }
 
@@ -70,36 +70,49 @@ UDP::UDP(const TestString& address, TestSize port) noexcept {
 
     auto res = inet_pton(AF_INET, address.data(), &other.sin_addr);
     if (-1 == res) {
-        perror("UDP");
+        perror("TCP");
+        close(fd);
+        return;
+    }
+
+    do {
+        if (-1 == res) {
+            --timeout;
+            sleep(1);
+        }
+
+        res = connect(fd, reinterpret_cast<sockaddr*>(&other), sizeof(other));
+    } while ((-1 == res) && (ECONNREFUSED == errno) && timeout);
+
+    if (-1 == res) {
+        perror("TCP");
         close(fd);
         return;
     }
 
     context<Socket>(new (std::nothrow) Socket);
     if (context<Socket>()) {
-        *context<Socket>() = {fd, other};
+        *context<Socket>() = {fd};
     }
     else {
-        std::cerr << "UDP: out of memory" << std::endl;
+        std::cerr << "TCP: out of memory" << std::endl;
         close(fd);
     }
 }
 
-void UDP::write(const TestString& str) noexcept {
+void TCP::write(const TestString& str) noexcept {
     if (context<Socket>()) {
-        auto res = sendto(context<Socket>()->fd, str.data(), str.size(), 0,
-                reinterpret_cast<sockaddr*>(&context<Socket>()->other),
-                sizeof(sockaddr_in));
+        auto res = ::write(context<Socket>()->fd, str.data(), str.size());
         if (-1 == res) {
-            perror("UDP");
-            this->~UDP();
+            perror("TCP");
+            this->~TCP();
         }
     }
 }
 
-void UDP::color(TestColor) noexcept { }
+void TCP::color(TestColor) noexcept { }
 
-UDP::~UDP() noexcept {
+TCP::~TCP() noexcept {
     if (context()) {
         close(context<Socket>()->fd);
         delete context<Socket>();
