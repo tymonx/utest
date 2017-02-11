@@ -70,6 +70,39 @@ Test output example:
 [  PASSED  ] 1 test(s).
 ```
 
+Main example with multi writers:
+
+```c++
+#include <utest/utest.hpp>
+
+#include <utest/test_writer/udp.hpp>
+#include <utest/test_writer/file.hpp>
+#include <utest/test_reporter/google_test.hpp>
+
+#include <cstdlib>
+
+using namespace utest;
+
+int main() {
+    test_writer::UDP udp{"127.0.0.1", 51234};
+    test_writer::File out{stdout};
+
+    TestWriter* writers[]{
+        &out,
+        &udp
+    };
+
+    test_reporter::GoogleTest google_test{writers};
+
+    TestReporter* reporters[]{
+        &google_test
+    };
+
+    return TestStatus::PASS == Test{reporters}.run().status()
+        ? EXIT_SUCCESS : EXIT_FAILURE;
+}
+```
+
 Test example with evil macros extension:
 
 ```

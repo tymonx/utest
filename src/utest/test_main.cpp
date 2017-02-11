@@ -46,6 +46,6 @@
 using namespace utest;
 
 int main() {
-    return TestStatus::PASS == Test().run().status()
+    return TestStatus::PASS == Test{}.run().status()
         ? EXIT_SUCCESS : EXIT_FAILURE;
 }

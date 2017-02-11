@@ -42,7 +42,7 @@
 #include <utest/utest.hpp>
 
 #include <utest/test_writer/udp.hpp>
-#include <utest/test_writer/generic.hpp>
+#include <utest/test_writer/file.hpp>
 #include <utest/test_reporter/google_test.hpp>
 
 #include <cstdlib>
@@ -51,15 +51,20 @@ using namespace utest;
 
 int main() {
     test_writer::UDP udp{"127.0.0.1", 51234};
-    test_writer::Generic generic{};
+    test_writer::File out{stdout};
 
-    TestWriter* writers[]{&generic, &udp};
+    TestWriter* writers[]{
+        &out,
+        &udp
+    };
 
     test_reporter::GoogleTest google_test{writers};
 
-    TestReporter* reporters[]{&google_test};
+    TestReporter* reporters[]{
+        &google_test
+    };
 
-    return TestStatus::PASS == Test(reporters).run().status()
+    return TestStatus::PASS == Test{reporters}.run().status()
         ? EXIT_SUCCESS : EXIT_FAILURE;
 }
 

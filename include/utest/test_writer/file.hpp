@@ -34,56 +34,90 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @file utest/test_writer/generic.cpp
+ * @file utest/test_writer/file.hpp
  *
- * @brief Test writer generic implementation
+ * @brief Test writer interface
  */
 
-#include <utest/test_writer/generic.hpp>
+#ifndef UTEST_TEST_WRITER_FILE_HPP
+#define UTEST_TEST_WRITER_FILE_HPP
+
+#include <utest/test_writer.hpp>
 
 #include <cstdio>
 
-using utest::test_writer::Generic;
+namespace utest {
+namespace test_writer {
 
-void Generic::write(const TestString& str) noexcept {
-    std::fwrite(str.data(), sizeof(TestString::value_type),
-            str.length(), stdout);
+class File final : public TestWriter {
+public:
+    enum Mode {
+        WRITE,
+        APPEND
+    };
+
+    File(File&&) noexcept;
+
+    File& operator=(File&&) noexcept;
+
+    File(FILE* file = stdout) noexcept;
+
+    File(const TestString& file, Mode mode = WRITE) noexcept;
+
+    virtual void write(const TestString& str) noexcept override;
+
+    virtual void color(TestColor c) noexcept override;
+
+    virtual ~File() noexcept override;
+private:
+    File(const File&) = delete;
+
+    File& operator=(const File&) = delete;
+
+    FILE* m_file{nullptr};
+    bool m_open{false};
+};
+
+inline
+File::File(File&& other) noexcept :
+    m_file{other.m_file},
+    m_open{other.m_open}
+{
+    other.m_file = nullptr;
 }
 
-void Generic::color(TestColor c) noexcept {
-    if (TestWriter::color()) {
-        switch (c) {
-        case TestColor::BLACK:
-            write("\x1B[30m");
-            break;
-        case TestColor::RED:
-            write("\x1B[31m");
-            break;
-        case TestColor::GREEN:
-            write("\x1B[32m");
-            break;
-        case TestColor::YELLOW:
-            write("\x1B[33m");
-            break;
-        case TestColor::BLUE:
-            write("\x1B[34m");
-            break;
-        case TestColor::MAGENTA:
-            write("\x1B[35m");
-            break;
-        case TestColor::CYAN:
-            write("\x1B[36m");
-            break;
-        case TestColor::WHITE:
-            write("\x1B[37m");
-            break;
-        case TestColor::DEFAULT:
-            write("\x1B[39m");
-            break;
-        default:
-            break;
-        }
+inline auto
+File::operator=(File&& other) noexcept -> File& {
+    if (this != &other) {
+        m_file = other.m_file;
+        m_open = other.m_open;
+        other.m_file = nullptr;
+    }
+    return *this;
+}
+
+inline
+File::File(FILE* file) noexcept :
+    m_file{file}
+{ }
+
+inline
+File::File(const TestString& file, Mode mode) noexcept :
+    m_open{true}
+{
+    switch (mode) {
+    case WRITE:
+        m_file = std::fopen(file.data(), "w");
+        break;
+    case APPEND:
+        m_file = std::fopen(file.data(), "a");
+        break;
+    default:
+        break;
     }
 }
 
-Generic::~Generic() noexcept { }
+}
+}
+
+#endif /* UTEST_TEST_WRITER_FILE_HPP */

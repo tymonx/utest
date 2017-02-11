@@ -32,6 +32,6 @@ set(CXX_SOURCES)
 add_subdirectory(linux)
 
 add_library(utest-writers OBJECT
-    generic.cpp
+    file.cpp
     ${CXX_SOURCES}
 )

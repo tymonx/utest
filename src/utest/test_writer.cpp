@@ -40,12 +40,12 @@
  */
 
 #include <utest/test_writer.hpp>
-#include <utest/test_writer/generic.hpp>
+#include <utest/test_writer/file.hpp>
 
 using utest::TestWriter;
 
 TestWriter& TestWriter::get_default() noexcept {
-    static test_writer::Generic instance;
+    static test_writer::File instance;
     return instance;
 }
 

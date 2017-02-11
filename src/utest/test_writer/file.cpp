@@ -34,29 +34,61 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @file utest/test_writer/generic.hpp
+ * @file utest/test_writer/file.cpp
  *
- * @brief Test writer interface
+ * @brief Test writer file implementation
  */
 
-#ifndef UTEST_TEST_WRITER_GENERIC_HPP
-#define UTEST_TEST_WRITER_GENERIC_HPP
+#include <utest/test_writer/file.hpp>
 
-#include <utest/test_writer.hpp>
+using utest::test_writer::File;
 
-namespace utest {
-namespace test_writer {
-
-class Generic final : public TestWriter {
-public:
-    virtual void write(const TestString& str) noexcept override;
-
-    virtual void color(TestColor c) noexcept override;
-
-    virtual ~Generic() noexcept override;
-};
-
-}
+void File::write(const TestString& str) noexcept {
+    if (m_file) {
+        std::fwrite(str.data(), sizeof(TestString::value_type),
+                str.length(), m_file);
+    }
 }
 
-#endif /* UTEST_TEST_WRITER_GENERIC_HPP */
+void File::color(TestColor c) noexcept {
+    if (TestWriter::color()) {
+        switch (c) {
+        case TestColor::BLACK:
+            write("\x1B[30m");
+            break;
+        case TestColor::RED:
+            write("\x1B[31m");
+            break;
+        case TestColor::GREEN:
+            write("\x1B[32m");
+            break;
+        case TestColor::YELLOW:
+            write("\x1B[33m");
+            break;
+        case TestColor::BLUE:
+            write("\x1B[34m");
+            break;
+        case TestColor::MAGENTA:
+            write("\x1B[35m");
+            break;
+        case TestColor::CYAN:
+            write("\x1B[36m");
+            break;
+        case TestColor::WHITE:
+            write("\x1B[37m");
+            break;
+        case TestColor::DEFAULT:
+            write("\x1B[39m");
+            break;
+        default:
+            break;
+        }
+    }
+}
+
+File::~File() noexcept {
+    if (m_file && m_open) {
+        std::fclose(m_file);
+        m_file = nullptr;
+    }
+}
