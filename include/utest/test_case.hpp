@@ -60,7 +60,7 @@ class TestThread;
 class TestCase {
 public:
     using TestReporters = TestSpan<TestReporter*>;
-    using TestFunction = void(*) (TestParams&);
+    using TestFunction = void(*)(TestParams&);
     using TestContext = void*;
 
     TestCase& name(const TestString& str) noexcept;

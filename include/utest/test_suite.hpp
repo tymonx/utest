@@ -51,6 +51,7 @@ namespace utest {
 
 class Test;
 class TestCase;
+class TestParams;
 class TestRunner;
 class TestMessage;
 class TestReporter;
@@ -59,7 +60,21 @@ class TestThread;
 class TestSuite {
 public:
     using TestReporters = TestSpan<TestReporter*>;
+    using TestFunction = void(*)(TestParams&);
     using TestRun = void (*)(TestCase& test_case);
+    using TestContext = void*;
+
+    template<typename T>
+    TestSuite& context(T& test_context) noexcept;
+
+    template<typename T = void>
+    TestSuite& context(T* test_context) noexcept;
+
+    template<typename T = void>
+    T* context() noexcept;
+
+    template<typename T = void>
+    const T* context() const noexcept;
 
     TestSuite& name(const TestString& str) noexcept;
 
@@ -71,7 +86,19 @@ public:
 
     TestSuite& line(TestSize number) noexcept;
 
-    auto line() const noexcept -> TestSize;
+    TestSize line() const noexcept;
+
+    TestSuite& setup(TestFunction test_setup) noexcept;
+
+    TestFunction setup() noexcept;
+
+    TestFunction setup() const noexcept;
+
+    TestSuite& teardown(TestFunction test_setup) noexcept;
+
+    TestFunction teardown() noexcept;
+
+    TestFunction teardown() const noexcept;
 
     TestStatus status() const noexcept;
 
@@ -96,6 +123,9 @@ private:
     TestSize test_cases_failed() const noexcept;
 
     Test& m_test;
+    TestContext m_context{};
+    TestFunction m_setup{};
+    TestFunction m_teardown{};
     TestString m_name{};
     TestString m_file{};
     TestSize m_line{0};
@@ -106,6 +136,60 @@ private:
     TestStatus m_status{TestStatus::PASS};
     bool m_non_fatal{false};
 };
+
+template<typename T> inline auto
+TestSuite::context(T& test_context) noexcept -> TestSuite& {
+    m_context = static_cast<void*>(&test_context);
+    return *this;
+}
+
+template<typename T> inline auto
+TestSuite::context(T* test_context) noexcept -> TestSuite& {
+    m_context = static_cast<void*>(test_context);
+    return *this;
+}
+
+template<typename T> inline auto
+TestSuite::context() noexcept -> T* {
+    return static_cast<T*>(m_context);
+}
+
+template<typename T> inline auto
+TestSuite::context() const noexcept -> const T* {
+    return static_cast<const T*>(m_context);
+}
+
+inline auto
+TestSuite::setup(TestFunction test_setup) noexcept -> TestSuite& {
+    m_setup = test_setup;
+    return *this;
+}
+
+inline auto
+TestSuite::setup() noexcept -> TestFunction {
+    return m_setup;
+}
+
+inline auto
+TestSuite::setup() const noexcept -> TestFunction {
+    return m_setup;
+}
+
+inline auto
+TestSuite::teardown(TestFunction test_setup) noexcept -> TestSuite& {
+    m_teardown = test_setup;
+    return *this;
+}
+
+inline auto
+TestSuite::teardown() noexcept -> TestFunction {
+    return m_teardown;
+}
+
+inline auto
+TestSuite::teardown() const noexcept -> TestFunction {
+    return m_teardown;
+}
 
 inline auto
 TestSuite::name(const TestString& str) noexcept -> TestSuite& {

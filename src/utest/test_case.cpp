@@ -53,6 +53,9 @@ using utest::TestCase;
 
 TestCase::TestCase(TestSuite& test_suite) noexcept :
     m_test(test_suite.m_test),
+    m_context{test_suite.m_context},
+    m_setup{test_suite.m_setup},
+    m_teardown{test_suite.m_teardown},
     m_file{test_suite.m_file},
     m_non_fatal{test_suite.m_non_fatal}
 { }
