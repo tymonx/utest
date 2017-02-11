@@ -89,6 +89,6 @@ void File::color(TestColor c) noexcept {
 File::~File() noexcept {
     if (m_file && m_open) {
         std::fclose(m_file);
-        m_file = nullptr;
     }
+    m_file = nullptr;
 }

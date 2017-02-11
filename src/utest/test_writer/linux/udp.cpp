@@ -94,6 +94,6 @@ UDP::~UDP() noexcept {
     if (context()) {
         close(context<Socket>()->fd);
         delete context<Socket>();
-        context<void>(nullptr);
     }
+    context<void>(nullptr);
 }
