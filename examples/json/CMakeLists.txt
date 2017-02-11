@@ -27,7 +27,15 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-add_library(utest-reporters OBJECT
-    google_test.cpp
+add_executable(example-json
     json.cpp
 )
+
+set_target_properties(example-json PROPERTIES OUTPUT_NAME json)
+target_link_libraries(example-json utest)
+
+if (CMAKE_CXX_COMPILER_ID MATCHES Clang)
+    set_source_files_properties(json.cpp PROPERTIES
+        COMPILE_FLAGS "-Wno-global-constructors"
+    )
+endif()
