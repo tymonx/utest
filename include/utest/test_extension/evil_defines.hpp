@@ -42,18 +42,20 @@
 #ifndef UTEST_TEST_EXTENSION_EVIL_DEFINES_HPP
 #define UTEST_TEST_EXTENSION_EVIL_DEFINES_HPP
 
+#define UTEST_END });
+
 #define UTEST_RUNNER() \
     static utest::TestRunner _g_test_runner(\
             [] (utest::TestSuite& _test_suite) {\
         _test_suite.file(__FILE__).line(__LINE__);
 
-#define UTEST_RUNNER_END });
+#define UTEST_RUNNER_END UTEST_END
 
 #define UTEST_SUITE(_test_name) \
     _test_suite.file(__FILE__).line(__LINE__).name(_test_name).run(\
             [] (utest::TestCase& _test_case) {
 
-#define UTEST_SUITE_END });
+#define UTEST_SUITE_END UTEST_END
 
 #define UTEST_SUITE_CONTEXT(...) \
     _test_suite.context(__VA_ARGS__)
@@ -62,7 +64,7 @@
     _test_case.file(__FILE__).line(__LINE__).name(_test_name).run(\
             [] (utest::TestParams& _test_params) {
 
-#define UTEST_CASE_END });
+#define UTEST_CASE_END UTEST_END
 
 #define UTEST_CASE_CONTEXT(...) \
     _test_case.context(__VA_ARGS__)
@@ -70,30 +72,142 @@
 #define UTEST_CASE_SETUP() \
     _test_case.setup([] (utest::TestParams& _test_params) {
 
-#define UTEST_CASE_SETUP_END });
+#define UTEST_CASE_SETUP_END UTEST_END
 
 #define UTEST_CASE_TEARDOWN() \
     _test_case.teardown([] (utest::TestParams& _test_params) {
 
-#define UTEST_CASE_TEARDOWN_END });
+#define UTEST_CASE_TEARDOWN_END UTEST_END
 
 #define UTEST_CONTEXT(...) \
     _test_params.context<__VA_ARGS__>()
 
+#define UTEST_ASSERT_FATAL() \
+    utest::TestAssert{_test_params}.file(__FILE__).line(__LINE__).fatal(true)
+
+#define UTEST_ASSERT_NON_FATAL() \
+    utest::TestAssert{_test_params}.file(__FILE__).line(__LINE__).fatal(false)
+
+#define UTEST_EXPECT_FAIL() \
+    UTEST_ASSERT_NON_FATAL().fail()
+
+#define UTEST_ASSERT_FAIL() \
+    UTEST_ASSERT_FATAL().fail()
+
+#define UTEST_EXPECT_TRUE(condition) \
+    UTEST_ASSERT_NON_FATAL().is_true(condition)
+
+#define UTEST_EXPECT_FALSE(condition) \
+    UTEST_ASSERT_NON_FATAL().is_false(condition)
+
+#define UTEST_ASSERT_TRUE(condition) \
+    UTEST_ASSERT_FATAL().is_true(condition)
+
+#define UTEST_ASSERT_FALSE(condition) \
+    UTEST_ASSERT_FATAL().is_false(condition)
+
 #define UTEST_EXPECT_EQ(val1, val2) \
-    utest::TestAssert{_test_params}.file(__FILE__).line(__LINE__).fatal(false)\
-        .equal(val1, val2)
+    UTEST_ASSERT_NON_FATAL().equal(val1, val2)
 
 #define UTEST_EXPECT_NE(val1, val2) \
-    utest::TestAssert{_test_params}.file(__FILE__).line(__LINE__).fatal(false)\
-        .not_equal(val1, val2)
+    UTEST_ASSERT_NON_FATAL().not_equal(val1, val2)
+
+#define UTEST_EXPECT_LT(val1, val2) \
+    UTEST_ASSERT_NON_FATAL().less_than(val1, val2)
+
+#define UTEST_EXPECT_LE(val1, val2) \
+    UTEST_ASSERT_NON_FATAL().less_than_or_equal(val1, val2)
+
+#define UTEST_EXPECT_GT(val1, val2) \
+    UTEST_ASSERT_NON_FATAL().greater_than(val1, val2)
+
+#define UTEST_EXPECT_GE(val1, val2) \
+    UTEST_ASSERT_NON_FATAL().greater_than_or_equal(val1, val2)
 
 #define UTEST_ASSERT_EQ(val1, val2) \
-    utest::TestAssert{_test_params}.file(__FILE__).line(__LINE__).fatal(true)\
-        .equal(val1, val2)
+    UTEST_ASSERT_FATAL().equal(val1, val2)
 
 #define UTEST_ASSERT_NE(val1, val2) \
-    utest::TestAssert{_test_params}.file(__FILE__).line(__LINE__).fatal(true)\
-        .not_equal(val1, val2)
+    UTEST_ASSERT_FATAL().not_equal(val1, val2)
+
+#define UTEST_ASSERT_LT(val1, val2) \
+    UTEST_ASSERT_FATAL().less_than(val1, val2)
+
+#define UTEST_ASSERT_LE(val1, val2) \
+    UTEST_ASSERT_FATAL().less_than_or_equal(val1, val2)
+
+#define UTEST_ASSERT_GT(val1, val2) \
+    UTEST_ASSERT_FATAL().greater_than(val1, val2)
+
+#define UTEST_ASSERT_GE(val1, val2) \
+    UTEST_ASSERT_FATAL().greater_than_or_equal(val1, val2)
+
+#define UTEST_EXPECT_STREQ(str1, str2) \
+    UTEST_ASSERT_NON_FATAL()\
+        .equal(utest::TestString{str1}, utest::TestString{str2})
+
+#define UTEST_EXPECT_STRNE(str1, str2) \
+    UTEST_ASSERT_NON_FATAL()\.not_equal(utest::TestString{str1},\
+            utest::TestString{str2})
+
+#define UTEST_EXPECT_STRCASEEQ(str1, str2) \
+    UTEST_ASSERT_NON_FATAL().equal(utest::TestString{str1}.ignore_case(),\
+            utest::TestString{str2})
+
+#define UTEST_EXPECT_STRCASENE(str1, str2) \
+    UTEST_ASSERT_NON_FATAL().not_equal(utest::TestString{str1}.ignore_case(),\
+            utest::TestString{str2})
+
+#define UTEST_ASSERT_STREQ(str1, str2) \
+    UTEST_ASSERT_FATAL().equal(utest::TestString{str1},\
+            utest::TestString{str2})
+
+#define UTEST_ASSERT_STRNE(str1, str2) \
+    UTEST_ASSERT_FATAL().not_equal(utest::TestString{str1},\
+            utest::TestString{str2})
+
+#define UTEST_ASSERT_STRCASEEQ(str1, str2) \
+    UTEST_ASSERT_FATAL().equal(utest::TestString{str1}.ignore_case(),\
+            utest::TestString{str2})
+
+#define UTEST_ASSERT_STRCASENE(str1, str2) \
+    UTEST_ASSERT_FATAL().not_equal(utest::TestString{str1}.ignore_case(),\
+            utest::TestString{str2})
+
+#define UTEST_EXPECT_THROW(exception_type) \
+    UTEST_ASSERT_NON_FATAL().expected_throw<exception_type>(\
+            [] (utest::TestParams& _test_params) {
+
+#define UTEST_EXPECT_THROW_END UTEST_END
+
+#define UTEST_EXPECT_ANY_THROW() \
+    UTEST_ASSERT_NON_FATAL().any_throw(\
+            [] (utest::TestParams& _test_params) {
+
+#define UTEST_EXPECT_ANY_THROW_END UTEST_END
+
+#define UTEST_EXPECT_NO_THROW() \
+    UTEST_ASSERT_NON_FATAL().no_throw(\
+            [] (utest::TestParams& _test_params) {
+
+#define UTEST_EXPECT_NO_THROW_END UTEST_END
+
+#define UTEST_ASSERT_THROW(exception_type) \
+    UTEST_ASSERT_FATAL().expected_throw<exception_type>(\
+            [] (utest::TestParams& _test_params) {
+
+#define UTEST_ASSERT_THROW_END UTEST_END
+
+#define UTEST_ASSERT_ANY_THROW(exception_type) \
+    UTEST_ASSERT_FATAL()\
+        .any_throw([] (utest::TestParams& _test_params) {
+
+#define UTEST_ASSERT_ANY_THROW_END UTEST_END
+
+#define UTEST_ASSERT_NO_THROW(exception_type) \
+    UTEST_ASSERT_FATAL()\
+        .no_throw([] (utest::TestParams& _test_params) {
+
+#define UTEST_ASSERT_NO_THROW_END UTEST_END
 
 #endif /* UTEST_TEST_EXTENSION_EVIL_DEFINES_HPP */
