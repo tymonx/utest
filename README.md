@@ -21,7 +21,7 @@ Lightweight unit testing framework mainly for C++ and also for C projects. Suita
 * Optionally running test case in isolate environment using thread
 * Minimal virtual methods usage
 * Small footprint, friendly for embedded target like Cortex-Mx microcontrollers
-* Clean from warnings even on the most aggressive levels
+* Warnings free even on the most aggressive levels
 * Support for Clang 3.5 and later
 * Support for GCC 4.8 and later
 
