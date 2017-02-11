@@ -49,6 +49,8 @@ namespace test_writer {
 
 class TCP final : public TestWriter {
 public:
+    using TestWriter::color;
+
     static constexpr TestString DEFAULT_ADDRESS{"127.0.0.1"};
     static constexpr TestSize   DEFAULT_PORT{8080};
     static constexpr TestSize   DEFAULT_TIMEOUT{0};

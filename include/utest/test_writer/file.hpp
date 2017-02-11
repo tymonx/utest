@@ -51,6 +51,8 @@ namespace test_writer {
 
 class File final : public TestWriter {
 public:
+    using TestWriter::color;
+
     enum Mode {
         WRITE,
         APPEND

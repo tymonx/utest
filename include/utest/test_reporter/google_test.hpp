@@ -58,6 +58,7 @@ namespace test_reporter {
 class GoogleTest final : public TestReporter {
 public:
     using TestReporter::TestReporter;
+    using TestReporter::color;
 
     virtual void report(const TestMessage& message) noexcept override;
 

@@ -27,12 +27,19 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+if (NOT UNIX)
+    return()
+endif()
 
-add_subdirectory(simple)
-add_subdirectory(string)
-add_subdirectory(factorial)
-add_subdirectory(evil_defines)
-add_subdirectory(udp)
-add_subdirectory(tcp)
-add_subdirectory(files)
+add_executable(example-files
+    files.cpp
+)
+
+set_target_properties(example-files PROPERTIES OUTPUT_NAME files)
+target_link_libraries(example-files utest)
+
+if (CMAKE_CXX_COMPILER_ID MATCHES Clang)
+    set_source_files_properties(files.cpp PROPERTIES
+        COMPILE_FLAGS "-Wno-global-constructors"
+    )
+endif()

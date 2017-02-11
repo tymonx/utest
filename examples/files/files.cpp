@@ -34,85 +34,56 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @file utest/test_writer/udp.hpp
+ * @file examples/writers.cpp
  *
- * @brief Test writer interface
+ * @brief Main implementation
  */
 
-#ifndef UTEST_TEST_WRITER_UDP_HPP
-#define UTEST_TEST_WRITER_UDP_HPP
+#include <utest/utest.hpp>
 
-#include <utest/test_writer.hpp>
+#include <utest/test_writer/file.hpp>
+#include <utest/test_reporter/google_test.hpp>
 
-namespace utest {
-namespace test_writer {
+#include <cstdlib>
 
-class UDP final : public TestWriter {
-public:
-    using TestWriter::color;
+using namespace utest;
 
-    static constexpr TestString DEFAULT_ADDRESS{"127.0.0.1"};
-    static constexpr TestSize   DEFAULT_PORT{8080};
+int main() {
+    test_writer::File out{stdout};
+    test_writer::File file1{"results_blank.log"};
+    test_writer::File file2{"results_colored.log"};
 
-    UDP(UDP&& other) noexcept;
+    out.color(true);
+    file2.color(true);
 
-    UDP& operator=(UDP&& other) noexcept;
+    TestWriter* writers[]{
+        &out,
+        &file1,
+        &file2
+    };
 
-    UDP(TestSize port) noexcept;
+    test_reporter::GoogleTest google_test{writers};
 
-    UDP(const TestString& address = DEFAULT_ADDRESS,
-            TestSize port = DEFAULT_PORT) noexcept;
+    TestReporter* reporters[]{
+        &google_test
+    };
 
-    virtual void write(const TestString& str) noexcept override;
-
-    virtual void color(TestColor c) noexcept override;
-
-    virtual ~UDP() noexcept override;
-private:
-    UDP(const UDP&) = delete;
-    UDP& operator=(const UDP&) = delete;
-
-    template<typename T = void>
-    void context(T* ptr) noexcept;
-
-    template<typename T = void>
-    T* context() noexcept;
-
-    void* m_context{nullptr};
-};
-
-inline
-UDP::UDP(UDP&& other) noexcept :
-    m_context{other.context()}
-{
-    other.context<void>(nullptr);
+    return TestStatus::PASS == Test{reporters}.run().status()
+        ? EXIT_SUCCESS : EXIT_FAILURE;
 }
 
-inline auto
-UDP::operator=(UDP&& other) noexcept -> UDP& {
-    if (this != &other) {
-        context(other.context());
-        other.context<void>(nullptr);
-    }
-    return *this;
-}
+static TestRunner g([] (TestSuite& test_suite) {
+    test_suite.file(__FILE__)
 
-inline
-UDP::UDP(TestSize port) noexcept :
-    UDP{DEFAULT_ADDRESS, port}
-{ }
+    .name("integer compare").run([] (TestCase& test_case) {
+        test_case
+        .name("equal").run([] (TestParams& p) {
+            TestAssert{p}.equal(5, 5);
+        })
 
-template<typename T> inline void
-UDP::context(T* ptr) noexcept {
-    m_context = static_cast<void*>(ptr);
-}
+        .name("not equal").run([] (TestParams& p) {
+            TestAssert{p}.not_equal(5, 4);
+        });
+    });
+});
 
-template<typename T> inline auto
-UDP::context() noexcept -> T* {
-    return static_cast<T*>(m_context);
-}
-
-}
-}
-
-#endif /* UTEST_TEST_WRITER_UDP_HPP */
