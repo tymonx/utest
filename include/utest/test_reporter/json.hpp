@@ -57,10 +57,12 @@ namespace test_reporter {
 
 class JSON final : public TestReporter {
 public:
-    static constexpr TestSize DEFAULT_INDENT{4};
-
     using TestReporter::TestReporter;
     using TestReporter::color;
+
+    static constexpr TestSize DEFAULT_INDENT{4};
+
+    JSON& compress(bool enable = true) noexcept;
 
     virtual void report(const TestMessage& message) noexcept override;
 
@@ -105,11 +107,18 @@ private:
 
     TestSize m_indent{0};
     TestSize m_indent_step{DEFAULT_INDENT};
+    bool m_compress{false};
     bool m_next_test_suite{false};
     bool m_next_test_case{false};
     bool m_next_test_assert{false};
     bool m_test_asserts{false};
 };
+
+inline auto
+JSON::compress(bool enable) noexcept -> JSON& {
+    m_compress = enable;
+    return *this;
+}
 
 inline auto
 JSON::write(const TestString& str) noexcept -> JSON& {

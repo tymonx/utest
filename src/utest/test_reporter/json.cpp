@@ -57,8 +57,10 @@ using utest::TestMessage;
 using utest::test_reporter::JSON;
 using namespace utest::test_message;
 
-static constexpr TestString PASSED{"\"passed\"\n"};
-static constexpr TestString FAILED{"\"failed\"\n"};
+static constexpr TestString NAME{"name"};
+static constexpr TestString STATUS{"status"};
+static constexpr TestString PASSED{"passed"};
+static constexpr TestString FAILED{"failed"};
 
 namespace utest {
 namespace test_reporter {
@@ -92,18 +94,19 @@ void JSON::report<TestMessage::TEST_END>(
     m_indent -= m_indent_step;
     endl();
     indent().write("],").endl();
-    indent().key("passed").write(msg.test_cases_passed(), ",").endl();
+    indent().key(PASSED).write(msg.test_cases_passed(), ",").endl();
     if (msg.test_cases_failed()) {
-        indent().key("failed").write(msg.test_cases_failed(), ",").endl();
+        indent().key(FAILED).write(msg.test_cases_failed(), ",").endl();
     }
-    indent().key("status");
+    indent().key(STATUS);
 
     if (msg.test_cases_failed()) {
-        write(FAILED);
+        name(FAILED);
     }
     else {
-        write(PASSED);
+        name(PASSED);
     }
+    endl();
     indent<DECREASE>().write("}");
 }
 
@@ -118,7 +121,7 @@ void JSON::report<TestMessage::TEST_SUITE_BEGIN>(
     endl();
 
     indent().write("{").endl();
-    indent<INCREASE>().key("name").name(msg.name()).write(",").endl();
+    indent<INCREASE>().key(NAME).name(msg.name()).write(",").endl();
     indent().key("test case").write("[");
     m_indent += m_indent_step;
     m_next_test_case = false;
@@ -132,18 +135,19 @@ void JSON::report<TestMessage::TEST_SUITE_END>(
     m_indent -= m_indent_step;
     endl();
     indent().write("],").endl();
-    indent().key("passed").write(msg.tests_passed(), ",").endl();
+    indent().key(PASSED).write(msg.tests_passed(), ",").endl();
     if (msg.tests_failed()) {
-        indent().key("failed").write(msg.tests_failed(), ",").endl();
+        indent().key(FAILED).write(msg.tests_failed(), ",").endl();
     }
-    indent().key("status");
+    indent().key(STATUS);
 
     if (msg.tests_failed()) {
-        write(FAILED);
+        name(FAILED);
     }
     else {
-        write(PASSED);
+        name(PASSED);
     }
+    endl();
     indent<DECREASE>().write("}");
     m_next_test_suite = true;
 }
@@ -159,9 +163,7 @@ void JSON::report<TestMessage::TEST_CASE_BEGIN>(
     endl();
 
     indent().write("{").endl();
-    indent<INCREASE>().key("name").name(msg.name()).write(",");
-    //indent().key("asserts").write("[").endl();
-    m_indent += m_indent_step;
+    indent<INCREASE>().key(NAME).name(msg.name()).write(",");
     m_next_test_assert = false;
     m_test_asserts = false;
 }
@@ -171,17 +173,19 @@ void JSON::report<TestMessage::TEST_CASE_END>(
         const TestMessage& message) noexcept {
     const auto& msg = get<TestCaseEnd>(message);
 
-    m_indent -= m_indent_step;
     endl();
-    //indent().write("],").endl();
-    indent().key("status");
+    if (m_test_asserts) {
+        indent<DECREASE>().write("],").endl();
+    }
+    indent().key(STATUS);
 
     if (TestStatus::FAIL == msg.status()) {
-        write(FAILED);
+        name(FAILED);
     }
     else {
-        write(PASSED);
+        name(PASSED);
     }
+    endl();
     indent<DECREASE>().write("}");
     m_next_test_case = true;
 }
@@ -203,7 +207,36 @@ void JSON::report<TestMessage::TEST_ASSERT_FAIL>(
 
 template<>
 void JSON::report<TestMessage::TEST_ASSERT_TRUE>(
-        const TestMessage&) noexcept {
+        const TestMessage& message) noexcept {
+    const auto& msg = get<TestAssertTrue>(message);
+
+    if (!m_test_asserts) {
+        endl();
+        indent().key("assert").write("[");
+        m_indent += m_indent_step;
+        m_test_asserts = true;
+    }
+
+    if (m_next_test_assert) {
+        write(",");
+    }
+    endl();
+
+    indent().write("{").endl();
+    indent<INCREASE>().key(NAME).name("is true").write(",").endl();
+
+    if (msg.file()) {
+        indent().key("file").name(msg.file()).write(",").endl();
+    }
+
+    if (msg.line()) {
+        indent().key("line").write(msg.line()).write(",").endl();
+    }
+
+    indent().key("value").write("false").endl();
+    indent<DECREASE>().write("}");
+
+    m_next_test_assert = true;
 }
 
 template<>
@@ -313,14 +346,19 @@ void JSON::report(const TestMessage& message) noexcept {
 }
 
 JSON& JSON::indent() noexcept {
-    for (TestSize i = 0; i < m_indent; ++i) {
-        write(" ");
+    if (!m_compress) {
+        for (TestSize i = 0; i < m_indent; ++i) {
+            write(" ");
+        }
     }
     return *this;
 }
 
 JSON& JSON::endl() noexcept {
-    return write("\n");
+    if (!m_compress) {
+        write("\n");
+    }
+    return *this;
 }
 
 JSON& JSON::name(const TestString& str) noexcept {
@@ -328,7 +366,11 @@ JSON& JSON::name(const TestString& str) noexcept {
 }
 
 JSON& JSON::key(const TestString& str) noexcept {
-    return name(str).write(": ");
+    name(str).write(":");
+    if (!m_compress) {
+        write(" ");
+    }
+    return *this;
 }
 
 JSON::~JSON() noexcept { }

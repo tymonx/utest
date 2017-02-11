@@ -71,6 +71,8 @@ static TestRunner g([] (TestSuite& test_suite) {
     .name("integer compare").run([] (TestCase& test_case) {
         test_case
         .name("equal").run([] (TestParams& p) {
+            TestAssert{p}.fatal(false).is_true(false);
+            TestAssert{p}.fatal(false).is_true(false);
             TestAssert{p}.equal(5, 5);
         })
 
