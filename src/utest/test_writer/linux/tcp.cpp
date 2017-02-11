@@ -74,6 +74,11 @@ TCP::TCP(const TestString& address, TestSize port, TestSize timeout) noexcept {
         close(fd);
         return;
     }
+    else if (!res) {
+        std::cerr << "TCP: invalid IP address " << address.data() << std::endl;
+        close(fd);
+        return;
+    }
 
     do {
         if (-1 == res) {

@@ -74,6 +74,11 @@ UDP::UDP(const TestString& address, TestSize port) noexcept {
         close(fd);
         return;
     }
+    else if (!res) {
+        std::cerr << "UDP: invalid IP address " << address.data() << std::endl;
+        close(fd);
+        return;
+    }
 
     context<Socket>(new (std::nothrow) Socket);
     if (context<Socket>()) {
