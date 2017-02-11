@@ -27,10 +27,11 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+if (NOT UNIX)
+    return()
+endif()
 
-add_subdirectory(simple)
-add_subdirectory(string)
-add_subdirectory(factorial)
-add_subdirectory(evil_defines)
-add_subdirectory(udp)
+set(CXX_SOURCES ${CXX_SOURCES}
+    linux/udp.cpp
+    PARENT_SCOPE
+)

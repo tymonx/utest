@@ -27,10 +27,19 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+if (NOT UNIX)
+    return()
+endif()
 
-add_subdirectory(simple)
-add_subdirectory(string)
-add_subdirectory(factorial)
-add_subdirectory(evil_defines)
-add_subdirectory(udp)
+add_executable(example-udp
+    udp.cpp
+)
+
+set_target_properties(example-udp PROPERTIES OUTPUT_NAME udp)
+target_link_libraries(example-udp utest)
+
+if (CMAKE_CXX_COMPILER_ID MATCHES Clang)
+    set_source_files_properties(udp.cpp PROPERTIES
+        COMPILE_FLAGS "-Wno-global-constructors"
+    )
+endif()
