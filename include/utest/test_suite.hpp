@@ -47,6 +47,8 @@
 #include <utest/test_span.hpp>
 #include <utest/test_size.hpp>
 
+#include <cstddef>
+
 namespace utest {
 
 class Test;
@@ -63,6 +65,8 @@ public:
     using TestFunction = void(*)(TestParams&);
     using TestRun = void (*)(TestCase& test_case);
     using TestContext = void*;
+
+    TestSuite& context(std::nullptr_t test_context) noexcept;
 
     template<typename T>
     TestSuite& context(T& test_context) noexcept;
@@ -135,6 +139,12 @@ private:
     TestSize m_test_cases_failed{0};
     bool m_non_fatal{false};
 };
+
+inline auto
+TestSuite::context(std::nullptr_t) noexcept -> TestSuite& {
+    m_context = nullptr;
+    return *this;
+}
 
 template<typename T> inline auto
 TestSuite::context(T& test_context) noexcept -> TestSuite& {

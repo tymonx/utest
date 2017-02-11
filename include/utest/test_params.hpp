@@ -46,6 +46,7 @@
 #include <utest/test_status.hpp>
 #include <utest/test_span.hpp>
 
+#include <cstddef>
 #include <csetjmp>
 
 namespace utest {
@@ -65,6 +66,8 @@ public:
     using context_reference = typename std::enable_if<
         !std::is_pointer<T>::value && std::is_object<T>::value,
         typename std::add_lvalue_reference<T>::type>::type;
+
+    void context(std::nullptr_t test_context) noexcept;
 
     template<typename T>
     void context(T& test_context) noexcept;
@@ -111,6 +114,11 @@ private:
     TestStatus m_status{TestStatus::PASS};
     bool m_non_fatal{false};
 };
+
+inline void
+TestParams::context(std::nullptr_t) noexcept {
+    *m_context = nullptr;
+}
 
 template<typename T> inline void
 TestParams::context(T& test_context) noexcept {
