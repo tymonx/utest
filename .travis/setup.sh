@@ -31,6 +31,19 @@
 set -e
 set -u
 
+function install_lcov {
+    if [ ! -f "$LCOV_ROOT/$LCOV_TAR" ]; then
+        echo "Downloading $LCOV_URL/$LCOV_TAR..."
+        wget $LCOV_URL/$LCOV_TAR -O $LCOV_ROOT/$LCOV_TAR
+    else
+        echo "lcov $LCOV_URL/$LCOV_TAR already downloaded"
+    fi
+
+    echo "Unpacking $LCOV_ROOT/$LCOV_TAR archive..."
+    mkdir -p /tmp/lcov && tar -xf $LCOV_ROOT/$LCOV_TAR \
+        -C /tmp/lcov --strip-components 1
+}
+
 function install_toolchain {
     if [ ! -f "$TOOLCHAIN_ROOT/$TOOLCHAIN_TAR" ]; then
         echo "Downloading $TOOLCHAIN_URL/$TOOLCHAIN_TAR..."
@@ -87,8 +100,14 @@ case $TOOLCHAIN in
     QEMU_URL=http://download.qemu-project.org
     QEMU_TAR=qemu-$QEMU_VERSION.tar.xz
 
+    LCOV_ROOT=$HOME/lcov
+    LCOV_VERSION=1.13
+    LCOV_URL=http://downloads.sourceforge.net/ltp
+    LCOV_TAR=lcov-$LCOV_VERSION.tar.gz
+
     TOOLCHAIN_ROOT=$HOME/toolchains
 
+    install_lcov
     install_qemu
 
     case $TOOLCHAIN_VERSION in

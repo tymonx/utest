@@ -7,6 +7,7 @@ cache:
   directories:
    - $HOME/toolchains
    - $HOME/qemu
+   - $HOME/lcov
 
 env: TOOLCHAIN=gcc C_COMPILER=gcc-6 CXX_COMPILER=g++-6 BUILD_TYPE=Coverage
 
@@ -19,7 +20,6 @@ addons:
      - cmake cmake-data
      - gcc-6 g++-6
      - valgrind
-     - lcov
 
 matrix:
   include:
@@ -166,6 +166,7 @@ matrix:
 
 before_script:
  - ./.travis/setup.sh
+ - export PATH=/tmp/lcov/bin:$PATH
  - export PATH=/tmp/qemu/bin:$PATH
  - if [ ! -z ${TOOLCHAIN+x} ]; then export PATH=/tmp/$TOOLCHAIN/bin:$PATH; fi
 
