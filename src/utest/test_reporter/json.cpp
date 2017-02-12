@@ -420,7 +420,7 @@ void JSON::report(const TestMessage& message) noexcept {
 void JSON::report_exception(const TestString& str,
         const TestMessage& message) noexcept {
 #if defined(UTEST_USE_EXCEPTIONS)
-    report("throwException", get<TestAssertBase>(message));
+    report("exception", get<TestAssertBase>(message));
     append().key(VALUE, str);
 #else
     (void)str;
