@@ -43,6 +43,10 @@
 
 using utest::TestValue;
 
+TestValue::TestValue(const TestNumber& value) noexcept :
+    m_type{NUMBER}, m_number{value}
+{ }
+
 TestValue::TestValue(const TestString& value) noexcept :
     m_type{STRING}, m_string{value}
 { }

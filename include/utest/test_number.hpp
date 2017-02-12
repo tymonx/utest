@@ -138,7 +138,7 @@ TestSpan<char> to_string(const TestNumber& number, const TestSpan<char>& str,
 
 TestSpan<char> to_string(const void* ptr, const TestSpan<char>& str) noexcept;
 
-template<typename T, TestNumber::enable_signed<T>> inline constexpr
+template<typename T, TestNumber::enable_signed<T>> constexpr
 TestNumber::TestNumber(T value) noexcept :
     m_int{value},
     m_is_floating{false},
@@ -151,7 +151,7 @@ TestNumber::TestNumber() noexcept :
     TestNumber{0}
 { }
 
-template<typename T, TestNumber::enable_unsigned<T>> inline constexpr
+template<typename T, TestNumber::enable_unsigned<T>> constexpr
 TestNumber::TestNumber(T value) noexcept :
     m_uint{value},
     m_is_floating{false},
@@ -159,7 +159,7 @@ TestNumber::TestNumber(T value) noexcept :
     m_size{sizeof(value)}
 { }
 
-template<typename T, TestNumber::enable_floating<T>> inline constexpr
+template<typename T, TestNumber::enable_floating<T>> constexpr
 TestNumber::TestNumber(T value) noexcept :
     m_double{Double(value)},
     m_is_floating{true},

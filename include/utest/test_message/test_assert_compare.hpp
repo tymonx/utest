@@ -69,6 +69,11 @@ TestAssertCompare::TestAssertCompare(TestMessage::Type message_type,
 { }
 
 template<> inline auto
+get(const TestMessage& msg) noexcept -> const TestAssertCompare& {
+    return reinterpret_cast<const TestAssertCompare&>(msg);
+}
+
+template<> inline auto
 TestAssertCompare::get<0>() const noexcept -> const TestValue& {
     return m_lhs;
 }

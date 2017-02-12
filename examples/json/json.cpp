@@ -68,16 +68,42 @@ int main() {
 static TestRunner g([] (TestSuite& test_suite) {
     test_suite.file(__FILE__)
 
-    .name("integer compare").run([] (TestCase& test_case) {
-        test_case
-        .name("equal").run([] (TestParams& p) {
-            TestAssert{p}.fatal(false).is_true(false);
-            TestAssert{p}.fatal(false).is_true(false);
-            TestAssert{p}.equal(5, 5);
+    .name("positive").run([] (TestCase& test_case) {
+        test_case.fatal(false)
+        .name("boolean").run([] (TestParams& p) {
+            TestAssert{p}.is_true(true);
+            TestAssert{p}.is_false(false);
         })
-
-        .name("not equal").run([] (TestParams& p) {
-            TestAssert{p}.not_equal(5, 4);
+        .name("compare").run([] (TestParams& p) {
+            TestAssert{p}.equal(1, 1);
+            TestAssert{p}.not_equal(3, 4);
+            TestAssert{p}.greater_than(7, 6);
+            TestAssert{p}.greater_than_or_equal(4, 4);
+            TestAssert{p}.less_than(3, 5);
+            TestAssert{p}.less_than_or_equal(4, 4);
+        })
+        .name("string").run([] (TestParams& p) {
+            TestAssert{p}.equal("Test", "Test");
+            TestAssert{p}.not_equal("Test", "TestX");
+        });
+    })
+    .name("negative").run([] (TestCase& test_case) {
+        test_case.fatal(false)
+        .name("boolean").run([] (TestParams& p) {
+            TestAssert{p}.is_true(false);
+            TestAssert{p}.is_false(true);
+        })
+        .name("compare").run([] (TestParams& p) {
+            TestAssert{p}.equal(1, 2);
+            TestAssert{p}.not_equal(3, 3);
+            TestAssert{p}.greater_than(6, 6);
+            TestAssert{p}.greater_than_or_equal(4, 7);
+            TestAssert{p}.less_than(5, 5);
+            TestAssert{p}.less_than_or_equal(4, 3);
+        })
+        .name("string").run([] (TestParams& p) {
+            TestAssert{p}.equal("Test", "TestX");
+            TestAssert{p}.not_equal("Test", "Test");
         });
     });
 });

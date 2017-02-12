@@ -44,25 +44,28 @@
 
 #include <utest/test_reporter.hpp>
 #include <utest/test_message.hpp>
-#include <utest/test_value.hpp>
 
 namespace utest {
 
-class TestNumber;
-class TestString;
+class TestValue;
 
-namespace test_message { class TestAssertCompare; }
+namespace test_message {
+    class TestAssertBase;
+    class TestAssertCompare;
+}
 
 namespace test_reporter {
 
 class JSON final : public TestReporter {
 public:
+    static constexpr TestSize DEFAULT_INDENT{4};
+
     using TestReporter::TestReporter;
     using TestReporter::color;
 
-    static constexpr TestSize DEFAULT_INDENT{4};
-
     JSON& compress(bool enable = true) noexcept;
+
+    JSON& indent(TestSize step) noexcept;
 
     virtual void report(const TestMessage& message) noexcept override;
 
@@ -80,13 +83,21 @@ private:
 
     JSON& endl() noexcept;
 
+    JSON& append() noexcept;
+
     JSON& key(const TestString& str) noexcept;
+
+    JSON& key(const TestString& str, const TestString& value) noexcept;
+
+    JSON& key(const TestString& str, const TestNumber& value) noexcept;
 
     JSON& name(const TestString& str) noexcept;
 
     JSON& write(const TestString& str) noexcept;
 
     JSON& write(const TestNumber& number) noexcept;
+
+    JSON& write_value(const TestValue& value) noexcept;
 
     template<TestSize... N>
     JSON& write(const TestNumber& number,
@@ -105,6 +116,15 @@ private:
     template<TestMessage::Type T>
     void report(const TestMessage& message) noexcept;
 
+    void report(const TestString& str,
+            const test_message::TestAssertBase& base) noexcept;
+
+    void report(const TestString& str,
+            const test_message::TestAssertCompare& compare) noexcept;
+
+    void report_exception(const TestString& str,
+            const TestMessage& message) noexcept;
+
     TestSize m_indent{0};
     TestSize m_indent_step{DEFAULT_INDENT};
     bool m_compress{false};
@@ -112,7 +132,14 @@ private:
     bool m_next_test_case{false};
     bool m_next_test_assert{false};
     bool m_test_asserts{false};
+    bool m_explanation{false};
 };
+
+inline auto
+JSON::indent(TestSize step) noexcept -> JSON& {
+    m_indent_step = step;
+    return *this;
+}
 
 inline auto
 JSON::compress(bool enable) noexcept -> JSON& {

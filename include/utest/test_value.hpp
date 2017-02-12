@@ -121,11 +121,6 @@ private:
     };
 };
 
-inline
-TestValue::TestValue(const TestNumber& value) noexcept :
-    m_type{NUMBER}, m_number{value}
-{ }
-
 template<TestSize N> inline
 TestValue::TestValue(const char (&arr)[N]) noexcept :
     m_type{STRING}, m_string{arr}

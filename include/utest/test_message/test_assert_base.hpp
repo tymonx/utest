@@ -83,6 +83,11 @@ TestAssertBase::status() const noexcept -> TestStatus {
     return m_test_assert.status();
 }
 
+template<> inline auto
+get(const TestMessage& msg) noexcept -> const TestAssertBase& {
+    return reinterpret_cast<const TestAssertBase&>(msg);
+}
+
 }
 }
 

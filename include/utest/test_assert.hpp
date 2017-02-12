@@ -236,7 +236,7 @@ TestAssert::greater_than(const T1& lhs, const T2& rhs) noexcept -> TestAssert& {
 template<typename T1, typename T2> auto
 TestAssert::greater_than_or_equal(const T1& lhs,
         const T2& rhs) noexcept -> TestAssert& {
-    if (!(lhs > rhs)) {
+    if (!(lhs >= rhs)) {
         greater_than_or_equal(TestValue{lhs}, TestValue{rhs});
     }
     return *this;
@@ -253,7 +253,7 @@ TestAssert::less_than(const T1& lhs, const T2& rhs) noexcept -> TestAssert& {
 template<typename T1, typename T2> auto
 TestAssert::less_than_or_equal(const T1& lhs,
         const T2& rhs) noexcept -> TestAssert& {
-    if (!(lhs < rhs)) {
+    if (!(lhs <= rhs)) {
         less_than_or_equal(TestValue{lhs}, TestValue{rhs});
     }
     return *this;
