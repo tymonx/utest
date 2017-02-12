@@ -1,5 +1,13 @@
 # ARM
 
+## Requirements
+
+* CMake 3.1 or later for project configuration
+* gcc-arm-none-eabi toolchain 4.8 or later
+* LCOV 1.13 or later for code coverage (optional)
+* QEMU 2.7.1 or later for emulating ARM target (optional)
+* Clang 3.5 or later for cross compilation using Clang (optional)
+
 ## Toolchain
 
 Download and unpack [gcc-arm-none-eabi][arm-toolchain] toolchain. Add
@@ -11,7 +19,7 @@ Build using gcc-arm-none-eabi toolchain:
 
 ```
 mkdir -p build && cd build
-cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-gcc-arm-none-eabi.cmake -DCMAKE_SYSTEM_PROCESSOR=cortex-m3 -DSEMIHOSTING=ON -DEXAMPLES=ON ..
+cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-gcc-arm-none-eabi.cmake -DSEMIHOSTING=ON -DEXAMPLES=ON ..
 make
 ```
 
@@ -19,14 +27,42 @@ Build using Clang compiler and GCC linker from gcc-arm-none-eabi toolchain:
 
 ```
 mkdir -p build && cd build
-cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-clang-arm-none-eabi.cmake -DCMAKE_SYSTEM_PROCESSOR=cortex-m3 -DSEMIHOSTING=ON -DEXAMPLES=ON ..
+cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-clang-arm-none-eabi.cmake -DSEMIHOSTING=ON -DEXAMPLES=ON ..
 make
 ```
 
 Run factorial example using QEMU:
 
 ```
-qemu-arm -cpu cortex-m3 ./bin/factorial
+qemu-arm ./bin/factorial
+```
+
+## Build and run tests with code coverage results
+
+Build tests for code coverage:
+
+```
+mkdir -p build && cd build
+cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-gcc-arm-none-eabi.cmake -DSEMIHOSTING=ON -DTESTS=ON -DCMAKE_BUILD_TYPE=Coverage ..
+make
+```
+
+Run tests for µTest:
+
+```
+make test
+```
+
+Generate code coverage results:
+
+```
+make code_coverage
+```
+
+View code coverage results:
+
+```
+<your_browser> ./coverage/index.html
 ```
 
 ## Build examples for embedded target
