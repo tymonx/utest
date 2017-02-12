@@ -1,9 +1,11 @@
 # µTest
 
-[![Join the chat at https://gitter.im/utest-embedded/Lobby](https://badges.gitter.im/utest-embedded/Lobby.svg)](https://gitter.im/utest-embedded/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Language](https://img.shields.io/badge/language-C++-blue.svg?style=flat)](https://isocpp.org/)
+[![Standard](https://img.shields.io/badge/c%2B%2B-11/14/17-blue.svg?style=flat)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization)
 [![License (3-Clause BSD)](https://img.shields.io/badge/license-BSD%203--Clause-blue.svg?style=flat)](http://opensource.org/licenses/BSD-3-Clause)
 [![Build Status](https://travis-ci.org/tymonx/utest.svg?branch=master)](https://travis-ci.org/tymonx/utest)
 [![Coverage Status](https://coveralls.io/repos/github/tymonx/utest/badge.svg?branch=master)](https://coveralls.io/github/tymonx/utest?branch=master)
+[![Join the chat at https://gitter.im/utest-embedded/Lobby](https://badges.gitter.im/utest-embedded/Lobby.svg)](https://gitter.im/utest-embedded/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Lightweight unit testing framework mainly for C++ and also for C projects. Suitable for embedded devices.
 

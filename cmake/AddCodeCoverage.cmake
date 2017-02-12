@@ -65,22 +65,26 @@ if (CMAKE_BUILD_TYPE MATCHES "Coverage")
         COMMAND ${LCOV_COMMAND}
             --capture
             --gcov-tool ${GCOV_COMMAND}
+            --base-directory ${CMAKE_SOURCE_DIR}
             --initial
             --directory .
             --output-file coverage.base
         COMMAND ${LCOV_COMMAND}
             --capture
             --gcov-tool ${GCOV_COMMAND}
+            --base-directory ${CMAKE_SOURCE_DIR}
             --directory .
             --output-file coverage.run
         COMMAND ${LCOV_COMMAND}
             --gcov-tool ${GCOV_COMMAND}
+            --base-directory ${CMAKE_SOURCE_DIR}
             --add-tracefile coverage.base
             --add-tracefile coverage.run
             --directory .
             --output-file coverage.total
         COMMAND ${LCOV_COMMAND}
             --gcov-tool ${GCOV_COMMAND}
+            --base-directory ${CMAKE_SOURCE_DIR}
             --extract coverage.total */src/*.cpp
             --extract coverage.total */src/*.hpp
             --extract coverage.total */include/utest/*.hpp
