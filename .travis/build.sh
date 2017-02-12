@@ -48,24 +48,24 @@ gcc)
     mkdir -p build
     cd build
     cmake -DCMAKE_C_COMPILER=$C_COMPILER -DCMAKE_CXX_COMPILER=$CXX_COMPILER \
-        -DEXAMPLES=ON -DTHREADS=OFF .. && make
-    ./bin/simple
+        -DEXAMPLES=ON -DTHREADS=OFF -DTESTS=ON .. && make
+    make test
     cd -
     ;;
 clang)
     mkdir -p build
     cd build
     cmake -DCMAKE_C_COMPILER=$C_COMPILER -DCMAKE_CXX_COMPILER=$CXX_COMPILER \
-        -DEXAMPLES=ON .. && make
-    ./bin/simple
+        -DEXAMPLES=ON -DTESTS=ON .. && make
+    make test
     cd -
     ;;
 gcc-arm-none-eabi)
     mkdir -p build
     cd build
     cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-gcc-arm-none-eabi.cmake \
-        -DEXAMPLES=ON -DSEMIHOSTING=ON .. && make
-    qemu-arm ./bin/simple
+        -DEXAMPLES=ON -DSEMIHOSTING=ON -DTESTS=ON .. && make
+    make test
     cd -
     ;;
 clang-arm-none-eabi)
@@ -73,8 +73,8 @@ clang-arm-none-eabi)
     cd build
     cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-clang-arm-none-eabi.cmake \
         -DCMAKE_C_COMPILER=$C_COMPILER -DCMAKE_CXX_COMPILER=$CXX_COMPILER \
-        -DEXAMPLES=ON -DSEMIHOSTING=ON .. && make
-    qemu-arm ./bin/simple
+        -DEXAMPLES=ON -DSEMIHOSTING=ON -DTESTS=ON .. && make
+    make test
     cd -
     ;;
 *)

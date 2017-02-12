@@ -27,48 +27,36 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-cmake_minimum_required(VERSION 3.1)
-project(utest C CXX)
-
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_LIST_DIR}/cmake)
-
-if (CMAKE_TOOLCHAIN_FILE AND CMAKE_SYSTEM_NAME MATCHES "Generic")
-    option(MEMORY_CHECK "Enable/disable memory checks" OFF)
-    option(EXCEPTIONS "Enable/disable exceptions" OFF)
-    option(RTTI "Enable/disable rtti" OFF)
-    option(THREADS "Enable/disable threads" OFF)
-else()
-    option(MEMORY_CHECK "Enable/disable memory checks" ON)
-    option(EXCEPTIONS "Enable/disable exceptions" ON)
-    option(RTTI "Enable/disable rtti" ON)
-    option(THREADS "Enable/disable threads" ON)
+if (NOT TESTS)
+    return()
 endif()
 
-if (CMAKE_BUILD_TYPE MATCHES "MinSizeRel")
-    option(LTO "Enable/disable link time optimization" ON)
-else()
-    option(LTO "Enable/disable link time optimization" OFF)
+set(TEST_RUNNER)
+
+if (CMAKE_SYSTEM_NAME MATCHES "Generic")
+    if (CMAKE_SYSTEM_PROCESSOR MATCHES "cortex*")
+        find_program(QEMU_ARM qemu-arm)
+
+        if (QEMU_ARM)
+            message(STATUS "TEST_RUNNER is set to ${QEMU_ARM}")
+            set(TEST_RUNNER ${QEMU_ARM})
+        endif()
+    endif()
+elseif (MEMORY_CHECK AND CMAKE_SYSTEM_NAME MATCHES "Linux")
+    find_program(VALGRIND_COMMAND valgrind)
+
+    if (VALGRIND_COMMAND)
+        message(STATUS "TEST_RUNNER is set to ${VALGRIND_COMMAND}")
+        set(TEST_RUNNER ${VALGRIND_COMMAND}
+            --tool=memcheck
+            --leak-check=full
+            --show-leak-kinds=all
+            --errors-for-leak-kinds=all
+            --error-exitcode=1
+        )
+    endif()
 endif()
 
-option(TESTS "Enable/disable tests" OFF)
-option(EXAMPLES "Enable/disable examples" OFF)
-
-include(AddGnuCompiler)
-include(AddClangCompiler)
-include(AddThreads)
-include(AddTestRunner)
-
-include_directories(include)
-
-install(DIRECTORY include/utest DESTINATION include FILES_MATCHING PATTERN "*.hpp")
-
-add_subdirectory(src)
-
-if (EXAMPLES)
-    add_subdirectory(examples)
-endif()
-
-if (TESTS)
-    enable_testing()
-    add_subdirectory(tests)
+if (NOT TEST_RUNNER)
+    message(STATUS "TEST_RUNNER is not set. Run tests normally")
 endif()
