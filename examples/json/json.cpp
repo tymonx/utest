@@ -50,15 +50,31 @@ using namespace utest;
 
 int main() {
     test_writer::File out{stdout};
-
-    TestWriter* writers[]{
-        &out
+    test_writer::File json_file[2]{
+        {"pretty.json"},
+        {"compact.json"}
     };
 
-    test_reporter::JSON json{writers};
+    TestWriter* writers[][2]{
+        {
+            &out,
+            &json_file[0]
+        },
+        {
+            &json_file[1]
+        }
+    };
+
+    test_reporter::JSON json[2]{
+        {writers[0]},
+        {writers[1]}
+    };
+
+    json[1].compress();
 
     TestReporter* reporters[]{
-        &json
+        &json[0],
+        &json[1]
     };
 
     return TestStatus::PASS == Test{reporters}.run().status()
