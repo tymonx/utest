@@ -8,7 +8,7 @@ cache:
    - $HOME/toolchains
    - $HOME/qemu
 
-env: TOOLCHAIN=gcc C_COMPILER=gcc-6 CXX_COMPILER=g++-6
+env: TOOLCHAIN=gcc C_COMPILER=gcc-6 CXX_COMPILER=g++-6 BUILD_TYPE=Coverage
 
 addons:
   apt:
@@ -18,7 +18,8 @@ addons:
     packages:
      - cmake cmake-data
      - gcc-6 g++-6
-       - valgrind
+     - valgrind
+     - lcov
 
 matrix:
   include:
@@ -115,7 +116,7 @@ matrix:
            - clang-3.5
            - valgrind
 
-    - env: TOOLCHAIN=gcc-arm-none-eabi TOOLCHAIN_VERSION=6.2
+    - env: TOOLCHAIN=gcc-arm-none-eabi TOOLCHAIN_VERSION=6.2 BUILD_TYPE=MinSizeRel
       addons:
         apt:
           sources:
@@ -124,7 +125,7 @@ matrix:
            - lib32z1 lib32bz2-1.0 lib32ncurses5
            - cmake cmake-data
 
-    - env: TOOLCHAIN=gcc-arm-none-eabi TOOLCHAIN_VERSION=5.4
+    - env: TOOLCHAIN=gcc-arm-none-eabi TOOLCHAIN_VERSION=5.4 BUILD_TYPE=MinSizeRel
       addons:
         apt:
           sources:
@@ -133,7 +134,7 @@ matrix:
            - lib32z1 lib32bz2-1.0 lib32ncurses5
            - cmake cmake-data
 
-    - env: TOOLCHAIN=gcc-arm-none-eabi TOOLCHAIN_VERSION=4.9
+    - env: TOOLCHAIN=gcc-arm-none-eabi TOOLCHAIN_VERSION=4.9 BUILD_TYPE=MinSizeRel
       addons:
         apt:
           sources:
@@ -142,7 +143,7 @@ matrix:
            - lib32z1 lib32bz2-1.0 lib32ncurses5
            - cmake cmake-data
 
-    - env: TOOLCHAIN=gcc-arm-none-eabi TOOLCHAIN_VERSION=4.8
+    - env: TOOLCHAIN=gcc-arm-none-eabi TOOLCHAIN_VERSION=4.8 BUILD_TYPE=MinSizeRel
       addons:
         apt:
           sources:
@@ -151,7 +152,7 @@ matrix:
            - lib32z1 lib32bz2-1.0 lib32ncurses5
            - cmake cmake-data
 
-    - env: TOOLCHAIN=clang-arm-none-eabi TOOLCHAIN_VERSION=5.4 C_COMPILER=clang-3.9 CXX_COMPILER=clang++-3.9
+    - env: TOOLCHAIN=clang-arm-none-eabi TOOLCHAIN_VERSION=5.4 C_COMPILER=clang-3.9 CXX_COMPILER=clang++-3.9 BUILD_TYPE=MinSizeRel
       addons:
         apt:
           sources:

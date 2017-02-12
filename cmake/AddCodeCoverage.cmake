@@ -27,49 +27,51 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-cmake_minimum_required(VERSION 3.1)
-project(utest C CXX)
+if (CMAKE_BUILD_TYPE MATCHES "Coverage")
+    if (NOT CMAKE_CXX_COMPILER_ID MATCHES GNU)
+        message(FATAL_ERROR "Code coverage is only supported by GNU compiler")
+    endif()
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_LIST_DIR}/cmake)
+    find_program(LCOV_COMMAND lcov)
+    if (NOT LCOV_COMMAND)
+        message(FATAL_ERROR "Cannot find lcov command")
+    endif()
 
-if (CMAKE_TOOLCHAIN_FILE AND CMAKE_SYSTEM_NAME MATCHES "Generic")
-    option(MEMORY_CHECK "Enable/disable memory checks" OFF)
-    option(EXCEPTIONS "Enable/disable exceptions" OFF)
-    option(RTTI "Enable/disable rtti" OFF)
-    option(THREADS "Enable/disable threads" OFF)
-else()
-    option(MEMORY_CHECK "Enable/disable memory checks" ON)
-    option(EXCEPTIONS "Enable/disable exceptions" ON)
-    option(RTTI "Enable/disable rtti" ON)
-    option(THREADS "Enable/disable threads" ON)
-endif()
+    find_program(GENHTML_COMMAND genhtml)
+    if (NOT GENHTML_COMMAND)
+        message(FATAL_ERROR "Cannot find genhtml command")
+    endif()
 
-if (CMAKE_BUILD_TYPE MATCHES "MinSizeRel")
-    option(LTO "Enable/disable link time optimization" ON)
-else()
-    option(LTO "Enable/disable link time optimization" OFF)
-endif()
+    add_custom_target(code_coverage
+        COMMAND ${LCOV_COMMAND}
+            --capture
+            --initial
+            --directory .
+            --output-file coverage.base
+        COMMAND ${LCOV_COMMAND}
+            --capture
+            --directory .
+            --output-file coverage.run
+        COMMAND ${LCOV_COMMAND}
+            --add-tracefile coverage.base
+            --add-tracefile coverage.run
+            --directory .
+            --output-file coverage.total
+        COMMAND ${LCOV_COMMAND}
+            --extract coverage.total */src/*.cpp
+            --extract coverage.total */src/*.hpp
+            --extract coverage.total */include/utest/*.hpp
+            --output-file coverage.info
+        COMMAND ${GENHTML_COMMAND}
+            --legend
+            --title "µTest - unit testing framework"
+            --demangle-cpp
+            --output-directory coverage
+            coverage.info
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    )
 
-option(TESTS "Enable/disable tests" OFF)
-option(EXAMPLES "Enable/disable examples" OFF)
-
-include(AddCodeCoverage)
-include(AddGnuCompiler)
-include(AddClangCompiler)
-include(AddThreads)
-include(AddTestRunner)
-
-include_directories(include)
-
-install(DIRECTORY include/utest DESTINATION include FILES_MATCHING PATTERN "*.hpp")
-
-add_subdirectory(src)
-
-if (EXAMPLES)
-    add_subdirectory(examples)
-endif()
-
-if (TESTS)
-    enable_testing()
-    add_subdirectory(tests)
+    message(STATUS "Enabled code coverage support")
+else ()
+    message(STATUS "Disabled code coverage support")
 endif()

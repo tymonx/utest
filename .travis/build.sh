@@ -31,6 +31,13 @@
 set -e
 set -u
 
+function run_code_coverage {
+    if [[ $BUILD_TYPE =~ Coverage ]]; then
+        echo "Run code coverage"
+        make code_coverage
+    fi
+}
+
 if [ -z ${TOOLCHAIN+x} ]; then
     TOOLCHAIN=gcc
 fi
@@ -43,38 +50,53 @@ if [ -z ${CXX_COMPILER+x} ]; then
     CXX_COMPILER=g++
 fi
 
+if [ -z ${BUILD_TYPE+x} ]; then
+    BUILD_TYPE=Release
+fi
+
 case $TOOLCHAIN in
 gcc)
-    mkdir -p build
-    cd build
+    mkdir -p build && cd build
     cmake -DCMAKE_C_COMPILER=$C_COMPILER -DCMAKE_CXX_COMPILER=$CXX_COMPILER \
-        -DEXAMPLES=ON -DTHREADS=OFF -DTESTS=ON .. && make
+        -DEXAMPLES=ON -DTHREADS=OFF -DTESTS=ON \
+        -DCMAKE_BUILD_TYPE=$BUILD_TYPE .. && make
     make test
+
+    run_code_coverage
+
     cd -
     ;;
 clang)
-    mkdir -p build
-    cd build
+    mkdir -p build && cd build
     cmake -DCMAKE_C_COMPILER=$C_COMPILER -DCMAKE_CXX_COMPILER=$CXX_COMPILER \
-        -DEXAMPLES=ON -DTESTS=ON .. && make
+        -DEXAMPLES=ON -DTESTS=ON -DCMAKE_BUILD_TYPE=$BUILD_TYPE .. && make
     make test
+
+    run_code_coverage
+
     cd -
     ;;
 gcc-arm-none-eabi)
-    mkdir -p build
-    cd build
+    mkdir -p build && cd build
     cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-gcc-arm-none-eabi.cmake \
-        -DEXAMPLES=ON -DSEMIHOSTING=ON -DTESTS=ON .. && make
+        -DEXAMPLES=ON -DSEMIHOSTING=ON -DTESTS=ON \
+        -DCMAKE_BUILD_TYPE=$BUILD_TYPE .. && make
     make test
+
+    run_code_coverage
+
     cd -
     ;;
 clang-arm-none-eabi)
-    mkdir -p build
-    cd build
+    mkdir -p build && cd build
     cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-clang-arm-none-eabi.cmake \
         -DCMAKE_C_COMPILER=$C_COMPILER -DCMAKE_CXX_COMPILER=$CXX_COMPILER \
-        -DEXAMPLES=ON -DSEMIHOSTING=ON -DTESTS=ON .. && make
+        -DEXAMPLES=ON -DSEMIHOSTING=ON -DTESTS=ON \
+        -DCMAKE_BUILD_TYPE=$BUILD_TYPE .. && make
     make test
+
+    run_code_coverage
+
     cd -
     ;;
 *)
