@@ -50,7 +50,7 @@ elseif (MEMORY_CHECK AND CMAKE_SYSTEM_NAME MATCHES "Linux")
         set(TEST_RUNNER ${VALGRIND_COMMAND}
             --tool=memcheck
             --leak-check=full
-            --show-leak-kinds=all
+            --show-reachable=yes
             --errors-for-leak-kinds=all
             --error-exitcode=1
         )
