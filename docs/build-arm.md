@@ -4,7 +4,7 @@
 
 * CMake 3.1 or later for project configuration
 * gcc-arm-none-eabi toolchain 4.8 or later
-* LCOV 1.13 or later for code coverage (optional)
+* LCOV 1.12 or later for code coverage (optional)
 * QEMU 2.7.1 or later for emulating ARM target (optional)
 * Clang 3.5 or later for cross compilation using Clang (optional)
 
