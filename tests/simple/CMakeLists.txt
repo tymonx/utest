@@ -34,8 +34,10 @@ add_executable(test-simple
 set_target_properties(test-simple PROPERTIES OUTPUT_NAME test_simple)
 target_link_libraries(test-simple utest-main utest)
 
-add_test(NAME test-simple COMMAND ${TEST_RUNNER}
-    ${CMAKE_BINARY_DIR}/tests/test_simple)
+if (DEFINED TEST_RUNNER)
+    add_test(NAME test-simple COMMAND ${TEST_RUNNER}
+        ${CMAKE_BINARY_DIR}/tests/test_simple)
+endif()
 
 if (CMAKE_CXX_COMPILER_ID MATCHES Clang)
     set_source_files_properties(simple.cpp PROPERTIES

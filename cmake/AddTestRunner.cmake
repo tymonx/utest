@@ -35,18 +35,21 @@ set(TEST_RUNNER)
 
 if (CMAKE_SYSTEM_NAME MATCHES "Generic")
     if (CMAKE_SYSTEM_PROCESSOR MATCHES "cortex*")
-        find_program(QEMU_ARM qemu-arm)
+        find_program(QEMU_ARM_COMMAND qemu-arm)
 
-        if (QEMU_ARM)
-            message(STATUS "TEST_RUNNER is set to ${QEMU_ARM}")
-            set(TEST_RUNNER ${QEMU_ARM})
+        if (QEMU_ARM_COMMAND)
+            message(STATUS "Tests will be run through ${QEMU_ARM_COMMAND}")
+            set(TEST_RUNNER ${QEMU_ARM_COMMAND})
+        else()
+            message(WARNING "Tests cannot be run, qemu-arm not found")
+            unset(TEST_RUNNER)
         endif()
     endif()
 elseif (MEMORY_CHECK AND CMAKE_SYSTEM_NAME MATCHES "Linux")
     find_program(VALGRIND_COMMAND valgrind)
 
     if (VALGRIND_COMMAND)
-        message(STATUS "TEST_RUNNER is set to ${VALGRIND_COMMAND}")
+        message(STATUS "Tests will be run through ${VALGRIND_COMMAND}")
         set(TEST_RUNNER ${VALGRIND_COMMAND}
             -v
             --tool=memcheck
@@ -56,8 +59,4 @@ elseif (MEMORY_CHECK AND CMAKE_SYSTEM_NAME MATCHES "Linux")
             --error-exitcode=1
         )
     endif()
-endif()
-
-if (NOT TEST_RUNNER)
-    message(STATUS "TEST_RUNNER is not set. Run tests normally")
 endif()
