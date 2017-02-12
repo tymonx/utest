@@ -35,6 +35,7 @@ function run_code_coverage {
     if [[ $BUILD_TYPE =~ Coverage ]]; then
         echo "Run code coverage"
         make code_coverage
+        coveralls-lcov coverage.info
     fi
 }
 

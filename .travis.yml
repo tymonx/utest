@@ -164,6 +164,9 @@ matrix:
            - cmake cmake-data
            - clang-3.9
 
+install:
+ - gem install coveralls-lcov
+
 before_script:
  - ./.travis/setup.sh
  - export PATH=/tmp/lcov/bin:$PATH
