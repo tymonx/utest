@@ -91,23 +91,24 @@ function install_qemu {
     fi
 }
 
+echo "Preparing tools..."
+
+LCOV_ROOT=$HOME/lcov
+LCOV_VERSION=1.13
+LCOV_URL=http://downloads.sourceforge.net/ltp
+LCOV_TAR=lcov-$LCOV_VERSION.tar.gz
+
+install_lcov
+
 case $TOOLCHAIN in
 *-arm-none-eabi)
-    echo "Preparing tools..."
-
     QEMU_ROOT=$HOME/qemu
     QEMU_VERSION=2.8.0
     QEMU_URL=http://download.qemu-project.org
     QEMU_TAR=qemu-$QEMU_VERSION.tar.xz
 
-    LCOV_ROOT=$HOME/lcov
-    LCOV_VERSION=1.13
-    LCOV_URL=http://downloads.sourceforge.net/ltp
-    LCOV_TAR=lcov-$LCOV_VERSION.tar.gz
-
     TOOLCHAIN_ROOT=$HOME/toolchains
 
-    install_lcov
     install_qemu
 
     case $TOOLCHAIN_VERSION in
