@@ -83,7 +83,7 @@ template<>
 void JSON::report<TestMessage::TEST_BEGIN>(
         const TestMessage&) noexcept {
     indent().write("{").endl();
-    indent<INCREASE>().key("test suite").write("[");
+    indent<INCREASE>().key("testSuites").write("[");
     m_indent += m_indent_step;
     m_next_test_suite = false;
 }
@@ -115,7 +115,7 @@ void JSON::report<TestMessage::TEST_SUITE_BEGIN>(
 
     indent().write("{").endl();
     indent<INCREASE>().key(NAME, msg.name());
-    append().key("test case").write("[");
+    append().key("testCases").write("[");
     m_indent += m_indent_step;
     m_next_test_case = false;
 }
@@ -197,51 +197,51 @@ void JSON::report<TestMessage::TEST_ASSERT_FAIL>(
 template<>
 void JSON::report<TestMessage::TEST_ASSERT_TRUE>(
         const TestMessage& message) noexcept {
-    report("is true", get<TestAssertBase>(message));
+    report("isTrue", get<TestAssertBase>(message));
     append().key(VALUE).write("false");
 }
 
 template<>
 void JSON::report<TestMessage::TEST_ASSERT_FALSE>(
         const TestMessage& message) noexcept {
-    report("is false", get<TestAssertBase>(message));
+    report("isFalse", get<TestAssertBase>(message));
     append().key(VALUE).write("true");
 }
 
 template<>
 void JSON::report<TestMessage::TEST_ASSERT_EQUAL>(
         const TestMessage& message) noexcept {
-    report("==", get<TestAssertCompare>(message));
+    report("isEqual", get<TestAssertCompare>(message));
 }
 
 template<>
 void JSON::report<TestMessage::TEST_ASSERT_NOT_EQUAL>(
         const TestMessage& message) noexcept {
-    report("!=", get<TestAssertCompare>(message));
+    report("isNotEqual", get<TestAssertCompare>(message));
 }
 
 template<>
 void JSON::report<TestMessage::TEST_ASSERT_GREATER_THAN>(
         const TestMessage& message) noexcept {
-    report(">", get<TestAssertCompare>(message));
+    report("isGreaterThan", get<TestAssertCompare>(message));
 }
 
 template<>
 void JSON::report<TestMessage::TEST_ASSERT_GREATER_THAN_OR_EQUAL>(
         const TestMessage& message) noexcept {
-    report(">=", get<TestAssertCompare>(message));
+    report("isGreaterThanOrEqual", get<TestAssertCompare>(message));
 }
 
 template<>
 void JSON::report<TestMessage::TEST_ASSERT_LESS_THAN>(
         const TestMessage& message) noexcept {
-    report("<", get<TestAssertCompare>(message));
+    report("isLessThan", get<TestAssertCompare>(message));
 }
 
 template<>
 void JSON::report<TestMessage::TEST_ASSERT_LESS_THAN_OR_EQUAL>(
         const TestMessage& message) noexcept {
-    report("<=", get<TestAssertCompare>(message));
+    report("isLessThanOrEqual", get<TestAssertCompare>(message));
 }
 
 #if defined(UTEST_USE_EXCEPTIONS)
@@ -249,7 +249,7 @@ void JSON::report<TestMessage::TEST_ASSERT_LESS_THAN_OR_EQUAL>(
 template<>
 void JSON::report<TestMessage::TEST_ASSERT_NO_THROW>(
         const TestMessage& message) noexcept {
-    report("throw no exception", get<TestAssertBase>(message));
+    report("throwNoException", get<TestAssertBase>(message));
     const auto& msg = get<TestAssertNoThrow>(message);
 
     append().key(VALUE, "it throws an exception");
@@ -261,14 +261,14 @@ void JSON::report<TestMessage::TEST_ASSERT_NO_THROW>(
 template<>
 void JSON::report<TestMessage::TEST_ASSERT_ANY_THROW>(
         const TestMessage& message) noexcept {
-    report("throw any exception", get<TestAssertBase>(message));
+    report("throwAnyException", get<TestAssertBase>(message));
     append().key(VALUE, "it throws nothing");
 }
 
 template<>
 void JSON::report<TestMessage::TEST_ASSERT_EXPECTED_THROW>(
         const TestMessage& message) noexcept {
-    report("throw expected exception", get<TestAssertBase>(message));
+    report("throwExpectedException", get<TestAssertBase>(message));
     const auto& msg = get<TestAssertExpectedThrow>(message);
 
     if (msg.throws()) {
@@ -420,7 +420,7 @@ void JSON::report(const TestMessage& message) noexcept {
 void JSON::report_exception(const TestString& str,
         const TestMessage& message) noexcept {
 #if defined(UTEST_USE_EXCEPTIONS)
-    report("throw exception", get<TestAssertBase>(message));
+    report("throwException", get<TestAssertBase>(message));
     append().key(VALUE, str);
 #else
     (void)str;
@@ -460,7 +460,7 @@ JSON& JSON::write_value(const TestValue& value) noexcept {
 
 void JSON::report(const TestString& str, const TestAssertBase& base) noexcept {
     if (!m_test_asserts) {
-        append().key("assert").write("[");
+        append().key("testAsserts").write("[");
         m_indent += m_indent_step;
         m_test_asserts = true;
     }
