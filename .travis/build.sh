@@ -49,11 +49,6 @@ gcc)
     cd build
     cmake -DCMAKE_C_COMPILER=$C_COMPILER -DCMAKE_CXX_COMPILER=$CXX_COMPILER \
         -DEXAMPLES=ON -DTHREADS=OFF -DTESTS=ON .. && make
-    valgrind --version
-    valgrind --help
-    valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all \
-        --errors-for-leak-kinds=all --error-exitcode=1 ./tests/test_simple
-
     make test
     cd -
     ;;
