@@ -44,16 +44,9 @@ Build tests for code coverage:
 ```
 mkdir -p build && cd build
 cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-gcc-arm-none-eabi.cmake -DSEMIHOSTING=ON -DTESTS=ON -DCMAKE_BUILD_TYPE=Coverage ..
-make
 ```
 
-Run tests for µTest:
-
-```
-make test
-```
-
-Generate code coverage results:
+Build, run tests and generate code coverage results:
 
 ```
 make code_coverage

@@ -62,13 +62,11 @@ if (CMAKE_BUILD_TYPE MATCHES "Coverage")
     message(STATUS "Found genhtml: ${GENHTML_COMMAND}")
 
     add_custom_target(code_coverage
+        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target all
         COMMAND ${LCOV_COMMAND}
-            --capture
-            --gcov-tool ${GCOV_COMMAND}
-            --base-directory ${CMAKE_SOURCE_DIR}
-            --initial
+            --zerocounters
             --directory .
-            --output-file coverage.base
+        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target test
         COMMAND ${LCOV_COMMAND}
             --capture
             --gcov-tool ${GCOV_COMMAND}
@@ -78,16 +76,9 @@ if (CMAKE_BUILD_TYPE MATCHES "Coverage")
         COMMAND ${LCOV_COMMAND}
             --gcov-tool ${GCOV_COMMAND}
             --base-directory ${CMAKE_SOURCE_DIR}
-            --add-tracefile coverage.base
-            --add-tracefile coverage.run
-            --directory .
-            --output-file coverage.total
-        COMMAND ${LCOV_COMMAND}
-            --gcov-tool ${GCOV_COMMAND}
-            --base-directory ${CMAKE_SOURCE_DIR}
-            --extract coverage.total */src/*.cpp
-            --extract coverage.total */src/*.hpp
-            --extract coverage.total */include/utest/*.hpp
+            --extract coverage.run */src/*.cpp
+            --extract coverage.run */src/*.hpp
+            --extract coverage.run */include/utest/*.hpp
             --output-file coverage.info
         COMMAND ${GENHTML_COMMAND}
             --legend
