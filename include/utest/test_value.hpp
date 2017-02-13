@@ -45,6 +45,7 @@
 #include <utest/test_string.hpp>
 #include <utest/test_number.hpp>
 
+#include <string>
 #include <type_traits>
 
 namespace utest {
@@ -54,28 +55,23 @@ class TestAssert;
 class TestValue {
 public:
     template<typename T>
-    using enable_string_object = typename std::enable_if<
-            std::is_same<typename std::remove_cv<typename T::pointer>::type,
-                char*>::value
-        , int>::type;
-
-    template<typename T>
-    using enable_string_char = typename std::enable_if<
-            std::is_same<typename std::remove_cv<T>::type, char*>::value
-        , unsigned>::type;
-
-    template<typename T>
     using enable_pointer = typename std::enable_if<
             std::is_pointer<T>::value &&
             !std::is_same<typename std::remove_cv<T>::type, char*>::value
-        , long>::type;
+        , int>::type;
 
     template<typename T>
     using enable_object = typename std::enable_if<
+            !std::is_enum<T>::value &&
             !std::is_pointer<T>::value &&
             !std::is_integral<T>::value &&
             !std::is_floating_point<T>::value
-        , unsigned long>::type;
+        , unsigned>::type;
+
+    template<typename T>
+    using enable_enum = typename std::enable_if<
+                std::is_enum<T>::value
+        , long>::type;
 
     enum Type {
         NUMBER,
@@ -97,20 +93,19 @@ private:
 
     TestValue(const TestString& value) noexcept;
 
+    TestValue(const std::string& value) noexcept;
+
     template<TestSize N>
     TestValue(const char (&arr)[N]) noexcept;
 
-    template<typename T, enable_string_object<T>>
+    template<typename T, enable_pointer<T> = 0>
     TestValue(const T& value) noexcept;
 
-    template<typename T, enable_string_char<T>>
+    template<typename T, enable_object<T> = 0>
     TestValue(const T& value) noexcept;
 
-    template<typename T, enable_pointer<T>>
-    TestValue(const T& value) noexcept;
-
-    template<typename T, enable_object<T>>
-    TestValue(const T& value) noexcept;
+    template<typename T, enable_enum<T> = 0>
+    TestValue(const T& e) noexcept;
 
     Type m_type;
 
@@ -121,19 +116,14 @@ private:
     };
 };
 
+inline
+TestValue::TestValue(const std::string& value) noexcept :
+    m_type{STRING}, m_string{value}
+{ }
+
 template<TestSize N> inline
 TestValue::TestValue(const char (&arr)[N]) noexcept :
     m_type{STRING}, m_string{arr}
-{ }
-
-template<typename T, TestValue::enable_string_object<T>> inline
-TestValue::TestValue(const T& value) noexcept :
-    m_type{STRING}, m_string{value}
-{ }
-
-template<typename T, TestValue::enable_string_char<T>> inline
-TestValue::TestValue(const T& value) noexcept :
-    m_type{STRING}, m_string{value}
 { }
 
 template<typename T, TestValue::enable_pointer<T>> inline
@@ -143,7 +133,12 @@ TestValue::TestValue(const T& value) noexcept :
 
 template<typename T, TestValue::enable_object<T>> inline
 TestValue::TestValue(const T& value) noexcept :
-    m_type{OBJECT}, m_object{value}
+    m_type{OBJECT}, m_object{static_cast<const void*>(&value)}
+{ }
+
+template<typename T, TestValue::enable_enum<T>> inline
+TestValue::TestValue(const T& e) noexcept :
+    TestValue{static_cast<typename std::underlying_type<T>::type>(e)}
 { }
 
 template<> inline auto

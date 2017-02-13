@@ -27,20 +27,20 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-add_executable(test-simple
-    simple.cpp
+add_executable(test-positive
+    positive.cpp
 )
 
-set_target_properties(test-simple PROPERTIES OUTPUT_NAME test_simple)
-target_link_libraries(test-simple utest-main utest)
+set_target_properties(test-positive PROPERTIES OUTPUT_NAME test_positive)
+target_link_libraries(test-positive utest-main utest)
 
 if (DEFINED TEST_RUNNER)
-    add_test(NAME test-simple COMMAND ${TEST_RUNNER}
-        ${CMAKE_BINARY_DIR}/tests/test_simple)
+    add_test(NAME test-positive COMMAND ${TEST_RUNNER}
+        ${CMAKE_BINARY_DIR}/tests/test_positive)
 endif()
 
 if (CMAKE_CXX_COMPILER_ID MATCHES Clang)
-    set_source_files_properties(simple.cpp PROPERTIES
+    set_source_files_properties(positive.cpp PROPERTIES
         COMPILE_FLAGS "-Wno-global-constructors"
     )
 endif()

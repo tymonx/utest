@@ -42,8 +42,8 @@
 #ifndef UTEST_TEST_ASSERT_HPP
 #define UTEST_TEST_ASSERT_HPP
 
-#include <utest/test_value.hpp>
 #include <utest/test_status.hpp>
+#include <utest/test_value.hpp>
 #include <utest/test_exception.hpp>
 
 #include <cstddef>
@@ -55,6 +55,14 @@ class TestParams;
 
 class TestAssert {
 public:
+    template<typename T1, typename T2>
+    using enable_equal_compare = typename std::enable_if<
+            !((std::is_floating_point<T1>::value ||
+             std::is_integral<T1>::value) &&
+            (std::is_floating_point<T2>::value ||
+             std::is_integral<T2>::value))
+        , int>::type;
+
     using TestRun = void(*)(TestParams& params);
 
     TestAssert(TestParams& params) noexcept;
@@ -79,10 +87,15 @@ public:
 
     TestAssert& is_false(bool value) noexcept;
 
-    template<typename T1, typename T2>
+    TestAssert& equal(const TestNumber& lhs, const TestNumber& rhs) noexcept;
+
+    TestAssert& not_equal(const TestNumber& lhs,
+            const TestNumber& rhs) noexcept;
+
+    template<typename T1, typename T2, enable_equal_compare<T1, T2> = 0>
     TestAssert& equal(const T1& lhs, const T2& rhs) noexcept;
 
-    template<typename T1, typename T2>
+    template<typename T1, typename T2, enable_equal_compare<T1, T2> = 0>
     TestAssert& not_equal(const T1& lhs, const T2& rhs) noexcept;
 
     template<typename T1, typename T2>
@@ -209,7 +222,26 @@ TestAssert::operator<<(double value) noexcept -> TestAssert& {
     return operator<<(TestNumber{value});
 }
 
-template<typename T1, typename T2> auto
+inline auto
+TestAssert::equal(const TestNumber& lhs,
+        const TestNumber& rhs) noexcept -> TestAssert& {
+    if (!(lhs == rhs)) {
+        equal(TestValue{lhs}, TestValue{rhs});
+    }
+    return *this;
+}
+
+inline auto
+TestAssert::not_equal(const TestNumber& lhs,
+        const TestNumber& rhs) noexcept -> TestAssert& {
+    if (!(lhs != rhs)) {
+        not_equal(TestValue{lhs}, TestValue{rhs});
+    }
+    return *this;
+}
+
+template<typename T1, typename T2,
+    TestAssert::enable_equal_compare<T1, T2>> auto
 TestAssert::equal(const T1& lhs, const T2& rhs) noexcept -> TestAssert& {
     if (!(lhs == rhs)) {
         equal(TestValue{lhs}, TestValue{rhs});
@@ -217,7 +249,8 @@ TestAssert::equal(const T1& lhs, const T2& rhs) noexcept -> TestAssert& {
     return *this;
 }
 
-template<typename T1, typename T2> auto
+template<typename T1, typename T2,
+    TestAssert::enable_equal_compare<T1, T2>> auto
 TestAssert::not_equal(const T1& lhs, const T2& rhs) noexcept -> TestAssert& {
     if (!(lhs != rhs)) {
         not_equal(TestValue{lhs}, TestValue{rhs});

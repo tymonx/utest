@@ -101,11 +101,11 @@ public:
     template<typename T, enable_floating<T> = 0>
     constexpr TestNumber(T value) noexcept;
 
-    constexpr operator Double() const noexcept;
+    explicit constexpr operator Double() const noexcept;
 
-    constexpr operator Int() const noexcept;
+    explicit constexpr operator Int() const noexcept;
 
-    constexpr operator Uint() const noexcept;
+    explicit constexpr operator Uint() const noexcept;
 
     template<typename T>
     T get() const noexcept;
