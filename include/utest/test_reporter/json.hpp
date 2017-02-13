@@ -63,7 +63,7 @@ public:
     using TestReporter::TestReporter;
     using TestReporter::color;
 
-    JSON& compress(bool enable = true) noexcept;
+    JSON& compact(bool enable = true) noexcept;
 
     JSON& indent(TestSize step) noexcept;
 
@@ -127,7 +127,7 @@ private:
 
     TestSize m_indent{0};
     TestSize m_indent_step{DEFAULT_INDENT};
-    bool m_compress{false};
+    bool m_compact{false};
     bool m_next_test_suite{false};
     bool m_next_test_case{false};
     bool m_next_test_assert{false};
@@ -142,8 +142,8 @@ JSON::indent(TestSize step) noexcept -> JSON& {
 }
 
 inline auto
-JSON::compress(bool enable) noexcept -> JSON& {
-    m_compress = enable;
+JSON::compact(bool enable) noexcept -> JSON& {
+    m_compact = enable;
     return *this;
 }
 

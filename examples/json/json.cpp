@@ -70,7 +70,7 @@ int main() {
         {writers[1]}
     };
 
-    json[1].compress();
+    json[1].compact();
 
     TestReporter* reporters[]{
         &json[0],

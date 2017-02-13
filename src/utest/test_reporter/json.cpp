@@ -483,7 +483,7 @@ void JSON::report(const TestString& str, const TestAssertBase& base) noexcept {
 }
 
 JSON& JSON::indent() noexcept {
-    if (!m_compress) {
+    if (!m_compact) {
         for (TestSize i = 0; i < m_indent; ++i) {
             write(" ");
         }
@@ -496,7 +496,7 @@ JSON& JSON::append() noexcept {
 }
 
 JSON& JSON::endl() noexcept {
-    if (!m_compress) {
+    if (!m_compact) {
         write("\n");
     }
     return *this;
@@ -512,7 +512,7 @@ JSON& JSON::key(const TestString& str, const TestNumber& value) noexcept {
 
 JSON& JSON::key(const TestString& str) noexcept {
     name(str).write(":");
-    if (!m_compress) {
+    if (!m_compact) {
         write(" ");
     }
     return *this;
