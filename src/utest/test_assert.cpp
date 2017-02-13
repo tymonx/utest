@@ -155,6 +155,22 @@ TestAssert& TestAssert::is_false(bool value) noexcept {
     return *this;
 }
 
+TestAssert& TestAssert::equal(const TestNumber& lhs,
+        const TestNumber& rhs) noexcept {
+    if (!(lhs == rhs)) {
+        equal(TestValue{lhs}, TestValue{rhs});
+    }
+    return *this;
+}
+
+TestAssert& TestAssert::not_equal(const TestNumber& lhs,
+        const TestNumber& rhs) noexcept {
+    if (!(lhs != rhs)) {
+        not_equal(TestValue{lhs}, TestValue{rhs});
+    }
+    return *this;
+}
+
 void TestAssert::equal(const TestValue& lhs, const TestValue& rhs) noexcept {
     m_status = TestStatus::FAIL;
     report(TestAssertEqual{*this, lhs, rhs});

@@ -222,24 +222,6 @@ TestAssert::operator<<(double value) noexcept -> TestAssert& {
     return operator<<(TestNumber{value});
 }
 
-inline auto
-TestAssert::equal(const TestNumber& lhs,
-        const TestNumber& rhs) noexcept -> TestAssert& {
-    if (!(lhs == rhs)) {
-        equal(TestValue{lhs}, TestValue{rhs});
-    }
-    return *this;
-}
-
-inline auto
-TestAssert::not_equal(const TestNumber& lhs,
-        const TestNumber& rhs) noexcept -> TestAssert& {
-    if (!(lhs != rhs)) {
-        not_equal(TestValue{lhs}, TestValue{rhs});
-    }
-    return *this;
-}
-
 template<typename T1, typename T2,
     TestAssert::enable_equal_compare<T1, T2>> auto
 TestAssert::equal(const T1& lhs, const T2& rhs) noexcept -> TestAssert& {
