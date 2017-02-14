@@ -90,6 +90,8 @@ public:
         (MAX_INTEGER_BUFFER < MAX_FLOATING_BUFFER)
         ? MAX_FLOATING_BUFFER : MAX_INTEGER_BUFFER;
 
+    using Buffer = char[MAX_STRING_BUFFER];
+
     constexpr TestNumber() noexcept;
 
     template<typename T, enable_signed<T> = 0>

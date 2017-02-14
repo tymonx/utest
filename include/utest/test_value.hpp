@@ -62,6 +62,8 @@ public:
 
     template<typename T>
     using enable_object = typename std::enable_if<
+            !std::is_same<T, TestString>::value &&
+            !std::is_same<T, TestSpan<char>>::value &&
             !std::is_enum<T>::value &&
             !std::is_pointer<T>::value &&
             !std::is_integral<T>::value &&

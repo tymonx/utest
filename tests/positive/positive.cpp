@@ -104,13 +104,24 @@ static TestRunner g([] (TestSuite& test_suite) {
             TestAssert{p}.greater_than(0.9, -1.4);
             TestAssert{p}.greater_than_or_equal(0.1, -0.3);
             TestAssert{p}.greater_than_or_equal(1.0, 1.0);
+            TestAssert{p}.is_true(TestNumber{-0.0}.is_signed());
+            TestAssert{p}.is_true(TestNumber{0.0}.is_unsigned());
         })
 
         .name("string").run([] (TestParams& p) {
+            TestNumber::Buffer buffer;
+
             TestAssert{p}.equal("Test", "Test");
             TestAssert{p}.not_equal("Test", "Text");
             TestAssert{p}.equal(TestString{"TEST"}.ignore_case(), "Test");
             TestAssert{p}.not_equal(TestString{"TEST"}.ignore_case(), "Text");
+            TestAssert{p}.equal(4, TestString::length("Test"));
+            TestAssert{p}.equal("0.0", to_string(0.0, buffer));
+            TestAssert{p}.equal("1.0", to_string(1.0, buffer));
+            TestAssert{p}.equal("-1.0", to_string(-1.0, buffer));
+            TestAssert{p}.equal("1.0e1", to_string(10.0, buffer));
+            TestAssert{p}.equal("-1.0e1", to_string(-10.0, buffer));
+            TestAssert{p}.equal("-1.0e-1", to_string(-0.10, buffer));
         })
 
         .name("exception").run([] (TestParams& p) {
