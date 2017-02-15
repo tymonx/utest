@@ -27,7 +27,20 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests)
+add_executable(test-negative
+    negative.cpp
+)
 
-add_subdirectory(positive)
-add_subdirectory(negative)
+set_target_properties(test-negative PROPERTIES OUTPUT_NAME test_negative)
+target_link_libraries(test-negative utest)
+
+if (DEFINED TEST_RUNNER)
+    add_test(NAME test-negative COMMAND ${TEST_RUNNER}
+        ${CMAKE_BINARY_DIR}/tests/test_negative)
+endif()
+
+if (CMAKE_CXX_COMPILER_ID MATCHES Clang)
+    set_source_files_properties(negative.cpp PROPERTIES
+        COMPILE_FLAGS "-Wno-global-constructors"
+    )
+endif()
