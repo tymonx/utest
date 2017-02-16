@@ -39,7 +39,7 @@ set_target_properties(test-writer-file PROPERTIES OUTPUT_NAME test_writer_file)
 target_link_libraries(test-writer-file utest)
 
 if (DEFINED TEST_RUNNER)
-    add_test(NAME test-writer-file COMMAND
+    add_test(NAME test-writer-file COMMAND ${TEST_RUNNER}
         ${CMAKE_BINARY_DIR}/tests/test_writer_file)
 endif()
 

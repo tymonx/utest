@@ -83,7 +83,6 @@ gcc-arm-none-eabi)
         -DEXAMPLES=ON -DSEMIHOSTING=ON -DTESTS=ON \
         -DCMAKE_BUILD_TYPE=$BUILD_TYPE .. && make
     make test
-    cat ./Testing/Temporary/LastTest.log
 
     run_code_coverage
 
