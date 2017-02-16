@@ -34,13 +34,13 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @file tests/tcp.cpp
+ * @file tests/udp.cpp
  *
  * @brief Main implementation
  */
 
 #include <utest/utest.hpp>
-#include <utest/test_writer/tcp.hpp>
+#include <utest/test_writer/udp.hpp>
 #include <utest/test_reporter/google_test.hpp>
 
 #include <memory>
@@ -53,8 +53,7 @@ using namespace utest;
 
 static int g_socket_code{-1};
 static int g_inet_pton_code{-1};
-static int g_connect_code{-1};
-static ssize_t g_write_code{-1};
+static ssize_t g_sendto_code{-1};
 static int g_close_code{-1};
 static bool g_new{false};
 
@@ -66,12 +65,9 @@ int inet_pton(int, const char*, void*) noexcept {
     return g_inet_pton_code;
 }
 
-int connect(int, const struct sockaddr*, socklen_t) {
-    return g_connect_code;
-}
-
-ssize_t write(int, const void*, size_t) {
-    return g_write_code;
+ssize_t sendto(int, const void*, size_t, int,
+        const struct sockaddr*, socklen_t) {
+    return g_sendto_code;
 }
 
 int close(int) {
@@ -88,34 +84,28 @@ void operator delete(void* ptr) noexcept {
 
 int main() {
     {
-        test_writer::TCP tcp{"127.0.0.1", 51234};
+        test_writer::UDP udp{"127.0.0.1", 51234};
     }
     {
         g_socket_code = 0;
         g_inet_pton_code = -1;
-        test_writer::TCP tcp{"127.0.0.1", 51234};
+        test_writer::UDP udp{"127.0.0.1", 51234};
     }
     {
         g_inet_pton_code = 0;
-        test_writer::TCP tcp{"127.0.0.1", 51234};
+        test_writer::UDP udp{"127.0.0.1", 51234};
     }
     {
-        g_inet_pton_code = 1;
-        errno = ECONNREFUSED;
-        test_writer::TCP tcp{"127.0.0.1", 51234, 1};
-    }
-    {
-        g_connect_code = 0;
-        errno = 0;
-        test_writer::TCP tcp{"127.0.0.1", 51234};
+        g_inet_pton_code = 16;
+        test_writer::UDP udp{"127.0.0.1", 51234};
     }
     {
         g_new = true;
-        test_writer::TCP tcp{"127.0.0.1", 51234};
+        test_writer::UDP udp{"127.0.0.1", 51234};
     }
     {
-        test_writer::TCP tcp{"127.0.0.1"};
-        TestWriter* writers[]{&tcp};
+        test_writer::UDP udp{"127.0.0.1"};
+        TestWriter* writers[]{&udp};
 
         test_reporter::GoogleTest google_test{writers};
         TestReporter* reporters[]{&google_test};
@@ -123,7 +113,7 @@ int main() {
         Test{reporters}.color().run();
     }
     {
-        std::unique_ptr<TestWriter> p{new test_writer::TCP{}};
+        std::unique_ptr<TestWriter> p{new test_writer::UDP{}};
     }
 
     return EXIT_SUCCESS;
