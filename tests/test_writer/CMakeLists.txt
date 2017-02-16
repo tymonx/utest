@@ -30,3 +30,21 @@
 if (UNIX)
     add_subdirectory(linux)
 endif()
+
+add_executable(test-writer-file
+    file.cpp
+)
+
+set_target_properties(test-writer-file PROPERTIES OUTPUT_NAME test_writer_file)
+target_link_libraries(test-writer-file utest)
+
+if (DEFINED TEST_RUNNER)
+    add_test(NAME test-writer-file COMMAND
+        ${CMAKE_BINARY_DIR}/tests/test_writer_file)
+endif()
+
+if (CMAKE_CXX_COMPILER_ID MATCHES Clang)
+    set_source_files_properties(file.cpp PROPERTIES
+        COMPILE_FLAGS "-Wno-global-constructors"
+    )
+endif()

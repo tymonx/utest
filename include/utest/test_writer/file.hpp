@@ -103,22 +103,6 @@ File::File(FILE* file) noexcept :
     m_file{file}
 { }
 
-inline
-File::File(const TestString& file, Mode mode) noexcept :
-    m_open{true}
-{
-    switch (mode) {
-    case WRITE:
-        m_file = std::fopen(file.data(), "w");
-        break;
-    case APPEND:
-        m_file = std::fopen(file.data(), "a");
-        break;
-    default:
-        break;
-    }
-}
-
 }
 }
 

@@ -34,46 +34,39 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @file utest/test_writer/file.cpp
+ * @file tests/file.cpp
  *
- * @brief Test writer file implementation
+ * @brief Main implementation
  */
 
+#include <utest/utest.hpp>
 #include <utest/test_writer/file.hpp>
 
-using utest::test_writer::File;
+#include <memory>
 
-File::File(const TestString& file, Mode mode) noexcept :
-    m_open{true}
-{
-    switch (mode) {
-    case WRITE:
-        m_file = std::fopen(file.data(), "w");
-        break;
-    case APPEND:
-        m_file = std::fopen(file.data(), "a");
-        break;
-    default:
-        break;
+using namespace utest;
+
+int main() {
+    {
+        test_writer::File file{"test"};
     }
+    {
+        test_writer::File file{"test", test_writer::File::WRITE};
+    }
+    {
+        test_writer::File file{"test", test_writer::File::APPEND};
+    }
+    {
+        int mode = 2;
+
+        test_writer::File file{"test",
+            static_cast<test_writer::File::Mode>(mode)};
+    }
+    {
+        std::unique_ptr<test_writer::File> ptr{new test_writer::File{}};
+    }
+
+    return EXIT_SUCCESS;
 }
 
-void File::write(const TestString& str) noexcept {
-    if (m_file) {
-        std::fwrite(str.data(), sizeof(TestString::value_type),
-                str.length(), m_file);
-    }
-}
-
-void File::color(TestColor c) noexcept {
-    if (TestWriter::color()) {
-        write(ansi_escape_code(c));
-    }
-}
-
-File::~File() noexcept {
-    if (m_file && m_open) {
-        std::fclose(m_file);
-    }
-    m_file = nullptr;
-}
+static TestRunner g([] (TestSuite&) { });
