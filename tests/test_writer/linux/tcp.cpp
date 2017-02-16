@@ -59,11 +59,11 @@ static ssize_t g_write_code{-1};
 static int g_close_code{-1};
 static bool g_new{false};
 
-int socket(int,int,int) {
+int socket(int,int,int) noexcept(true) {
     return g_socket_code;
 }
 
-int inet_pton(int, const char*, void*) {
+int inet_pton(int, const char*, void*) noexcept(true) {
     return g_inet_pton_code;
 }
 
