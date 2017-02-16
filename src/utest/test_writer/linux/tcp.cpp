@@ -50,7 +50,10 @@
 #include <cstdint>
 #include <iostream>
 
+using utest::TestString;
 using utest::test_writer::TCP;
+
+constexpr TestString TCP::DEFAULT_ADDRESS;
 
 struct Socket {
     int fd;
@@ -71,12 +74,12 @@ TCP::TCP(const TestString& address, TestSize port, TestSize timeout) noexcept {
     auto res = inet_pton(AF_INET, address.data(), &other.sin_addr);
     if (-1 == res) {
         perror("TCP");
-        close(fd);
+        ::close(fd);
         return;
     }
     else if (!res) {
         std::cerr << "TCP: invalid IP address " << address.data() << std::endl;
-        close(fd);
+        ::close(fd);
         return;
     }
 
@@ -91,7 +94,7 @@ TCP::TCP(const TestString& address, TestSize port, TestSize timeout) noexcept {
 
     if (-1 == res) {
         perror("TCP");
-        close(fd);
+        ::close(fd);
         return;
     }
 
@@ -101,7 +104,7 @@ TCP::TCP(const TestString& address, TestSize port, TestSize timeout) noexcept {
     }
     else {
         std::cerr << "TCP: out of memory" << std::endl;
-        close(fd);
+        ::close(fd);
     }
 }
 
@@ -110,7 +113,7 @@ void TCP::write(const TestString& str) noexcept {
         auto res = ::write(context<Socket>()->fd, str.data(), str.size());
         if (-1 == res) {
             perror("TCP");
-            this->~TCP();
+            close();
         }
     }
 }
@@ -121,10 +124,14 @@ void TCP::color(TestColor c) noexcept {
     }
 }
 
-TCP::~TCP() noexcept {
+void TCP::close() noexcept {
     if (context()) {
-        close(context<Socket>()->fd);
+        ::close(context<Socket>()->fd);
         delete context<Socket>();
     }
     context<void>(nullptr);
+}
+
+TCP::~TCP() noexcept {
+    close();
 }

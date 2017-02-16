@@ -65,14 +65,16 @@ public:
             TestSize port = DEFAULT_PORT,
             TestSize timeout = DEFAULT_TIMEOUT) noexcept;
 
-    virtual void write(const TestString& str) noexcept override;
-
-    virtual void color(TestColor c) noexcept override;
-
     virtual ~TCP() noexcept override;
 private:
     TCP(const TCP&) = delete;
     TCP& operator=(const TCP&) = delete;
+
+    virtual void write(const TestString& str) noexcept override;
+
+    virtual void color(TestColor c) noexcept override;
+
+    void close() noexcept;
 
     template<typename T = void>
     void context(T* ptr) noexcept;

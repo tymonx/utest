@@ -27,8 +27,20 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests)
+add_executable(test-writer-tcp
+    tcp.cpp
+)
 
-add_subdirectory(positive)
-add_subdirectory(negative)
-add_subdirectory(test_writer)
+set_target_properties(test-writer-tcp PROPERTIES OUTPUT_NAME test_writer_tcp)
+target_link_libraries(test-writer-tcp utest)
+
+if (DEFINED TEST_RUNNER)
+    add_test(NAME test-writer-tcp COMMAND
+        ${CMAKE_BINARY_DIR}/tests/test_writer_tcp)
+endif()
+
+if (CMAKE_CXX_COMPILER_ID MATCHES Clang)
+    set_source_files_properties(tcp.cpp PROPERTIES
+        COMPILE_FLAGS "-Wno-global-constructors"
+    )
+endif()

@@ -50,7 +50,10 @@
 #include <cstdint>
 #include <iostream>
 
+using utest::TestString;
 using utest::test_writer::UDP;
+
+constexpr TestString UDP::DEFAULT_ADDRESS;
 
 struct Socket {
     int fd;
@@ -71,12 +74,12 @@ UDP::UDP(const TestString& address, TestSize port) noexcept {
     auto res = inet_pton(AF_INET, address.data(), &other.sin_addr);
     if (-1 == res) {
         perror("UDP");
-        close(fd);
+        ::close(fd);
         return;
     }
     else if (!res) {
         std::cerr << "UDP: invalid IP address " << address.data() << std::endl;
-        close(fd);
+        ::close(fd);
         return;
     }
 
@@ -86,7 +89,7 @@ UDP::UDP(const TestString& address, TestSize port) noexcept {
     }
     else {
         std::cerr << "UDP: out of memory" << std::endl;
-        close(fd);
+        ::close(fd);
     }
 }
 
@@ -97,7 +100,7 @@ void UDP::write(const TestString& str) noexcept {
                 sizeof(sockaddr_in));
         if (-1 == res) {
             perror("UDP");
-            this->~UDP();
+            close();
         }
     }
 }
@@ -108,10 +111,14 @@ void UDP::color(TestColor c) noexcept {
     }
 }
 
-UDP::~UDP() noexcept {
+void UDP::close() noexcept {
     if (context()) {
-        close(context<Socket>()->fd);
+        ::close(context<Socket>()->fd);
         delete context<Socket>();
     }
     context<void>(nullptr);
+}
+
+UDP::~UDP() noexcept {
+    close();
 }

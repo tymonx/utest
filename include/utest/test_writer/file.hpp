@@ -66,12 +66,12 @@ public:
 
     File(const TestString& file, Mode mode = WRITE) noexcept;
 
+    virtual ~File() noexcept override;
+private:
     virtual void write(const TestString& str) noexcept override;
 
     virtual void color(TestColor c) noexcept override;
 
-    virtual ~File() noexcept override;
-private:
     File(const File&) = delete;
 
     File& operator=(const File&) = delete;

@@ -63,14 +63,16 @@ public:
     UDP(const TestString& address = DEFAULT_ADDRESS,
             TestSize port = DEFAULT_PORT) noexcept;
 
-    virtual void write(const TestString& str) noexcept override;
-
-    virtual void color(TestColor c) noexcept override;
-
     virtual ~UDP() noexcept override;
 private:
     UDP(const UDP&) = delete;
     UDP& operator=(const UDP&) = delete;
+
+    virtual void write(const TestString& str) noexcept override;
+
+    virtual void color(TestColor c) noexcept override;
+
+    void close() noexcept;
 
     template<typename T = void>
     void context(T* ptr) noexcept;

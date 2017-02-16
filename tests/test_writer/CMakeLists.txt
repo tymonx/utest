@@ -27,8 +27,6 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests)
-
-add_subdirectory(positive)
-add_subdirectory(negative)
-add_subdirectory(test_writer)
+if (UNIX)
+    add_subdirectory(linux)
+endif()
