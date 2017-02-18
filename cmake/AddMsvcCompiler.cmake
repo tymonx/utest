@@ -31,4 +31,4 @@ if (NOT CMAKE_CXX_COMPILER_ID MATCHES MSVC)
     return()
 endif ()
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++latest /WX /W4")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++latest /W4")
