@@ -87,31 +87,12 @@ private:
 
     JSON& key(const TestString& str) noexcept;
 
-    JSON& key(const TestString& str, const TestString& value) noexcept;
+    JSON& value(const TestValue& val) noexcept;
 
-    JSON& key(const TestString& str, const TestNumber& value) noexcept;
-
-    JSON& name(const TestString& str) noexcept;
-
-    JSON& write(const TestString& str) noexcept;
-
-    JSON& write(const TestNumber& number) noexcept;
-
-    JSON& write_value(const TestValue& value) noexcept;
-
-    template<TestSize... N>
-    JSON& write(const TestNumber& number,
-            const char (&...args)[N]) noexcept;
+    JSON& value(const TestString& str) noexcept;
 
     template<typename... Args>
-    JSON& write(const TestNumber& number, const Args&... args) noexcept;
-
-    template<TestSize... N>
-    JSON& write(const TestString& str,
-            const char (&...args)[N]) noexcept;
-
-    template<typename... Args>
-    JSON& write(const TestString& str, const Args&... args) noexcept;
+    JSON& write(const Args&... args) noexcept;
 
     template<TestMessage::Type T>
     void report(const TestMessage& message) noexcept;
@@ -147,47 +128,9 @@ JSON::compact(bool enable) noexcept -> JSON& {
     return *this;
 }
 
-inline auto
-JSON::write(const TestString& str) noexcept -> JSON& {
-    TestReporter::write(str);
-    return *this;
-}
-
-inline auto
-JSON::write(const TestNumber& number) noexcept -> JSON& {
-    TestReporter::write(number);
-    return *this;
-}
-
-template<TestSize... N> auto
-JSON::write(const TestString& str,
-        const char (&...args)[N]) noexcept -> JSON& {
-    write(str);
-    write(args...);
-    return *this;
-}
-
-template<TestSize... N> auto
-JSON::write(const TestNumber& number,
-        const char (&...args)[N]) noexcept -> JSON& {
-    write(number);
-    write(args...);
-    return *this;
-}
-
-template<typename... Args> auto
-JSON::write(const TestNumber& number,
-        const Args&... args) noexcept -> JSON& {
-    write(number);
-    write(args...);
-    return *this;
-}
-
-template<typename... Args> auto
-JSON::write(const TestString& str,
-        const Args&... args) noexcept -> JSON& {
-    write(str);
-    write(args...);
+template<typename... Args> inline auto
+JSON::write(const Args&... args) noexcept -> JSON& {
+    TestReporter::write(args...);
     return *this;
 }
 

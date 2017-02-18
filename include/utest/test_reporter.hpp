@@ -45,15 +45,27 @@
 #include <utest/test_span.hpp>
 #include <utest/test_string.hpp>
 #include <utest/test_color.hpp>
+#include <utest/test_value.hpp>
+
+#include <type_traits>
 
 namespace utest {
 
 class TestMessage;
 class TestWriter;
-class TestNumber;
 
 class TestReporter {
 public:
+    template<typename T>
+    using enable_signed = typename std::enable_if<
+            std::is_integral<T>::value && std::is_signed<T>::value
+        , int>::type;
+
+    template<typename T>
+    using enable_unsigned = typename std::enable_if<
+            std::is_integral<T>::value && std::is_unsigned<T>::value
+        , unsigned int>::type;
+
     using TestWriters = TestSpan<TestWriter*>;
 
     static TestReporter& get_default() noexcept;
@@ -68,25 +80,33 @@ public:
 
     void color(bool enable) noexcept;
 protected:
-    void write(const TestString& str) noexcept;
+    template<typename T, typename... Args>
+    void write(const T& value, const Args&... args) noexcept;
 
-    void write(const TestNumber& number) noexcept;
-
-    template<TestSize... N>
-    void write(const TestNumber& number,
-            const char (&...args)[N]) noexcept;
-
-    template<typename... Args>
-    void write(const TestNumber& number, const Args&... args) noexcept;
-
-    template<TestSize... N>
-    void write(const TestString& str,
-            const char (&...args)[N]) noexcept;
-
-    template<typename... Args>
-    void write(const TestString& str, const Args&... args) noexcept;
+    void write() noexcept;
 
     void color(TestColor c) noexcept;
+private:
+    void write_ex(std::intmax_t value) noexcept;
+
+    void write_ex(std::uintmax_t value) noexcept;
+
+    void write_ex(TestValue::Type value) noexcept;
+
+    void write_ex(const TestValue& value) noexcept;
+
+    void write_ex(const TestString& value) noexcept;
+
+    void write_ex(const void* ptr) noexcept;
+
+    template<TestSize N>
+    void write_ex(const char (&str)[N]) noexcept;
+
+    template<typename T, enable_signed<T> = 0>
+    void write_ex(T value) noexcept;
+
+    template<typename T, enable_unsigned<T> = 0>
+    void write_ex(T value) noexcept;
 
     TestWriters m_writers{};
 };
@@ -96,33 +116,30 @@ TestReporter::TestReporter(const TestWriters& test_writers) noexcept :
     m_writers{test_writers}
 { }
 
-template<TestSize... N> void
-TestReporter::write(const TestString& str,
-        const char (&...args)[N]) noexcept {
-    write(str);
+template<typename T, TestReporter::enable_signed<T>> void
+TestReporter::write_ex(T value) noexcept {
+    write_ex(std::intmax_t(value));
+}
+
+template<typename T, TestReporter::enable_unsigned<T>> void
+TestReporter::write_ex(T value) noexcept {
+    write_ex(std::uintmax_t(value));
+}
+
+template<TestSize N> void
+TestReporter::write_ex(const char (&str)[N]) noexcept {
+    write_ex(TestString{str});
+}
+
+
+template<typename T, typename... Args> void
+TestReporter::write(const T& value, const Args&... args) noexcept {
+    write_ex(value);
     write(args...);
 }
 
-template<TestSize... N> void
-TestReporter::write(const TestNumber& number,
-        const char (&...args)[N]) noexcept {
-    write(number);
-    write(args...);
-}
-
-template<typename... Args> void
-TestReporter::write(const TestNumber& number,
-        const Args&... args) noexcept {
-    write(number);
-    write(args...);
-}
-
-template<typename... Args> void
-TestReporter::write(const TestString& str,
-        const Args&... args) noexcept {
-    write(str);
-    write(args...);
-}
+inline void
+TestReporter::write() noexcept { }
 
 }
 

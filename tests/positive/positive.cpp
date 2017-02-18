@@ -74,7 +74,7 @@ static TestRunner g([] (TestSuite& test_suite) {
         .name("set").run([] (TestParams& p) {
             TestAssert{p}.file(__FILE__).line(__LINE__).fatal(false);
             TestAssert{p}.equal(__FILE__, TestAssert{p}.file());
-            TestAssert{p}.equal(0, TestAssert{p}.line());
+            TestAssert{p}.equal(0u, TestAssert{p}.line());
             TestAssert{p}.equal(TestStatus::PASS, TestAssert{p}.status());
         })
 
@@ -104,18 +104,16 @@ static TestRunner g([] (TestSuite& test_suite) {
             TestAssert{p}.greater_than(0.9, -1.4);
             TestAssert{p}.greater_than_or_equal(0.1, -0.3);
             TestAssert{p}.greater_than_or_equal(1.0, 1.0);
-            TestAssert{p}.is_true(TestNumber{-0.0}.is_signed());
-            TestAssert{p}.is_true(TestNumber{0.0}.is_unsigned());
         })
 
         .name("string").run([] (TestParams& p) {
-            TestNumber::Buffer buffer;
+            TestString::Buffer buffer;
 
             TestAssert{p}.equal("Test", "Test");
             TestAssert{p}.not_equal("Test", "Text");
             TestAssert{p}.equal(TestString{"TEST"}.ignore_case(), "Test");
             TestAssert{p}.not_equal(TestString{"TEST"}.ignore_case(), "Text");
-            TestAssert{p}.equal(4, TestString::length("Test"));
+            TestAssert{p}.equal(4u, TestString::length("Test"));
             TestAssert{p}.equal("0.0", to_string(0.0, buffer));
             TestAssert{p}.equal("1.0", to_string(1.0, buffer));
             TestAssert{p}.equal("-1.0", to_string(-1.0, buffer));

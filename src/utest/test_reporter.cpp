@@ -42,7 +42,6 @@
 #include <utest/test_reporter.hpp>
 #include <utest/test_reporter/google_test.hpp>
 #include <utest/test_writer.hpp>
-#include <utest/test_number.hpp>
 
 #include <array>
 
@@ -61,7 +60,7 @@ TestReporter::TestReporter() noexcept :
     m_writers{g_default}
 { }
 
-void TestReporter::write(const TestString& str) noexcept {
+void TestReporter::write_ex(const TestString& str) noexcept {
     for (auto writer : m_writers) {
         if (writer) {
             writer->write(str);
@@ -69,9 +68,28 @@ void TestReporter::write(const TestString& str) noexcept {
     }
 }
 
-void TestReporter::write(const TestNumber& number) noexcept {
-    char buffer[TestNumber::MAX_STRING_BUFFER];
-    write(to_string(number, buffer));
+void TestReporter::write_ex(TestValue::Type value) noexcept {
+    write_ex(to_string(value));
+}
+
+void TestReporter::write_ex(const TestValue& value) noexcept {
+    TestString::Buffer buffer;
+    write(to_string(value, buffer));
+}
+
+void TestReporter::write_ex(std::intmax_t value) noexcept {
+    TestString::Buffer buffer;
+    write(to_string(value, buffer));
+}
+
+void TestReporter::write_ex(std::uintmax_t value) noexcept {
+    TestString::Buffer buffer;
+    write(to_string(value, buffer));
+}
+
+void TestReporter::write_ex(const void* ptr) noexcept {
+    TestString::Buffer buffer;
+    write(to_string(ptr, buffer));
 }
 
 void TestReporter::color(bool enable) noexcept {

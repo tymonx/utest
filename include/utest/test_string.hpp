@@ -46,6 +46,7 @@
 #include <utest/test_size.hpp>
 
 #include <limits>
+#include <cstdint>
 #include <type_traits>
 
 namespace utest {
@@ -61,6 +62,7 @@ public:
 
     static constexpr TestSize MAX_LENGTH{std::numeric_limits<TestSize>::max()};
 
+    using Buffer = char[32];
     using TestSpan<const char>::TestSpan;
     using TestSpan<const char>::TestSpan::length;
 
@@ -108,6 +110,46 @@ operator==(const TestString& str1, const TestString& str2) noexcept -> bool;
 static inline auto
 operator!=(const TestString& str1, const TestString& str2) noexcept -> bool {
     return !(str1 == str2);
+}
+
+auto
+to_string(const void* ptr, const TestSpan<char>& buffer) noexcept -> TestString;
+
+auto
+to_string(std::intmax_t value, const TestSpan<char>& buffer,
+        int base = 10) noexcept -> TestString;
+
+auto
+to_string(std::uintmax_t value, const TestSpan<char>& buffer,
+        int base = 10) noexcept -> TestString;
+
+auto
+to_string(double value, const TestSpan<char>& buffer) noexcept -> TestString;
+
+template<typename T, typename std::enable_if<std::is_pointer<T>::value,
+    long>::type = 0> inline auto
+to_string(T value, const TestSpan<char>& buffer) noexcept -> TestString {
+    return to_string(static_cast<const void*>(value), buffer);
+}
+
+template<typename T, typename std::enable_if<std::is_integral<T>::value &&
+    std::is_signed<T>::value, int>::type = 0> inline auto
+to_string(T value, const TestSpan<char>& buffer,
+        int base = 10) noexcept -> TestString {
+    return to_string(std::intmax_t(value), buffer, base);
+}
+
+template<typename T, typename std::enable_if<std::is_integral<T>::value &&
+    std::is_unsigned<T>::value, unsigned>::type = 0> inline auto
+to_string(T value, const TestSpan<char>& buffer,
+        int base = 10) noexcept -> TestString {
+    return to_string(std::uintmax_t(value), buffer, base);
+}
+
+template<typename T, typename std::enable_if<std::is_floating_point<T>::value,
+    short>::type = 0> inline auto
+to_string(T value, const TestSpan<char>& buffer) noexcept -> TestString {
+    return to_string(static_cast<double>(value), buffer);
 }
 
 }

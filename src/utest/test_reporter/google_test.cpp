@@ -51,7 +51,6 @@
 #include <utest/test_message/test_assert.hpp>
 
 using utest::TestSize;
-using utest::TestNumber;
 using utest::TestString;
 using utest::TestMessage;
 using utest::test_reporter::GoogleTest;
@@ -66,10 +65,8 @@ static constexpr TestString PASSED      {"[  PASSED  ] "};
 static constexpr TestString TEST        {" test(s).\n"};
 static constexpr TestString TEST_FROM   {" test(s) from "};
 static constexpr TestString ENDL        {"\n"};
-static constexpr TestString ACTUAL      {"  Actual: "};
 static constexpr TestString EXPECTED    {"Expected: "};
-static constexpr TestString TRUE        {"true"};
-static constexpr TestString FALSE       {"false"};
+static constexpr TestString ACTUAL      {"  Actual: "};
 
 namespace utest {
 namespace test_reporter {
@@ -189,16 +186,14 @@ template<>
 void GoogleTest::report<TestMessage::TEST_ASSERT_TRUE>(
         const TestMessage& message) noexcept {
     failure(get<TestAssertTrue>(message));
-    write(ACTUAL, FALSE, ENDL);
-    write(EXPECTED, TRUE, ENDL);
+    write("Expected: true\n  Actual: false\n");
 }
 
 template<>
 void GoogleTest::report<TestMessage::TEST_ASSERT_FALSE>(
         const TestMessage& message) noexcept {
     failure(get<TestAssertFalse>(message));
-    write(ACTUAL, TRUE, ENDL);
-    write(EXPECTED, FALSE, ENDL);
+    write("Expected: false\n  Actual: true\n");
 }
 
 template<>
@@ -423,8 +418,7 @@ void GoogleTest::write_exception(const TestString& message) noexcept {
 #endif
 }
 
-void GoogleTest::failure(const TestString& file,
-        const TestNumber& line) noexcept {
+void GoogleTest::failure(const TestString& file, TestSize line) noexcept {
     if (!file.empty()) {
         write(file);
     }
@@ -434,7 +428,7 @@ void GoogleTest::failure(const TestString& file,
 
     write(":");
 
-    if (line > TestNumber{0}) {
+    if (line) {
         write(line);
         write(":");
     }
@@ -442,40 +436,56 @@ void GoogleTest::failure(const TestString& file,
     write(" Failure\n");
 }
 
-void GoogleTest::write(const TestString& str,
-        const TestValue& value) noexcept {
-    write(str);
+void GoogleTest::write_type(const TestValue& value) noexcept {
+    write("(", value.type(), ")[address=", value.data(),
+            ",size=", value.size());
 
-    switch (value.type()) {
-    case TestValue::NUMBER:
-        write(value.get<TestNumber>());
-        break;
-    case TestValue::STRING:
-        write("\"", value.get<TestString>(), "\"");
-        break;
-    case TestValue::OBJECT:
-    case TestValue::POINTER:
-        char buffer[TestNumber::MAX_ADDRESS_BUFFER];
-        write(to_string(value.get<const void*>(), buffer));
-        break;
-    default:
-        break;
+    if (TestValue::ARRAY == value.type()) {
+        write(",dimension=", value.dimension());
     }
+
+    if (TestValue::ENUM == value.type()) {
+        write(",type='", value.underlying_type(), "'");
+    }
+
+    write("]");
 }
 
-void GoogleTest::write(TestValue::Type value_type) noexcept {
-    switch (value_type) {
-    case TestValue::NUMBER:
-        write("val");
+void GoogleTest::write_value(const TestValue& value) noexcept {
+    switch (value.type()) {
+    case TestValue::CHAR:
+        write("'", value, "'");
         break;
     case TestValue::STRING:
-        write("str");
+        write("\"", value, "\"");
+        break;
+    case TestValue::ARRAY:
+        write("Array(", value, ")");
+        break;
+    case TestValue::UNION:
+        write("Union(", value, ")");
         break;
     case TestValue::OBJECT:
-        write("obj");
+        write("Object(", value, ")");
         break;
+    case TestValue::NIL:
+    case TestValue::BOOLEAN:
+    case TestValue::UNSIGNED_CHAR:
+    case TestValue::UNSIGNED_SHORT:
+    case TestValue::UNSIGNED_INT:
+    case TestValue::UNSIGNED_LONG:
+    case TestValue::UNSIGNED_LONG_LONG:
+    case TestValue::SIGNED_SHORT:
+    case TestValue::SIGNED_CHAR:
+    case TestValue::SIGNED_INT:
+    case TestValue::SIGNED_LONG:
+    case TestValue::SIGNED_LONG_LONG:
+    case TestValue::FLOAT:
+    case TestValue::DOUBLE:
+    case TestValue::ENUM:
     case TestValue::POINTER:
-        write("ptr");
+    case TestValue::FUNCTION:
+        write(value);
         break;
     default:
         break;
@@ -487,9 +497,16 @@ void GoogleTest::report(const TestAssertCompare& message,
     failure(message);
 
     write(EXPECTED);
-    write(message.get<0>().type(), "1", str);
-    write(message.get<1>().type(), "2", ENDL);
-    write(ACTUAL, message.get<0>(), str, message.get<1>(), ENDL);
+    write_type(message.get<0>());
+    write(str);
+    write_type(message.get<1>());
+    write(ENDL);
+
+    write(ACTUAL);
+    write_value(message.get<0>());
+    write(str);
+    write_value(message.get<1>());
+    write(ENDL);
 }
 
 GoogleTest::~GoogleTest() noexcept { }

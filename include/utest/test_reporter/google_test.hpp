@@ -44,11 +44,10 @@
 
 #include <utest/test_reporter.hpp>
 #include <utest/test_message.hpp>
-#include <utest/test_value.hpp>
 
 namespace utest {
 
-class TestNumber;
+class TestValue;
 class TestString;
 
 namespace test_message { class TestAssertCompare; }
@@ -66,53 +65,30 @@ public:
 private:
     using TestReporter::write;
 
-    void failure(const TestString& file, const TestNumber& line) noexcept;
+    void failure(const TestString& file, TestSize line) noexcept;
 
     template<typename T>
     void failure(const T& message) noexcept;
 
     void write_exception(const TestString& message) noexcept;
 
-    void write_address(std::uintptr_t address) noexcept;
-
-    void write(TestValue::Type value_type) noexcept;
-
-    template<typename ...Args>
-    void write(TestValue::Type value_type, const Args&... args) noexcept;
-
-    void write(const TestString& str, const TestValue& value) noexcept;
-
-    template<typename ...Args>
-    void write(const TestString& str, const TestValue& value,
-            const Args&... args) noexcept;
-
-    template<bool T>
-    void write(const TestString& str) noexcept;
-
     template<TestMessage::Type T>
     void report(const TestMessage& message) noexcept;
 
     void report(const test_message::TestAssertCompare& message,
             const TestString& str) noexcept;
+
+    template<bool T>
+    void write(const TestString& str) noexcept;
+
+    void write_type(const TestValue& value) noexcept;
+
+    void write_value(const TestValue& value) noexcept;
 };
 
 template<typename T> void
 GoogleTest::failure(const T& message) noexcept {
     failure(message.file(), message.line());
-}
-
-template<typename ...Args> void
-GoogleTest::write(const TestString& str, const TestValue& value,
-        const Args&... args) noexcept {
-    write(str, value);
-    write(args...);
-}
-
-template<typename ...Args> inline
-void GoogleTest::write(TestValue::Type value_type,
-        const Args&... args) noexcept {
-    write(value_type);
-    write(args...);
 }
 
 }

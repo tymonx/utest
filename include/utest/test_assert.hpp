@@ -46,6 +46,7 @@
 #include <utest/test_value.hpp>
 #include <utest/test_exception.hpp>
 
+#include <limits>
 #include <cstddef>
 
 namespace utest {
@@ -55,13 +56,36 @@ class TestParams;
 
 class TestAssert {
 public:
-    template<typename T1, typename T2>
-    using enable_equal_compare = typename std::enable_if<
-            !((std::is_floating_point<T1>::value ||
-             std::is_integral<T1>::value) &&
-            (std::is_floating_point<T2>::value ||
-             std::is_integral<T2>::value))
+    template<typename T>
+    using enable_signed = typename std::enable_if<
+            std::is_integral<T>::value && std::is_signed<T>::value
         , int>::type;
+
+    template<typename T>
+    using enable_unsigned = typename std::enable_if<
+            std::is_integral<T>::value && std::is_unsigned<T>::value
+        , unsigned>::type;
+
+    template<typename T>
+    using enable_floating = typename std::enable_if<
+            std::is_floating_point<T>::value
+        , short>::type;
+
+    template<typename T1, typename T2>
+    using enable_compare = typename std::enable_if<
+            !((std::is_floating_point<T1>::value ||
+            std::is_floating_point<T2>::value) &&
+            std::is_convertible<T1, double>::value &&
+            std::is_convertible<T2, double>::value)
+        , long>::type;
+
+    template<typename T1, typename T2>
+    using enable_floating_compare = typename std::enable_if<
+            (std::is_floating_point<T1>::value ||
+            std::is_floating_point<T2>::value) &&
+            std::is_convertible<T1, double>::value &&
+            std::is_convertible<T2, double>::value
+        , unsigned long>::type;
 
     using TestRun = void(*)(TestParams& params);
 
@@ -87,16 +111,19 @@ public:
 
     TestAssert& is_false(bool value) noexcept;
 
-    TestAssert& equal(const TestNumber& lhs, const TestNumber& rhs) noexcept;
-
-    TestAssert& not_equal(const TestNumber& lhs,
-            const TestNumber& rhs) noexcept;
-
-    template<typename T1, typename T2, enable_equal_compare<T1, T2> = 0>
+    template<typename T1, typename T2, enable_compare<T1, T2> = 0>
     TestAssert& equal(const T1& lhs, const T2& rhs) noexcept;
 
-    template<typename T1, typename T2, enable_equal_compare<T1, T2> = 0>
+    template<typename T1, typename T2, enable_compare<T1, T2> = 0>
     TestAssert& not_equal(const T1& lhs, const T2& rhs) noexcept;
+
+    template<typename T1, typename T2, enable_floating_compare<T1, T2> = 0>
+    TestAssert& equal(const T1& lhs, const T2& rhs,
+            double epsilon = std::numeric_limits<double>::epsilon()) noexcept;
+
+    template<typename T1, typename T2, enable_floating_compare<T1, T2> = 0>
+    TestAssert& not_equal(const T1& lhs, const T2& rhs,
+            double epsilon = std::numeric_limits<double>::epsilon()) noexcept;
 
     template<typename T1, typename T2>
     TestAssert& greater_than(const T1& lhs, const T2& rhs) noexcept;
@@ -117,6 +144,8 @@ public:
     template<typename T>
     TestAssert& expected_throw(TestRun test_run) noexcept;
 
+    TestAssert& operator<<(bool value) noexcept;
+
     TestAssert& operator<<(std::nullptr_t) noexcept;
 
     TestAssert& operator<<(const void* ptr) noexcept;
@@ -124,37 +153,43 @@ public:
     template<TestSize N>
     TestAssert& operator<<(const char (&arr)[N]) noexcept;
 
-    TestAssert& operator<<(bool value) noexcept;
+    TestAssert& operator<<(const TestString& str) noexcept;
 
-    TestAssert& operator<<(const TestString& number) noexcept;
+    TestAssert& operator<<(std::intmax_t value) noexcept;
 
-    TestAssert& operator<<(int value) noexcept;
+    TestAssert& operator<<(std::uintmax_t value) noexcept;
 
-    TestAssert& operator<<(unsigned int value) noexcept;
+    TestAssert& operator<<(double value) noexcept;
 
-    TestAssert& operator<<(float number) noexcept;
+    template<typename T, enable_signed<T> = 0>
+    TestAssert& operator<<(T value) noexcept;
 
-    TestAssert& operator<<(double number) noexcept;
+    template<typename T, enable_unsigned<T> = 0>
+    TestAssert& operator<<(T value) noexcept;
 
-    TestAssert& operator<<(const TestNumber& number) noexcept;
+    template<typename T, enable_floating<T> = 0>
+    TestAssert& operator<<(T value) noexcept;
 private:
     void report(const TestMessage& test_message) noexcept;
 
-    void equal(const TestValue& lhs, const TestValue& rhs) noexcept;
+    bool equal(double lhs, double rhs, double epsilon) noexcept;
 
-    void not_equal(const TestValue& lhs, const TestValue& rhs) noexcept;
+    void report_equal(const TestValue& lhs, const TestValue& rhs) noexcept;
 
-    void greater_than(const TestValue& lhs, const TestValue& rhs) noexcept;
+    void report_not_equal(const TestValue& lhs, const TestValue& rhs) noexcept;
 
-    void greater_than_or_equal(const TestValue& lhs,
+    void report_greater_than(const TestValue& lhs,
             const TestValue& rhs) noexcept;
 
-    void less_than(const TestValue& lhs, const TestValue& rhs) noexcept;
-
-    void less_than_or_equal(const TestValue& lhs,
+    void report_greater_than_or_equal(const TestValue& lhs,
             const TestValue& rhs) noexcept;
 
-    void expected_throw(bool throws, const TestString& str = {}) noexcept;
+    void report_less_than(const TestValue& lhs, const TestValue& rhs) noexcept;
+
+    void report_less_than_or_equal(const TestValue& lhs,
+            const TestValue& rhs) noexcept;
+
+    void report_expected_throw(bool throws, const TestString& str = {}) noexcept;
 
     TestParams& m_params;
     TestString m_file{};
@@ -202,40 +237,53 @@ TestAssert::operator<<(const char (&arr)[N]) noexcept -> TestAssert& {
     return operator<<(TestString{arr});
 }
 
-inline auto
-TestAssert::operator<<(int value) noexcept -> TestAssert& {
-    return operator<<(TestNumber{value});
+template<typename T, TestAssert::enable_signed<T>> inline auto
+TestAssert::operator<<(T value) noexcept -> TestAssert& {
+    return operator<<(std::intmax_t(value));
 }
 
-inline auto
-TestAssert::operator<<(unsigned int value) noexcept -> TestAssert& {
-    return operator<<(TestNumber{value});
+template<typename T, TestAssert::enable_unsigned<T>> inline auto
+TestAssert::operator<<(T value) noexcept -> TestAssert& {
+    return operator<<(std::uintmax_t(value));
 }
 
-inline auto
-TestAssert::operator<<(float value) noexcept -> TestAssert& {
-    return operator<<(TestNumber{value});
+template<typename T, TestAssert::enable_floating<T>> inline auto
+TestAssert::operator<<(T value) noexcept -> TestAssert& {
+    return operator<<(double(value));
 }
 
-inline auto
-TestAssert::operator<<(double value) noexcept -> TestAssert& {
-    return operator<<(TestNumber{value});
-}
-
-template<typename T1, typename T2,
-    TestAssert::enable_equal_compare<T1, T2>> auto
+template<typename T1, typename T2, TestAssert::enable_compare<T1, T2>> auto
 TestAssert::equal(const T1& lhs, const T2& rhs) noexcept -> TestAssert& {
     if (!(lhs == rhs)) {
-        equal(TestValue{lhs}, TestValue{rhs});
+        report_equal({lhs}, {rhs});
+    }
+    return *this;
+}
+
+template<typename T1, typename T2, TestAssert::enable_compare<T1, T2>> auto
+TestAssert::not_equal(const T1& lhs, const T2& rhs) noexcept -> TestAssert& {
+    if (!(lhs != rhs)) {
+        report_not_equal({lhs}, {rhs});
     }
     return *this;
 }
 
 template<typename T1, typename T2,
-    TestAssert::enable_equal_compare<T1, T2>> auto
-TestAssert::not_equal(const T1& lhs, const T2& rhs) noexcept -> TestAssert& {
-    if (!(lhs != rhs)) {
-        not_equal(TestValue{lhs}, TestValue{rhs});
+    TestAssert::enable_floating_compare<T1, T2>> auto
+TestAssert::equal(const T1& lhs, const T2& rhs,
+        double epsilon) noexcept -> TestAssert& {
+    if (!equal(double(lhs), double(rhs), epsilon)) {
+        report_equal({lhs}, {rhs});
+    }
+    return *this;
+}
+
+template<typename T1, typename T2,
+    TestAssert::enable_floating_compare<T1, T2>> auto
+TestAssert::not_equal(const T1& lhs, const T2& rhs,
+        double epsilon) noexcept -> TestAssert& {
+    if (equal(double(lhs), double(rhs), epsilon)) {
+        report_not_equal({lhs}, {rhs});
     }
     return *this;
 }
@@ -243,7 +291,7 @@ TestAssert::not_equal(const T1& lhs, const T2& rhs) noexcept -> TestAssert& {
 template<typename T1, typename T2> auto
 TestAssert::greater_than(const T1& lhs, const T2& rhs) noexcept -> TestAssert& {
     if (!(lhs > rhs)) {
-        greater_than(TestValue{lhs}, TestValue{rhs});
+        report_greater_than({lhs}, {rhs});
     }
     return *this;
 }
@@ -252,7 +300,7 @@ template<typename T1, typename T2> auto
 TestAssert::greater_than_or_equal(const T1& lhs,
         const T2& rhs) noexcept -> TestAssert& {
     if (!(lhs >= rhs)) {
-        greater_than_or_equal(TestValue{lhs}, TestValue{rhs});
+        report_greater_than_or_equal({lhs}, {rhs});
     }
     return *this;
 }
@@ -260,7 +308,7 @@ TestAssert::greater_than_or_equal(const T1& lhs,
 template<typename T1, typename T2> auto
 TestAssert::less_than(const T1& lhs, const T2& rhs) noexcept -> TestAssert& {
     if (!(lhs < rhs)) {
-        less_than(TestValue{lhs}, TestValue{rhs});
+        report_less_than({lhs}, {rhs});
     }
     return *this;
 }
@@ -269,7 +317,7 @@ template<typename T1, typename T2> auto
 TestAssert::less_than_or_equal(const T1& lhs,
         const T2& rhs) noexcept -> TestAssert& {
     if (!(lhs <= rhs)) {
-        less_than_or_equal(TestValue{lhs}, TestValue{rhs});
+        report_less_than_or_equal({lhs}, {rhs});
     }
     return *this;
 }
@@ -280,16 +328,16 @@ TestAssert::expected_throw(TestRun test_run) noexcept -> TestAssert& {
     if (test_run) {
         try {
             test_run(m_params);
-            expected_throw(false);
+            report_expected_throw(false);
         }
         catch (const T&) {
             /* Do nothing */
         }
         catch (const std::exception& e) {
-            expected_throw(true, e.what());
+            report_expected_throw(true, e.what());
         }
         catch (...) {
-            expected_throw(true);
+            report_expected_throw(true);
         }
     }
 #else
@@ -305,13 +353,13 @@ TestAssert::expected_throw<std::exception>(
     if (test_run) {
         try {
             test_run(m_params);
-            expected_throw(false);
+            report_expected_throw(false);
         }
         catch (const std::exception&) {
             /* Do nothing */
         }
         catch (...) {
-            expected_throw(true);
+            report_expected_throw(true);
         }
     }
 #else

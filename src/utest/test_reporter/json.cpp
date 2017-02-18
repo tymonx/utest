@@ -51,18 +51,20 @@
 #include <utest/test_message/test_assert.hpp>
 
 using utest::TestSize;
-using utest::TestNumber;
 using utest::TestString;
 using utest::TestMessage;
 using utest::test_reporter::JSON;
 using namespace utest::test_message;
 
-static constexpr TestString WHAT{"what"};
 static constexpr TestString NAME{"name"};
 static constexpr TestString VALUE{"value"};
 static constexpr TestString STATUS{"status"};
 static constexpr TestString PASSED{"passed"};
 static constexpr TestString FAILED{"failed"};
+
+#if defined(UTEST_USE_EXCEPTIONS)
+static constexpr TestString WHAT{"what"};
+#endif
 
 namespace utest {
 namespace test_reporter {
@@ -95,11 +97,11 @@ void JSON::report<TestMessage::TEST_END>(
 
     m_indent -= m_indent_step;
     endl().indent().write("]");
-    append().key(PASSED, msg.test_cases_passed());
+    append().key(PASSED).write(msg.test_cases_passed());
     if (msg.test_cases_failed()) {
-        append().key(FAILED, msg.test_cases_failed());
+        append().key(FAILED).write(msg.test_cases_failed());
     }
-    append().key(STATUS, msg.test_cases_failed() ? FAILED : PASSED);
+    append().key(STATUS).value(msg.test_cases_failed() ? FAILED : PASSED);
     endl().indent<DECREASE>().write("}");
 }
 
@@ -114,7 +116,7 @@ void JSON::report<TestMessage::TEST_SUITE_BEGIN>(
     endl();
 
     indent().write("{").endl();
-    indent<INCREASE>().key(NAME, msg.name());
+    indent<INCREASE>().key(NAME).value(msg.name());
     append().key("testCases").write("[");
     m_indent += m_indent_step;
     m_next_test_case = false;
@@ -127,11 +129,11 @@ void JSON::report<TestMessage::TEST_SUITE_END>(
 
     m_indent -= m_indent_step;
     endl().indent().write("]");
-    append().key(PASSED, msg.tests_passed());
+    append().key(PASSED).write(msg.tests_passed());
     if (msg.tests_failed()) {
-        append().key(FAILED, msg.tests_failed());
+        append().key(FAILED).write(msg.tests_failed());
     }
-    append().key(STATUS, msg.tests_failed() ? FAILED : PASSED);
+    append().key(STATUS).value(msg.tests_failed() ? FAILED : PASSED);
     endl().indent<DECREASE>().write("}");
     m_next_test_suite = true;
 }
@@ -147,7 +149,7 @@ void JSON::report<TestMessage::TEST_CASE_BEGIN>(
     endl();
 
     indent().write("{").endl();
-    indent<INCREASE>().key(NAME, msg.name());
+    indent<INCREASE>().key(NAME).value(msg.name());
     m_next_test_assert = false;
     m_test_asserts = false;
     m_explanation = false;
@@ -162,7 +164,7 @@ void JSON::report<TestMessage::TEST_CASE_END>(
         endl().indent<DECREASE>().write("}");
         endl().indent<DECREASE>().write("]");
     }
-    append().key(STATUS, TestStatus::FAIL == msg.status()
+    append().key(STATUS).value(TestStatus::FAIL == msg.status()
             ? FAILED : PASSED);
     endl().indent<DECREASE>().write("}");
     m_next_test_case = true;
@@ -252,9 +254,9 @@ void JSON::report<TestMessage::TEST_ASSERT_NO_THROW>(
     report("throwNoException", get<TestAssertBase>(message));
     const auto& msg = get<TestAssertNoThrow>(message);
 
-    append().key(VALUE, "it throws an exception");
+    append().key(VALUE).write("\"it throws an exception\"");
     if (msg.what()) {
-        append().key(WHAT, msg.what());
+        append().key(WHAT).value(msg.what());
     }
 }
 
@@ -262,7 +264,7 @@ template<>
 void JSON::report<TestMessage::TEST_ASSERT_ANY_THROW>(
         const TestMessage& message) noexcept {
     report("throwAnyException", get<TestAssertBase>(message));
-    append().key(VALUE, "it throws nothing");
+    append().key(VALUE).write("\"it throws nothing\"");
 }
 
 template<>
@@ -272,13 +274,13 @@ void JSON::report<TestMessage::TEST_ASSERT_EXPECTED_THROW>(
     const auto& msg = get<TestAssertExpectedThrow>(message);
 
     if (msg.throws()) {
-        append().key(VALUE, "it throws unexpected exception");
+        append().key(VALUE).write("\"it throws unexpected exception\"");
         if (msg.what()) {
-            append().key(WHAT, msg.what());
+            append().key(WHAT).value(msg.what());
         }
     }
     else {
-        append().key(VALUE, "it throws nothing");
+        append().key(VALUE).write("\"it throws nothing\"");
     }
 }
 
@@ -286,35 +288,35 @@ template<>
 void JSON::report<TestMessage::TEST_RUNNER_EXCEPTION>(
         const TestMessage& message) noexcept {
     report_exception("from test runner body", message);
-    append().key(WHAT, get<TestRunnerException>(message).what());
+    append().key(WHAT).value(get<TestRunnerException>(message).what());
 }
 
 template<>
 void JSON::report<TestMessage::TEST_SUITE_EXCEPTION>(
         const TestMessage& message) noexcept {
     report_exception("from test suite body", message);
-    append().key(WHAT, get<TestSuiteException>(message).what());
+    append().key(WHAT).value(get<TestSuiteException>(message).what());
 }
 
 template<>
 void JSON::report<TestMessage::TEST_CASE_EXCEPTION>(
         const TestMessage& message) noexcept {
     report_exception("from test case body", message);
-    append().key(WHAT, get<TestCaseException>(message).what());
+    append().key(WHAT).value(get<TestCaseException>(message).what());
 }
 
 template<>
 void JSON::report<TestMessage::TEST_CASE_SETUP_EXCEPTION>(
         const TestMessage& message) noexcept {
     report_exception("from test case setup body", message);
-    append().key(WHAT, get<TestCaseSetupException>(message).what());
+    append().key(WHAT).value(get<TestCaseSetupException>(message).what());
 }
 
 template<>
 void JSON::report<TestMessage::TEST_CASE_TEARDOWN_EXCEPTION>(
         const TestMessage& message) noexcept {
     report_exception("from test case teardown body", message);
-    append().key(WHAT, get<TestCaseTeardownException>(message).what());
+    append().key(WHAT).value(get<TestCaseTeardownException>(message).what());
 }
 
 #endif
@@ -421,7 +423,7 @@ void JSON::report_exception(const TestString& str,
         const TestMessage& message) noexcept {
 #if defined(UTEST_USE_EXCEPTIONS)
     report("exception", get<TestAssertBase>(message));
-    append().key(VALUE, str);
+    append().key(VALUE).value(str);
 #else
     (void)str;
     (void)message;
@@ -432,30 +434,9 @@ void JSON::report(const TestString& str,
         const TestAssertCompare& compare) noexcept {
     report(str, static_cast<const TestAssertBase&>(compare));
 
-    append().key(VALUE).write("[").endl();
-    indent<INCREASE>().write_value(compare.get<0>());
-    append().write_value(compare.get<1>());
+    append().key(VALUE).write("[").endl().indent<INCREASE>();
+    value(compare.get<0>()).write(",").endl().indent().value(compare.get<1>());
     endl().indent<DECREASE>().write("]");
-}
-
-JSON& JSON::write_value(const TestValue& value) noexcept {
-    switch (value.type()) {
-    case TestValue::NUMBER:
-        write(value.get<TestNumber>());
-        break;
-    case TestValue::STRING:
-        name(value.get<TestString>());
-        break;
-    case TestValue::OBJECT:
-    case TestValue::POINTER:
-        char buffer[TestNumber::MAX_ADDRESS_BUFFER];
-        name(to_string(value.get<const void*>(), buffer));
-        break;
-    default:
-        break;
-    }
-
-    return *this;
 }
 
 void JSON::report(const TestString& str, const TestAssertBase& base) noexcept {
@@ -469,14 +450,14 @@ void JSON::report(const TestString& str, const TestAssertBase& base) noexcept {
         endl().indent<DECREASE>().write("},");
     }
     endl().indent().write("{");
-    endl().indent<INCREASE>().key(NAME, str);
+    endl().indent<INCREASE>().key(NAME).value(str);
 
     if (base.file()) {
-        append().key("file", base.file());
+        append().key("file").value(base.file());
     }
 
     if (base.line()) {
-        append().key("line", base.line());
+        append().key("line").write(base.line());
     }
 
     m_next_test_assert = true;
@@ -502,24 +483,63 @@ JSON& JSON::endl() noexcept {
     return *this;
 }
 
-JSON& JSON::key(const TestString& str, const TestString& value) noexcept {
-    return key(str).name(value);
-}
-
-JSON& JSON::key(const TestString& str, const TestNumber& value) noexcept {
-    return key(str).write(value);
-}
-
 JSON& JSON::key(const TestString& str) noexcept {
-    name(str).write(":");
+    value(str).write(":");
     if (!m_compact) {
         write(" ");
     }
     return *this;
 }
 
-JSON& JSON::name(const TestString& str) noexcept {
+JSON& JSON::value(const TestString& str) noexcept {
     return write("\"", str, "\"");
+}
+
+JSON& JSON::value(const TestValue& val) noexcept {
+    write("{").endl();
+
+    indent<INCREASE>().key("type").write("\"", val.type(), "\",").endl();
+    indent().key("size").write(val.size(), ",").endl();
+    indent().key("address").write("\"", val.data(), "\",").endl();
+
+    indent().key("data");
+    switch (val.type()) {
+    case TestValue::CHAR:
+    case TestValue::STRING:
+    case TestValue::POINTER:
+    case TestValue::FUNCTION:
+        write("\"", val, "\"");
+        break;
+    case TestValue::ARRAY:
+        write("[]");
+        break;
+    case TestValue::OBJECT:
+    case TestValue::UNION:
+        write("{}");
+        break;
+    case TestValue::NIL:
+    case TestValue::BOOLEAN:
+    case TestValue::UNSIGNED_CHAR:
+    case TestValue::UNSIGNED_SHORT:
+    case TestValue::UNSIGNED_INT:
+    case TestValue::UNSIGNED_LONG:
+    case TestValue::UNSIGNED_LONG_LONG:
+    case TestValue::SIGNED_SHORT:
+    case TestValue::SIGNED_CHAR:
+    case TestValue::SIGNED_INT:
+    case TestValue::SIGNED_LONG:
+    case TestValue::SIGNED_LONG_LONG:
+    case TestValue::FLOAT:
+    case TestValue::DOUBLE:
+    case TestValue::ENUM:
+        write(val);
+        break;
+    default:
+        break;
+    }
+    endl().indent<DECREASE>().write("}");
+
+    return *this;
 }
 
 JSON::~JSON() noexcept { }

@@ -46,8 +46,9 @@
 
 #include <utest/test_message/test_assert.hpp>
 
+#include <cmath>
+
 using utest::TestSize;
-using utest::TestNumber;
 using utest::TestAssert;
 using utest::TestString;
 using namespace utest::test_message;
@@ -90,9 +91,8 @@ TestAssert& TestAssert::operator<<(const void* ptr) noexcept {
     if (TestStatus::FAIL == m_status) {
         m_explanation = true;
         if (nullptr != ptr) {
-            char buffer[TestNumber::MAX_ADDRESS_BUFFER];
-            report(TestAssertExplanation{
-                    *this, to_string(ptr, buffer)});
+            TestString::Buffer buffer;
+            report(TestAssertExplanation{*this, to_string(ptr, buffer)});
         }
         else {
             report(TestAssertExplanation{*this, STRING_NULL});
@@ -122,13 +122,29 @@ TestAssert& TestAssert::operator<<(const TestString& str) noexcept {
     return *this;
 }
 
-TestAssert& TestAssert::operator<<(const TestNumber& number) noexcept {
+TestAssert& TestAssert::operator<<(std::intmax_t number) noexcept {
     if (TestStatus::FAIL == m_status) {
         m_explanation = true;
-        char buffer[TestNumber::MAX_STRING_BUFFER];
-        auto value = to_string(number, buffer);
+        TestString::Buffer buffer;
+        report(TestAssertExplanation{*this, to_string(number, buffer)});
+    }
+    return *this;
+}
 
-        report(TestAssertExplanation{*this, value});
+TestAssert& TestAssert::operator<<(std::uintmax_t number) noexcept {
+    if (TestStatus::FAIL == m_status) {
+        m_explanation = true;
+        TestString::Buffer buffer;
+        report(TestAssertExplanation{*this, to_string(number, buffer)});
+    }
+    return *this;
+}
+
+TestAssert& TestAssert::operator<<(double number) noexcept {
+    if (TestStatus::FAIL == m_status) {
+        m_explanation = true;
+        TestString::Buffer buffer;
+        report(TestAssertExplanation{*this, to_string(number, buffer)});
     }
     return *this;
 }
@@ -155,52 +171,41 @@ TestAssert& TestAssert::is_false(bool value) noexcept {
     return *this;
 }
 
-TestAssert& TestAssert::equal(const TestNumber& lhs,
-        const TestNumber& rhs) noexcept {
-    if (!(lhs == rhs)) {
-        equal(TestValue{lhs}, TestValue{rhs});
-    }
-    return *this;
+bool TestAssert::equal(double lhs, double rhs, double epsilon) noexcept {
+    return std::abs(lhs - rhs) < epsilon;
 }
 
-TestAssert& TestAssert::not_equal(const TestNumber& lhs,
-        const TestNumber& rhs) noexcept {
-    if (!(lhs != rhs)) {
-        not_equal(TestValue{lhs}, TestValue{rhs});
-    }
-    return *this;
-}
-
-void TestAssert::equal(const TestValue& lhs, const TestValue& rhs) noexcept {
+void TestAssert::report_equal(const TestValue& lhs,
+        const TestValue& rhs) noexcept {
     m_status = TestStatus::FAIL;
     report(TestAssertEqual{*this, lhs, rhs});
 }
 
-void TestAssert::not_equal(const TestValue& lhs,
+void TestAssert::report_not_equal(const TestValue& lhs,
         const TestValue& rhs) noexcept {
     m_status = TestStatus::FAIL;
     report(TestAssertNotEqual{*this, lhs, rhs});
 }
 
-void TestAssert::greater_than(const TestValue& lhs,
+void TestAssert::report_greater_than(const TestValue& lhs,
         const TestValue& rhs) noexcept {
     m_status = TestStatus::FAIL;
     report(TestAssertGreaterThan{*this, lhs, rhs});
 }
 
-void TestAssert::greater_than_or_equal(const TestValue& lhs,
+void TestAssert::report_greater_than_or_equal(const TestValue& lhs,
         const TestValue& rhs) noexcept {
     m_status = TestStatus::FAIL;
     report(TestAssertGreaterThanOrEqual{*this, lhs, rhs});
 }
 
-void TestAssert::less_than(const TestValue& lhs,
+void TestAssert::report_less_than(const TestValue& lhs,
         const TestValue& rhs) noexcept {
     m_status = TestStatus::FAIL;
     report(TestAssertLessThan{*this, lhs, rhs});
 }
 
-void TestAssert::less_than_or_equal(const TestValue& lhs,
+void TestAssert::report_less_than_or_equal(const TestValue& lhs,
         const TestValue& rhs) noexcept {
     m_status = TestStatus::FAIL;
     report(TestAssertLessThanOrEqual{*this, lhs, rhs});
@@ -242,7 +247,8 @@ TestAssert& TestAssert::no_throw(TestRun test_run) noexcept {
     return *this;
 }
 
-void TestAssert::expected_throw(bool throws, const TestString& str) noexcept {
+void TestAssert::report_expected_throw(bool throws,
+        const TestString& str) noexcept {
 #if defined(UTEST_USE_EXCEPTIONS)
     m_status = TestStatus::FAIL;
     report(TestAssertExpectedThrow{*this, throws, str});
