@@ -27,50 +27,8 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-cmake_minimum_required(VERSION 3.1)
-project(utest C CXX)
+if (NOT CMAKE_CXX_COMPILER_ID MATCHES MSVC)
+    return()
+endif ()
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_LIST_DIR}/cmake)
-
-if (CMAKE_TOOLCHAIN_FILE AND CMAKE_SYSTEM_NAME MATCHES "Generic")
-    option(MEMORY_CHECK "Enable/disable memory checks" OFF)
-    option(EXCEPTIONS "Enable/disable exceptions" OFF)
-    option(RTTI "Enable/disable rtti" OFF)
-    option(THREADS "Enable/disable threads" OFF)
-else()
-    option(MEMORY_CHECK "Enable/disable memory checks" ON)
-    option(EXCEPTIONS "Enable/disable exceptions" ON)
-    option(RTTI "Enable/disable rtti" ON)
-    option(THREADS "Enable/disable threads" ON)
-endif()
-
-if (CMAKE_BUILD_TYPE MATCHES "MinSizeRel")
-    option(LTO "Enable/disable link time optimization" ON)
-else()
-    option(LTO "Enable/disable link time optimization" OFF)
-endif()
-
-option(TESTS "Enable/disable tests" OFF)
-option(EXAMPLES "Enable/disable examples" OFF)
-
-include(AddCodeCoverage)
-include(AddGnuCompiler)
-include(AddMsvcCompiler)
-include(AddClangCompiler)
-include(AddThreads)
-include(AddTestRunner)
-
-include_directories(include)
-
-install(DIRECTORY include/utest DESTINATION include FILES_MATCHING PATTERN "*.hpp")
-
-add_subdirectory(src)
-
-if (EXAMPLES)
-    add_subdirectory(examples)
-endif()
-
-if (TESTS)
-    enable_testing()
-    add_subdirectory(tests)
-endif()
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++latest /WX /W4")
