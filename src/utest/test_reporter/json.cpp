@@ -251,7 +251,7 @@ void JSON::report<TestMessage::TEST_ASSERT_LESS_THAN_OR_EQUAL>(
 template<>
 void JSON::report<TestMessage::TEST_ASSERT_NO_THROW>(
         const TestMessage& message) noexcept {
-    report("throwNoException", get<TestAssertBase>(message));
+    report("throwNoException", get<TestAssertNoThrow>(message));
     const auto& msg = get<TestAssertNoThrow>(message);
 
     append().key(VALUE).write("\"it throws an exception\"");
@@ -263,14 +263,14 @@ void JSON::report<TestMessage::TEST_ASSERT_NO_THROW>(
 template<>
 void JSON::report<TestMessage::TEST_ASSERT_ANY_THROW>(
         const TestMessage& message) noexcept {
-    report("throwAnyException", get<TestAssertBase>(message));
+    report("throwAnyException", get<TestAssertAnyThrow>(message));
     append().key(VALUE).write("\"it throws nothing\"");
 }
 
 template<>
 void JSON::report<TestMessage::TEST_ASSERT_EXPECTED_THROW>(
         const TestMessage& message) noexcept {
-    report("throwExpectedException", get<TestAssertBase>(message));
+    report("throwExpectedException", get<TestAssertExpectedThrow>(message));
     const auto& msg = get<TestAssertExpectedThrow>(message);
 
     if (msg.throws()) {
@@ -286,37 +286,27 @@ void JSON::report<TestMessage::TEST_ASSERT_EXPECTED_THROW>(
 
 template<>
 void JSON::report<TestMessage::TEST_RUNNER_EXCEPTION>(
-        const TestMessage& message) noexcept {
-    report_exception("from test runner body", message);
-    append().key(WHAT).value(get<TestRunnerException>(message).what());
+        const TestMessage&) noexcept {
 }
 
 template<>
 void JSON::report<TestMessage::TEST_SUITE_EXCEPTION>(
-        const TestMessage& message) noexcept {
-    report_exception("from test suite body", message);
-    append().key(WHAT).value(get<TestSuiteException>(message).what());
+        const TestMessage&) noexcept {
 }
 
 template<>
 void JSON::report<TestMessage::TEST_CASE_EXCEPTION>(
-        const TestMessage& message) noexcept {
-    report_exception("from test case body", message);
-    append().key(WHAT).value(get<TestCaseException>(message).what());
+        const TestMessage&) noexcept {
 }
 
 template<>
 void JSON::report<TestMessage::TEST_CASE_SETUP_EXCEPTION>(
-        const TestMessage& message) noexcept {
-    report_exception("from test case setup body", message);
-    append().key(WHAT).value(get<TestCaseSetupException>(message).what());
+        const TestMessage&) noexcept {
 }
 
 template<>
 void JSON::report<TestMessage::TEST_CASE_TEARDOWN_EXCEPTION>(
-        const TestMessage& message) noexcept {
-    report_exception("from test case teardown body", message);
-    append().key(WHAT).value(get<TestCaseTeardownException>(message).what());
+        const TestMessage&) noexcept {
 }
 
 #endif
@@ -417,17 +407,6 @@ void JSON::report(const TestMessage& message) noexcept {
     default:
         break;
     }
-}
-
-void JSON::report_exception(const TestString& str,
-        const TestMessage& message) noexcept {
-#if defined(UTEST_USE_EXCEPTIONS)
-    report("exception", get<TestAssertBase>(message));
-    append().key(VALUE).value(str);
-#else
-    (void)str;
-    (void)message;
-#endif
 }
 
 void JSON::report(const TestString& str,

@@ -41,8 +41,6 @@
 
 #include <utest/utest.hpp>
 
-#include <cstdlib>
-
 using namespace utest;
 
 #if defined(UTEST_USE_EXCEPTIONS)
@@ -52,11 +50,6 @@ using namespace utest;
 #endif
 
 struct DummyException { };
-
-int main() {
-    return TestStatus::FAIL == Test{}.color().run().status()
-        ? EXIT_SUCCESS : EXIT_FAILURE;
-}
 
 static TestRunner g([] (TestSuite& test_suite) {
     test_suite.file(__FILE__).line(__LINE__).fatal(false)

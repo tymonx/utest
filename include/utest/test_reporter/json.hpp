@@ -103,9 +103,6 @@ private:
     void report(const TestString& str,
             const test_message::TestAssertCompare& compare) noexcept;
 
-    void report_exception(const TestString& str,
-            const TestMessage& message) noexcept;
-
     TestSize m_indent{0};
     TestSize m_indent_step{DEFAULT_INDENT};
     bool m_compact{false};

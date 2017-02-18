@@ -29,6 +29,7 @@
 
 add_executable(test-negative
     negative.cpp
+    negative_main.cpp
 )
 
 set_target_properties(test-negative PROPERTIES OUTPUT_NAME test_negative)

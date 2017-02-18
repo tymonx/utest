@@ -102,7 +102,7 @@ TestString utest::to_string(TestValue::Type type) noexcept {
         str = "pointer";
         break;
     case TestValue::ARRAY:
-        str = "pointer";
+        str = "array";
         break;
     case TestValue::OBJECT:
         str = "object";
