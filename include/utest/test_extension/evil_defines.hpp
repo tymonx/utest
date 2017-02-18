@@ -198,40 +198,46 @@
             utest::TestString{str2}) \
         << "("#str1") != ("#str2")"
 
-#define UTEST_EXPECT_THROW(exception_type) \
+#define UTEST_EXPECT_THROW(condition, exception_type) \
     UTEST_ASSERT_NON_FATAL().expected_throw<exception_type>(\
-            [] (utest::TestParams& _test_params) {
+            [] (utest::TestParams&) { \
+                condition; \
+            }) \
+        << "("#condition")"
 
-#define UTEST_EXPECT_THROW_END UTEST_END
-
-#define UTEST_EXPECT_ANY_THROW() \
+#define UTEST_EXPECT_ANY_THROW(condition) \
     UTEST_ASSERT_NON_FATAL().any_throw(\
-            [] (utest::TestParams& _test_params) {
+            [] (utest::TestParams&) { \
+                condition; \
+            }) \
+        << "("#condition")"
 
-#define UTEST_EXPECT_ANY_THROW_END UTEST_END
-
-#define UTEST_EXPECT_NO_THROW() \
+#define UTEST_EXPECT_NO_THROW(condition) \
     UTEST_ASSERT_NON_FATAL().no_throw(\
-            [] (utest::TestParams& _test_params) {
+            [] (utest::TestParams&) { \
+                condition; \
+            }) \
+        << "("#condition")"
 
-#define UTEST_EXPECT_NO_THROW_END UTEST_END
-
-#define UTEST_ASSERT_THROW(exception_type) \
+#define UTEST_ASSERT_THROW(condition, exception_type) \
     UTEST_ASSERT_FATAL().expected_throw<exception_type>(\
-            [] (utest::TestParams& _test_params) {
+            [] (utest::TestParams&) { \
+                condition; \
+            }) \
+        << "("#condition")"
 
-#define UTEST_ASSERT_THROW_END UTEST_END
-
-#define UTEST_ASSERT_ANY_THROW() \
+#define UTEST_ASSERT_ANY_THROW(condition) \
     UTEST_ASSERT_FATAL().any_throw(\
-            [] (utest::TestParams& _test_params) {
+            [] (utest::TestParams&) { \
+                condition; \
+            }) \
+        << "("#condition")"
 
-#define UTEST_ASSERT_ANY_THROW_END UTEST_END
-
-#define UTEST_ASSERT_NO_THROW() \
+#define UTEST_ASSERT_NO_THROW(condition) \
     UTEST_ASSERT_FATAL().no_throw(\
-            [] (utest::TestParams& _test_params) {
-
-#define UTEST_ASSERT_NO_THROW_END UTEST_END
+            [] (utest::TestParams&) { \
+                condition; \
+            }) \
+        << "("#condition")"
 
 #endif /* UTEST_TEST_EXTENSION_EVIL_DEFINES_HPP */
