@@ -95,16 +95,20 @@
     UTEST_ASSERT_FATAL().fail()
 
 #define UTEST_EXPECT_TRUE(condition) \
-    UTEST_ASSERT_NON_FATAL().is_true(condition) << "("#condition")"
+    UTEST_ASSERT_NON_FATAL().is_true(condition) \
+        << "("#condition")"
 
 #define UTEST_EXPECT_FALSE(condition) \
-    UTEST_ASSERT_NON_FATAL().is_false(condition) << "("#condition")"
+    UTEST_ASSERT_NON_FATAL().is_false(condition) \
+        << "("#condition")"
 
 #define UTEST_ASSERT_TRUE(condition) \
-    UTEST_ASSERT_FATAL().is_true(condition) << #condition
+    UTEST_ASSERT_FATAL().is_true(condition) \
+        << "("#condition")"
 
 #define UTEST_ASSERT_FALSE(condition) \
-    UTEST_ASSERT_FATAL().is_false(condition) << #condition
+    UTEST_ASSERT_FATAL().is_false(condition) \
+        << "("#condition")"
 
 #define UTEST_EXPECT_EQ(val1, val2) \
     UTEST_ASSERT_NON_FATAL().equal(val1, val2) \
