@@ -46,7 +46,7 @@ endif()
 if (CMAKE_CXX_COMPILER_ID MATCHES Clang)
     set_source_files_properties(
         ../positive/positive.cpp
-        ../positive/negative.cpp
+        ../negative/negative.cpp
         PROPERTIES
         COMPILE_FLAGS "-Wno-global-constructors"
     )
