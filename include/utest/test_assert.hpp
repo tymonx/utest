@@ -107,9 +107,11 @@ public:
 
     TestAssert& fail() noexcept;
 
-    TestAssert& is_true(bool value) noexcept;
+    template<typename T>
+    TestAssert& is_true(const T& value) noexcept;
 
-    TestAssert& is_false(bool value) noexcept;
+    template<typename T>
+    TestAssert& is_false(const T& value) noexcept;
 
     template<typename T1, typename T2, enable_compare<T1, T2> = 0>
     TestAssert& equal(const T1& lhs, const T2& rhs) noexcept;
@@ -173,6 +175,10 @@ private:
     void report(const TestMessage& test_message) noexcept;
 
     bool equal(double lhs, double rhs, double epsilon) noexcept;
+
+    void report_is_true(const TestValue& value) noexcept;
+
+    void report_is_false(const TestValue& value) noexcept;
 
     void report_equal(const TestValue& lhs, const TestValue& rhs) noexcept;
 
@@ -250,6 +256,22 @@ TestAssert::operator<<(T value) noexcept -> TestAssert& {
 template<typename T, TestAssert::enable_floating<T>> inline auto
 TestAssert::operator<<(T value) noexcept -> TestAssert& {
     return operator<<(double(value));
+}
+
+template<typename T> inline auto
+TestAssert::is_true(const T& value) noexcept -> TestAssert& {
+    if (!value) {
+        report_is_true({value});
+    }
+    return *this;
+}
+
+template<typename T> inline auto
+TestAssert::is_false(const T& value) noexcept -> TestAssert& {
+    if (!!value) {
+        report_is_false({value});
+    }
+    return *this;
 }
 
 template<typename T1, typename T2, TestAssert::enable_compare<T1, T2>> auto

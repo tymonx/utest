@@ -186,14 +186,18 @@ template<>
 void GoogleTest::report<TestMessage::TEST_ASSERT_TRUE>(
         const TestMessage& message) noexcept {
     failure(get<TestAssertTrue>(message));
-    write("Expected: true\n  Actual: false\n");
+    write(EXPECTED);
+    write_type(get<TestAssertTrue>(message).get());
+    write(" is true\n  Actual: false\n");
 }
 
 template<>
 void GoogleTest::report<TestMessage::TEST_ASSERT_FALSE>(
         const TestMessage& message) noexcept {
     failure(get<TestAssertFalse>(message));
-    write("Expected: false\n  Actual: true\n");
+    write(EXPECTED);
+    write_type(get<TestAssertFalse>(message).get());
+    write(" is false\n  Actual: true\n");
 }
 
 template<>

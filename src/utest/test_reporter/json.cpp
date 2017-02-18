@@ -200,14 +200,14 @@ template<>
 void JSON::report<TestMessage::TEST_ASSERT_TRUE>(
         const TestMessage& message) noexcept {
     report("isTrue", get<TestAssertBase>(message));
-    append().key(VALUE).write("false");
+    append().key(VALUE).value(get<TestAssertTrue>(message).get());
 }
 
 template<>
 void JSON::report<TestMessage::TEST_ASSERT_FALSE>(
         const TestMessage& message) noexcept {
     report("isFalse", get<TestAssertBase>(message));
-    append().key(VALUE).write("true");
+    append().key(VALUE).value(get<TestAssertTrue>(message).get());
 }
 
 template<>
@@ -499,8 +499,8 @@ JSON& JSON::value(const TestValue& val) noexcept {
     write("{").endl();
 
     indent<INCREASE>().key("type").write("\"", val.type(), "\",").endl();
-    indent().key("size").write(val.size(), ",").endl();
     indent().key("address").write("\"", val.data(), "\",").endl();
+    indent().key("size").write(val.size(), ",").endl();
 
     indent().key("data");
     switch (val.type()) {

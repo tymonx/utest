@@ -66,7 +66,7 @@ static void test_case_execution(TestCase& test_case) {
         TestAssert{p}.equal(str, str);
         TestAssert{p}.equal("Text", str);
         TestAssert{p}.equal(0, 1) << 0 << " != " << 1;
-        TestAssert{p}.equal(str, "Test") << str << " != Test";
+        TestAssert{p}.equal(str, "Texta") << str << " != Texta";
         TestAssert{p}.equal(TestString{"TEXT"}.ignore_case(), str);
         TestAssert{p}.not_equal(TestString{"TEXT"}.ignore_case(), str);
         TestAssert{p}.fail();

@@ -15,6 +15,7 @@ Lightweight unit testing framework mainly for C++ and also for C projects. Suita
 * An XUnit test framework
 * The 3-clause BSD license
 * No evil defined test macros, programmer API style
+* Very detailed asserts message
 * Automatic test registration
 * Single registered test can have multi test suites and test cases
 * A rich set of assertions
@@ -71,6 +72,21 @@ Test output example:
 
 [==========] 1 test(s) from 1 test suite(s) ran.
 [  PASSED  ] 1 test(s).
+```
+
+Test assert message examples:
+```
+unit_test.cpp:7: Failure
+Expected: (boolean)[address=0x00007fa3b3411e08,size=1] is true
+  Actual: false
+
+unit_test.cpp:13: Failure
+Expected: (string)[address=0x00007fff4d0c00b0,size=4] == (string)[address=0x00000000004097ee,size=5]
+  Actual: "Text" == "TextB"
+
+unit_test.cpp:17: Failure
+Expected: (signed int)[address=0x00007fa3b3411dc8,size=4] == (signed int)[address=0x00007fa3b3411d98,size=4]
+  Actual: 1 == 2
 ```
 
 Main example with multi writers:

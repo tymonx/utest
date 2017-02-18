@@ -42,21 +42,23 @@
 #ifndef UTEST_TEST_MESSAGE_TEST_ASSERT_FALSE_HPP
 #define UTEST_TEST_MESSAGE_TEST_ASSERT_FALSE_HPP
 
-#include <utest/test_message/test_assert_base.hpp>
+#include <utest/test_message/test_assert_value.hpp>
 
 namespace utest {
 namespace test_message {
 
-class TestAssertFalse : public TestAssertBase {
+class TestAssertFalse : public TestAssertValue {
 private:
     friend class utest::TestAssert;
 
-    TestAssertFalse(const TestAssert& test_assert) noexcept;
+    TestAssertFalse(const TestAssert& test_assert,
+            const TestValue& value) noexcept;
 };
 
 inline
-TestAssertFalse::TestAssertFalse(const TestAssert& test_assert) noexcept :
-    TestAssertBase{TestMessage::TEST_ASSERT_FALSE, test_assert}
+TestAssertFalse::TestAssertFalse(const TestAssert& test_assert,
+        const TestValue& value) noexcept :
+    TestAssertValue{TestMessage::TEST_ASSERT_FALSE, test_assert, value}
 { }
 
 template<> inline auto

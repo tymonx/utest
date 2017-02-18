@@ -34,39 +34,47 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @file utest/test_message/assert_true.hpp
+ * @file utest/test_message/test_assert_value.hpp
  *
  * @brief Test message interface
  */
 
-#ifndef UTEST_TEST_MESSAGE_TEST_ASSERT_TRUE_HPP
-#define UTEST_TEST_MESSAGE_TEST_ASSERT_TRUE_HPP
+#ifndef UTEST_TEST_MESSAGE_TEST_ASSERT_VALUE_HPP
+#define UTEST_TEST_MESSAGE_TEST_ASSERT_VALUE_HPP
 
-#include <utest/test_message/test_assert_value.hpp>
+#include <utest/test_message/test_assert_base.hpp>
+#include <utest/test_value.hpp>
 
 namespace utest {
 namespace test_message {
 
-class TestAssertTrue : public TestAssertValue {
+class TestAssertValue : public TestAssertBase {
+public:
+    const TestValue& get() const noexcept;
+protected:
+    TestAssertValue(TestMessage::Type message_type,
+            const TestAssert& test_assert, const TestValue& value) noexcept;
 private:
-    friend class utest::TestAssert;
-
-    TestAssertTrue(const TestAssert& test_assert,
-            const TestValue& value) noexcept;
+    const TestValue& m_value;
 };
 
 inline
-TestAssertTrue::TestAssertTrue(const TestAssert& test_assert,
-        const TestValue& value) noexcept :
-    TestAssertValue{TestMessage::TEST_ASSERT_TRUE, test_assert, value}
+TestAssertValue::TestAssertValue(TestMessage::Type message_type,
+        const TestAssert& test_assert, const TestValue& value) noexcept :
+    TestAssertBase{message_type, test_assert}, m_value(value)
 { }
 
 template<> inline auto
-get(const TestMessage& msg) noexcept -> const TestAssertTrue& {
-    return reinterpret_cast<const TestAssertTrue&>(msg);
+get(const TestMessage& msg) noexcept -> const TestAssertValue& {
+    return reinterpret_cast<const TestAssertValue&>(msg);
+}
+
+inline auto
+TestAssertValue::get() const noexcept -> const TestValue& {
+    return m_value;
 }
 
 }
 }
 
-#endif /* UTEST_TEST_MESSAGE_TEST_ASSERT_TRUE_HPP */
+#endif /* UTEST_TEST_MESSAGE_TEST_ASSERT_BASE_HPP */

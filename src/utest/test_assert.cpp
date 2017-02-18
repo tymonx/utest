@@ -155,20 +155,14 @@ TestAssert& TestAssert::fail() noexcept {
     return *this;
 }
 
-TestAssert& TestAssert::is_true(bool value) noexcept {
-    if (true != value) {
-        m_status = TestStatus::FAIL;
-        report(TestAssertTrue{*this});
-    }
-    return *this;
+void TestAssert::report_is_true(const TestValue& value) noexcept {
+    m_status = TestStatus::FAIL;
+    report(TestAssertTrue{*this, value});
 }
 
-TestAssert& TestAssert::is_false(bool value) noexcept {
-    if (false != value) {
-        m_status = TestStatus::FAIL;
-        report(TestAssertFalse{*this});
-    }
-    return *this;
+void TestAssert::report_is_false(const TestValue& value) noexcept {
+    m_status = TestStatus::FAIL;
+    report(TestAssertFalse{*this, value});
 }
 
 bool TestAssert::equal(double lhs, double rhs, double epsilon) noexcept {
