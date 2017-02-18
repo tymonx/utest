@@ -27,27 +27,15 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-add_executable(test-reporter-json
+add_executable(test_reporter_json
     json.cpp
     ../positive/positive.cpp
     ../negative/negative.cpp
 )
 
-set_target_properties(test-reporter-json PROPERTIES
-    OUTPUT_NAME test_reporter_json)
-
-target_link_libraries(test-reporter-json utest)
+target_link_libraries(test_reporter_json utest)
 
 if (DEFINED TEST_RUNNER)
-    add_test(NAME test-reporter-json COMMAND ${TEST_RUNNER}
+    add_test(NAME test_reporter_json COMMAND ${TEST_RUNNER}
         ${CMAKE_BINARY_DIR}/tests/test_reporter_json)
-endif()
-
-if (CMAKE_CXX_COMPILER_ID MATCHES Clang)
-    set_source_files_properties(
-        ../positive/positive.cpp
-        ../negative/negative.cpp
-        PROPERTIES
-        COMPILE_FLAGS "-Wno-global-constructors"
-    )
 endif()

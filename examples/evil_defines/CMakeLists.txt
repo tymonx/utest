@@ -27,15 +27,5 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-add_executable(example-evil-defines
-    evil_defines.cpp
-)
-
-set_target_properties(example-evil-defines PROPERTIES OUTPUT_NAME evil_defines)
-target_link_libraries(example-evil-defines utest-main utest)
-
-if (CMAKE_CXX_COMPILER_ID MATCHES Clang)
-    set_source_files_properties(evil_defines.cpp PROPERTIES
-        COMPILE_FLAGS "-Wno-global-constructors"
-    )
-endif()
+add_executable(example_evil_defines evil_defines.cpp)
+target_link_libraries(example_evil_defines utest-main utest)

@@ -29,8 +29,13 @@
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests)
 
+if (CMAKE_CXX_COMPILER_ID MATCHES Clang)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-global-constructors")
+endif()
+
 add_subdirectory(positive)
 add_subdirectory(negative)
+add_subdirectory(test_thread)
 add_subdirectory(test_writer)
 add_subdirectory(test_reporter)
 add_subdirectory(color)

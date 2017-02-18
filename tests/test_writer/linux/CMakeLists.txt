@@ -27,30 +27,16 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-add_executable(test-writer-udp
-    udp.cpp
-)
+add_executable(test_writer_udp udp.cpp)
+target_link_libraries(test_writer_udp utest)
 
-set_target_properties(test-writer-udp PROPERTIES OUTPUT_NAME test_writer_udp)
-target_link_libraries(test-writer-udp utest)
-
-add_executable(test-writer-tcp
-    tcp.cpp
-)
-
-set_target_properties(test-writer-tcp PROPERTIES OUTPUT_NAME test_writer_tcp)
-target_link_libraries(test-writer-tcp utest)
+add_executable(test_writer_tcp tcp.cpp)
+target_link_libraries(test_writer_tcp utest)
 
 if (DEFINED TEST_RUNNER)
-    add_test(NAME test-writer-udp COMMAND
+    add_test(NAME test_writer_udp COMMAND
         ${CMAKE_BINARY_DIR}/tests/test_writer_udp)
 
-    add_test(NAME test-writer-tcp COMMAND
+    add_test(NAME test_writer_tcp COMMAND
         ${CMAKE_BINARY_DIR}/tests/test_writer_tcp)
-endif()
-
-if (CMAKE_CXX_COMPILER_ID MATCHES Clang)
-    set_source_files_properties(udp.cpp tcp.cpp PROPERTIES
-        COMPILE_FLAGS "-Wno-global-constructors"
-    )
 endif()

@@ -27,15 +27,5 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-add_executable(example-factorial
-    factorial.cpp
-)
-
-set_target_properties(example-factorial PROPERTIES OUTPUT_NAME factorial)
-target_link_libraries(example-factorial utest-main utest)
-
-if (CMAKE_CXX_COMPILER_ID MATCHES Clang)
-    set_source_files_properties(factorial.cpp PROPERTIES
-        COMPILE_FLAGS "-Wno-global-constructors"
-    )
-endif()
+add_executable(example_factorial factorial.cpp)
+target_link_libraries(example_factorial utest-main utest)

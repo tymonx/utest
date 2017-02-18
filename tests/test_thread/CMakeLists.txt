@@ -27,17 +27,10 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+add_executable(test_thread_generic generic.cpp)
+target_link_libraries(test_thread_generic utest)
 
-if (CMAKE_CXX_COMPILER_ID MATCHES Clang)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-global-constructors")
+if (DEFINED TEST_RUNNER)
+    add_test(NAME test_thread_generic COMMAND ${TEST_RUNNER}
+        ${CMAKE_BINARY_DIR}/tests/test_thread_generic)
 endif()
-
-add_subdirectory(simple)
-add_subdirectory(string)
-add_subdirectory(factorial)
-add_subdirectory(evil_defines)
-add_subdirectory(udp)
-add_subdirectory(tcp)
-add_subdirectory(files)
-add_subdirectory(json)

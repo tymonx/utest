@@ -27,15 +27,5 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-add_executable(example-string
-    string.cpp
-)
-
-set_target_properties(example-string PROPERTIES OUTPUT_NAME string)
-target_link_libraries(example-string utest-main utest)
-
-if (CMAKE_CXX_COMPILER_ID MATCHES Clang)
-    set_source_files_properties(string.cpp PROPERTIES
-        COMPILE_FLAGS "-Wno-global-constructors"
-    )
-endif()
+add_executable(example_string string.cpp)
+target_link_libraries(example_string utest-main utest)

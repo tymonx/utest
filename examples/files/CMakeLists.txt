@@ -31,15 +31,5 @@ if (NOT UNIX)
     return()
 endif()
 
-add_executable(example-files
-    files.cpp
-)
-
-set_target_properties(example-files PROPERTIES OUTPUT_NAME files)
-target_link_libraries(example-files utest)
-
-if (CMAKE_CXX_COMPILER_ID MATCHES Clang)
-    set_source_files_properties(files.cpp PROPERTIES
-        COMPILE_FLAGS "-Wno-global-constructors"
-    )
-endif()
+add_executable(example_files files.cpp)
+target_link_libraries(example_files utest)

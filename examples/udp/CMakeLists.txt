@@ -31,15 +31,5 @@ if (NOT UNIX)
     return()
 endif()
 
-add_executable(example-udp
-    udp.cpp
-)
-
-set_target_properties(example-udp PROPERTIES OUTPUT_NAME udp)
-target_link_libraries(example-udp utest)
-
-if (CMAKE_CXX_COMPILER_ID MATCHES Clang)
-    set_source_files_properties(udp.cpp PROPERTIES
-        COMPILE_FLAGS "-Wno-global-constructors"
-    )
-endif()
+add_executable(example_udp udp.cpp)
+target_link_libraries(example_udp utest)

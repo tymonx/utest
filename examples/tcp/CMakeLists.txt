@@ -31,15 +31,5 @@ if (NOT UNIX)
     return()
 endif()
 
-add_executable(example-tcp
-    tcp.cpp
-)
-
-set_target_properties(example-tcp PROPERTIES OUTPUT_NAME tcp)
-target_link_libraries(example-tcp utest)
-
-if (CMAKE_CXX_COMPILER_ID MATCHES Clang)
-    set_source_files_properties(tcp.cpp PROPERTIES
-        COMPILE_FLAGS "-Wno-global-constructors"
-    )
-endif()
+add_executable(example_tcp tcp.cpp)
+target_link_libraries(example_tcp utest)
