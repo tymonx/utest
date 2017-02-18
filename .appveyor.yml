@@ -8,7 +8,7 @@ environment:
 build_script:
  - mkdir build
  - cd build
- - cmake -DTESTS=ON -DEXAMPLES=ON .. -G "Visual Studio 15 2017 %VS_GEN%"
+ - cmake -DTESTS=ON -DEXAMPLES=ON .. -G "Visual Studio 14 2015 %VS_GEN%"
  - cmake --build . --target utest
  - ctest
  - cd ..
