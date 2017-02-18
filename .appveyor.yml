@@ -8,7 +8,7 @@ environment:
 build_script:
  - mkdir build
  - cd build
- - cmake -DTESTS=ON -DEXAMPLES=ON -G "Visual Studio 14 2015 Win64" ..
- - cmake --build . --target all
+ - cmake -DTESTS=ON -DEXAMPLES=ON -G "Visual Studio 14 2015 %VS_GEN%" ..
+ - msbuild all.sln /p:Configuration=%Configuration%;Platform=%arch% /maxcpucount
  - ctest
  - cd ..
