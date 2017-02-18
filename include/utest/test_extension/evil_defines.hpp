@@ -95,84 +95,104 @@
     UTEST_ASSERT_FATAL().fail()
 
 #define UTEST_EXPECT_TRUE(condition) \
-    UTEST_ASSERT_NON_FATAL().is_true(condition)
+    UTEST_ASSERT_NON_FATAL().is_true(condition) << "("#condition")"
 
 #define UTEST_EXPECT_FALSE(condition) \
-    UTEST_ASSERT_NON_FATAL().is_false(condition)
+    UTEST_ASSERT_NON_FATAL().is_false(condition) << "("#condition")"
 
 #define UTEST_ASSERT_TRUE(condition) \
-    UTEST_ASSERT_FATAL().is_true(condition)
+    UTEST_ASSERT_FATAL().is_true(condition) << #condition
 
 #define UTEST_ASSERT_FALSE(condition) \
-    UTEST_ASSERT_FATAL().is_false(condition)
+    UTEST_ASSERT_FATAL().is_false(condition) << #condition
 
 #define UTEST_EXPECT_EQ(val1, val2) \
-    UTEST_ASSERT_NON_FATAL().equal(val1, val2)
+    UTEST_ASSERT_NON_FATAL().equal(val1, val2) \
+        << "("#val1") == ("#val2")"
 
 #define UTEST_EXPECT_NE(val1, val2) \
-    UTEST_ASSERT_NON_FATAL().not_equal(val1, val2)
+    UTEST_ASSERT_NON_FATAL().not_equal(val1, val2) \
+        << "("#val1") != ("#val2")"
 
 #define UTEST_EXPECT_LT(val1, val2) \
-    UTEST_ASSERT_NON_FATAL().less_than(val1, val2)
+    UTEST_ASSERT_NON_FATAL().less_than(val1, val2) \
+        << "("#val1") < ("#val2")"
 
 #define UTEST_EXPECT_LE(val1, val2) \
-    UTEST_ASSERT_NON_FATAL().less_than_or_equal(val1, val2)
+    UTEST_ASSERT_NON_FATAL().less_than_or_equal(val1, val2) \
+        << "("#val1") <= ("#val2")"
 
 #define UTEST_EXPECT_GT(val1, val2) \
-    UTEST_ASSERT_NON_FATAL().greater_than(val1, val2)
+    UTEST_ASSERT_NON_FATAL().greater_than(val1, val2) \
+        << "("#val1") > ("#val2")"
 
 #define UTEST_EXPECT_GE(val1, val2) \
-    UTEST_ASSERT_NON_FATAL().greater_than_or_equal(val1, val2)
+    UTEST_ASSERT_NON_FATAL().greater_than_or_equal(val1, val2) \
+        << "("#val1") >= ("#val2")"
 
 #define UTEST_ASSERT_EQ(val1, val2) \
-    UTEST_ASSERT_FATAL().equal(val1, val2)
+    UTEST_ASSERT_FATAL().equal(val1, val2) \
+        << "("#val1") == ("#val2")"
 
 #define UTEST_ASSERT_NE(val1, val2) \
-    UTEST_ASSERT_FATAL().not_equal(val1, val2)
+    UTEST_ASSERT_FATAL().not_equal(val1, val2) \
+        << "("#val1") != ("#val2")"
 
 #define UTEST_ASSERT_LT(val1, val2) \
-    UTEST_ASSERT_FATAL().less_than(val1, val2)
+    UTEST_ASSERT_FATAL().less_than(val1, val2) \
+        << "("#val1") < ("#val2")"
 
 #define UTEST_ASSERT_LE(val1, val2) \
-    UTEST_ASSERT_FATAL().less_than_or_equal(val1, val2)
+    UTEST_ASSERT_FATAL().less_than_or_equal(val1, val2) \
+        << "("#val1") <= ("#val2")"
 
 #define UTEST_ASSERT_GT(val1, val2) \
-    UTEST_ASSERT_FATAL().greater_than(val1, val2)
+    UTEST_ASSERT_FATAL().greater_than(val1, val2) \
+        << "("#val1") > ("#val2")"
 
 #define UTEST_ASSERT_GE(val1, val2) \
-    UTEST_ASSERT_FATAL().greater_than_or_equal(val1, val2)
+    UTEST_ASSERT_FATAL().greater_than_or_equal(val1, val2) \
+        << "("#val1") >= ("#val2")"
 
 #define UTEST_EXPECT_STREQ(str1, str2) \
     UTEST_ASSERT_NON_FATAL().equal(utest::TestString{str1},\
-            utest::TestString{str2})
+            utest::TestString{str2}) \
+        << "("#str1") == ("#str2")"
 
 #define UTEST_EXPECT_STRNE(str1, str2) \
     UTEST_ASSERT_NON_FATAL()\.not_equal(utest::TestString{str1},\
-            utest::TestString{str2})
+            utest::TestString{str2}) \
+        << "("#str1") != ("#str2")"
 
 #define UTEST_EXPECT_STRCASEEQ(str1, str2) \
     UTEST_ASSERT_NON_FATAL().equal(utest::TestString{str1}.ignore_case(),\
-            utest::TestString{str2})
+            utest::TestString{str2}) \
+        << "("#str1") == ("#str2")"
 
 #define UTEST_EXPECT_STRCASENE(str1, str2) \
     UTEST_ASSERT_NON_FATAL().not_equal(utest::TestString{str1}.ignore_case(),\
-            utest::TestString{str2})
+            utest::TestString{str2}) \
+        << "("#str1") != ("#str2")"
 
 #define UTEST_ASSERT_STREQ(str1, str2) \
     UTEST_ASSERT_FATAL().equal(utest::TestString{str1},\
-            utest::TestString{str2})
+            utest::TestString{str2}) \
+        << "("#str1") == ("#str2")"
 
 #define UTEST_ASSERT_STRNE(str1, str2) \
     UTEST_ASSERT_FATAL().not_equal(utest::TestString{str1},\
-            utest::TestString{str2})
+            utest::TestString{str2}) \
+        << "("#str1") != ("#str2")"
 
 #define UTEST_ASSERT_STRCASEEQ(str1, str2) \
     UTEST_ASSERT_FATAL().equal(utest::TestString{str1}.ignore_case(),\
-            utest::TestString{str2})
+            utest::TestString{str2}) \
+        << "("#str1") == ("#str2")"
 
 #define UTEST_ASSERT_STRCASENE(str1, str2) \
     UTEST_ASSERT_FATAL().not_equal(utest::TestString{str1}.ignore_case(),\
-            utest::TestString{str2})
+            utest::TestString{str2}) \
+        << "("#str1") != ("#str2")"
 
 #define UTEST_EXPECT_THROW(exception_type) \
     UTEST_ASSERT_NON_FATAL().expected_throw<exception_type>(\
