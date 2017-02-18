@@ -80,11 +80,17 @@ static TestRunner g([] (TestSuite& test_suite) {
 
         .name("set").run([] (TestParams& p) {
             TestAssert{p}.file(__FILE__).line(__LINE__).fatal(false).fail();
+            TestAssert{p}.equal(TestStatus::FAIL, TestAssert{p}.status());
         })
 
         .name("boolean").run([] (TestParams& p) {
             TestAssert{p}.is_true(false);
             TestAssert{p}.is_false(true);
+        })
+
+        .name("null").run([] (TestParams& p) {
+            TestAssert{p}.not_equal(nullptr, nullptr);
+            TestAssert{p}.equal(&p, nullptr);
         })
 
         .name("integral").run([] (TestParams& p) {
@@ -113,6 +119,7 @@ static TestRunner g([] (TestSuite& test_suite) {
         .name("string").run([] (TestParams& p) {
             TestString::Buffer buffer;
 
+            TestAssert{p}.not_equal('a', 0x61);
             TestAssert{p}.equal("Test", "Text");
             TestAssert{p}.not_equal("Test", "Test");
             TestAssert{p}.equal(TestString{"TEST"}.ignore_case(), "Text");
@@ -196,4 +203,9 @@ static TestRunner g([] (TestSuite& test_suite) {
     });
 
     THROW(std::runtime_error("error!"));
+});
+
+
+static TestRunner g_exception([] (TestSuite&) {
+    THROW(DummyException());
 });

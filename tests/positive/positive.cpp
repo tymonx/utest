@@ -79,8 +79,14 @@ static TestRunner g([] (TestSuite& test_suite) {
         })
 
         .name("boolean").run([] (TestParams& p) {
+            TestAssert{p}.is_true(&p);
             TestAssert{p}.is_true(true);
             TestAssert{p}.is_false(false);
+        })
+
+        .name("null").run([] (TestParams& p) {
+            TestAssert{p}.equal(nullptr, nullptr);
+            TestAssert{p}.not_equal(&p, nullptr);
         })
 
         .name("integral").run([] (TestParams& p) {
@@ -110,6 +116,7 @@ static TestRunner g([] (TestSuite& test_suite) {
             TestString::Buffer buffer;
 
             TestAssert{p}.equal("Test", "Test");
+            TestAssert{p}.equal('a', 0x61);
             TestAssert{p}.not_equal("Test", "Text");
             TestAssert{p}.equal(TestString{"TEST"}.ignore_case(), "Test");
             TestAssert{p}.not_equal(TestString{"TEST"}.ignore_case(), "Text");
