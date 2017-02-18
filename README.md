@@ -15,7 +15,7 @@ Lightweight unit testing framework mainly for C++ and also for C projects. Suita
 * An XUnit test framework
 * The 3-clause BSD license
 * No evil defined test macros, programmer API style
-* Very detailed asserts message
+* Detailed assert messages including type info, address and total size in bytes
 * Automatic test registration
 * Single registered test can have multi test suites and test cases
 * A rich set of assertions
