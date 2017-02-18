@@ -28,18 +28,57 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 if (CMAKE_BUILD_TYPE MATCHES "Coverage")
-    if (NOT CMAKE_CXX_COMPILER_ID MATCHES GNU)
-        message(FATAL_ERROR "Code coverage is only supported by GNU compiler")
+    get_filename_component(COMPILER_ROOT ${CMAKE_CXX_COMPILER} DIRECTORY)
+    get_filename_component(COMPILER_NAME ${CMAKE_CXX_COMPILER} NAME)
+
+    if (CMAKE_CXX_COMPILER_ID MATCHES Clang)
+        string(REGEX REPLACE "([a-z0-9-]*)clang.*" "\\1"
+            COMPILER_PREFIX ${COMPILER_NAME})
+
+        string(REGEX REPLACE ".*clang([a-z0-9-]*)" "\\1"
+            COMPILER_SUFFIX ${COMPILER_NAME})
+
+        find_program(GCOV_COMMAND
+            ${COMPILER_PREFIX}llvm-cov${COMPILER_SUFFIX}
+            llvm-cov${COMPILER_SUFFIX}
+            ${COMPILER_PREFIX}llvm-cov
+            llvm-cov
+            HINTS ${COMPILER_ROOT}
+        )
+
+        if (GCOV_COMMAND)
+            file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+            set(LLVM_GCOV_SCRIPT llvm-gcov.sh)
+
+            file(WRITE ${CMAKE_BINARY_DIR}/${LLVM_GCOV_SCRIPT}
+                "#!/bin/sh\n"
+                "exec ${GCOV_COMMAND} gcov \"$@\"\n"
+            )
+
+            file(INSTALL ${CMAKE_BINARY_DIR}/${LLVM_GCOV_SCRIPT}
+                DESTINATION ${CMAKE_BINARY_DIR}/bin
+                FILE_PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ)
+
+            set(GCOV_COMMAND ${CMAKE_BINARY_DIR}/bin/llvm-gcov.sh)
+        endif()
+    elseif (CMAKE_CXX_COMPILER_ID MATCHES GNU)
+        string(REGEX REPLACE "([a-z0-9-]*)gcc.*" "\\1"
+            COMPILER_PREFIX ${COMPILER_NAME})
+
+        string(REGEX REPLACE ".*gcc([a-z0-9-]*)" "\\1"
+            COMPILER_SUFFIX ${COMPILER_NAME})
+
+        find_program(GCOV_COMMAND
+            ${COMPILER_PREFIX}gcov${COMPILER_SUFFIX}
+            gcov${COMPILER_SUFFIX}
+            ${COMPILER_PREFIX}gcov
+            gcov
+            HINTS ${COMPILER_ROOT}
+        )
+    else()
+        message(FATAL_ERROR
+            "Code coverage is only supported by Clang and GNU compiler")
     endif()
-
-    get_filename_component(COMPILER_ROOT ${CMAKE_C_COMPILER} DIRECTORY)
-    get_filename_component(COMPILER_NAME ${CMAKE_C_COMPILER} NAME)
-
-    string(REGEX REPLACE "([a-z0-9-]*)gcc.*" "\\1" COMPILER_PREFIX ${COMPILER_NAME})
-    string(REGEX REPLACE ".*gcc([a-z0-9-]*)" "\\1" COMPILER_SUFFIX ${COMPILER_NAME})
-
-    find_program(GCOV_COMMAND "${COMPILER_PREFIX}gcov${COMPILER_SUFFIX}"
-        HINTS ${COMPILER_ROOT} PATHS ${COMPILER_ROOT})
 
     if (NOT GCOV_COMMAND)
         message(FATAL_ERROR "Cannot find gcov command")
