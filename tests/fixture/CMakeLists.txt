@@ -27,16 +27,10 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests)
+add_executable(test_fixture fixture.cpp)
+target_link_libraries(test_fixture utest-main utest-main utest)
 
-if (CMAKE_CXX_COMPILER_ID MATCHES Clang)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-global-constructors")
+if (DEFINED TEST_RUNNER)
+    add_test(NAME test_fixture COMMAND ${TEST_RUNNER}
+        ${CMAKE_BINARY_DIR}/tests/test_fixture)
 endif()
-
-add_subdirectory(positive)
-add_subdirectory(negative)
-add_subdirectory(fixture)
-add_subdirectory(test_thread)
-add_subdirectory(test_writer)
-add_subdirectory(test_reporter)
-add_subdirectory(color)
