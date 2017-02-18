@@ -28,10 +28,10 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 if (CMAKE_BUILD_TYPE MATCHES "Coverage")
-    get_filename_component(COMPILER_ROOT ${CMAKE_CXX_COMPILER} DIRECTORY)
-    get_filename_component(COMPILER_NAME ${CMAKE_CXX_COMPILER} NAME)
+    get_filename_component(COMPILER_ROOT ${CMAKE_C_COMPILER} DIRECTORY)
+    get_filename_component(COMPILER_NAME ${CMAKE_C_COMPILER} NAME)
 
-    if (CMAKE_CXX_COMPILER_ID MATCHES Clang)
+    if (CMAKE_C_COMPILER_ID MATCHES Clang)
         string(REGEX REPLACE "([a-z0-9-]*)clang.*" "\\1"
             COMPILER_PREFIX ${COMPILER_NAME})
 
@@ -61,7 +61,7 @@ if (CMAKE_BUILD_TYPE MATCHES "Coverage")
 
             set(GCOV_COMMAND ${CMAKE_BINARY_DIR}/bin/llvm-gcov.sh)
         endif()
-    elseif (CMAKE_CXX_COMPILER_ID MATCHES GNU)
+    elseif (CMAKE_C_COMPILER_ID MATCHES GNU)
         string(REGEX REPLACE "([a-z0-9-]*)gcc.*" "\\1"
             COMPILER_PREFIX ${COMPILER_NAME})
 
