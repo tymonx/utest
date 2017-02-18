@@ -258,7 +258,7 @@ TestAssert::operator<<(T value) noexcept -> TestAssert& {
     return operator<<(double(value));
 }
 
-template<typename T> inline auto
+template<typename T> auto
 TestAssert::is_true(const T& value) noexcept -> TestAssert& {
     if (!value) {
         report_is_true({value});
@@ -266,7 +266,7 @@ TestAssert::is_true(const T& value) noexcept -> TestAssert& {
     return *this;
 }
 
-template<typename T> inline auto
+template<typename T> auto
 TestAssert::is_false(const T& value) noexcept -> TestAssert& {
     if (!!value) {
         report_is_false({value});
