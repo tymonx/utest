@@ -34,15 +34,15 @@ endif ()
 set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -std=c++11)
 
 if (NOT EXCEPTIONS)
-    set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-fno-exceptions")
+    set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -fno-exceptions)
 endif()
 
 if (NOT RTTI)
-    set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-fno-rtti")
+    set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -fno-rtti)
 endif()
 
 if (LTO)
-    set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-flto")
+    set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -flto)
 endif()
 
 set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS}
@@ -54,6 +54,10 @@ set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS}
     -Wno-c++98-compat
     -Wno-c++98-compat-pedantic
 )
+
+if (WARNINGS_INTO_ERRORS)
+    set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -Werror)
+endif()
 
 if (CMAKE_BUILD_TYPE MATCHES "Release" OR NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release")

@@ -62,23 +62,24 @@ case $TOOLCHAIN in
 gcc)
     mkdir -p build && cd build
     cmake -DCMAKE_C_COMPILER=$C_COMPILER -DCMAKE_CXX_COMPILER=$CXX_COMPILER \
-        -DEXAMPLES=ON -DTHREADS=OFF -DTESTS=ON \
-        -DCMAKE_BUILD_TYPE=$BUILD_TYPE .. && make
+        -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DEXAMPLES=ON -DTESTS=ON -DTHREADS=OFF \
+        -DWARNINGS_INTO_ERRORS=ON .. && make
     run_tests
     cd -
     ;;
 clang)
     mkdir -p build && cd build
     cmake -DCMAKE_C_COMPILER=$C_COMPILER -DCMAKE_CXX_COMPILER=$CXX_COMPILER \
-        -DEXAMPLES=ON -DTESTS=ON -DCMAKE_BUILD_TYPE=$BUILD_TYPE .. && make
+        -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DEXAMPLES=ON -DTESTS=ON \
+        -DWARNINGS_INTO_ERRORS=ON .. && make
     run_tests
     cd -
     ;;
 gcc-arm-none-eabi)
     mkdir -p build && cd build
     cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-gcc-arm-none-eabi.cmake \
-        -DEXAMPLES=ON -DSEMIHOSTING=ON -DTESTS=ON \
-        -DCMAKE_BUILD_TYPE=$BUILD_TYPE .. && make
+        -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DEXAMPLES=ON -DTESTS=ON \
+        -DSEMIHOSTING=ON -DWARNINGS_INTO_ERRORS=ON .. && make
     run_tests
     cd -
     ;;
@@ -86,8 +87,8 @@ clang-arm-none-eabi)
     mkdir -p build && cd build
     cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-clang-arm-none-eabi.cmake \
         -DCMAKE_C_COMPILER=$C_COMPILER -DCMAKE_CXX_COMPILER=$CXX_COMPILER \
-        -DEXAMPLES=ON -DSEMIHOSTING=ON -DTESTS=ON -DLTO=OFF \
-        -DCMAKE_BUILD_TYPE=$BUILD_TYPE .. && make
+        -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DEXAMPLES=ON -DTESTS=ON -DLTO=OFF \
+        -DSEMIHOSTING=ON -DWARNINGS_INTO_ERRORS=ON .. && make
     run_tests
     cd -
     ;;
