@@ -94,7 +94,7 @@ TestSize TestCommandLine::get_arguments_length(
 }
 
 void TestCommandLine::parsing() noexcept {
-    auto status{Status::OK};
+    auto status = Status::OK;
 
     for (TestSize i = 1; i < m_arguments.size(); ++i) {
         const auto& arg = m_arguments[i];
