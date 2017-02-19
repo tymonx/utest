@@ -34,6 +34,7 @@ add_subdirectory(test_thread)
 add_library(utest-core OBJECT
     test.cpp
     test_assert.cpp
+    test_command_line.cpp
     test_case.cpp
     test_exception.cpp
     test_list.cpp

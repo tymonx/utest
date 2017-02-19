@@ -267,7 +267,7 @@ TestSpan<T>::first(size_type count) const noexcept -> TestSpan {
     if (count > size()) {
         count = size();
     }
-    return {data(), count};
+    return {m_data, count};
 }
 
 template<typename T> inline auto
@@ -275,10 +275,10 @@ TestSpan<T>::last(size_type count) const noexcept -> TestSpan {
     if (count > size()) {
         count = size();
     }
-    return {data() + (size() - count), count};
+    return {m_data + (size() - count), count};
 }
 
-template<typename T> inline auto
+template<typename T> auto
 TestSpan<T>::subspan(size_type offset,
         size_type count) const noexcept -> TestSpan {
     return last(size() - offset).first(count);

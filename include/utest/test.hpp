@@ -44,6 +44,7 @@
 
 #include <utest/test_span.hpp>
 #include <utest/test_status.hpp>
+#include <utest/test_command_line.hpp>
 
 namespace utest {
 
@@ -64,6 +65,8 @@ public:
 
     Test& run() noexcept;
 
+    Test& command_line(const TestCommandLine& test_command_line) noexcept;
+
     TestStatus status() const noexcept;
 
     Test& color(bool enable = true) noexcept;
@@ -76,8 +79,15 @@ private:
 
     TestThread& m_thread;
     TestReporters m_reporters{};
+    TestCommandLine m_command_line{};
     TestStatus m_status{TestStatus::PASS};
 };
+
+inline auto
+Test::command_line(const TestCommandLine& test_command_line) noexcept -> Test& {
+    m_command_line = test_command_line;
+    return *this;
+}
 
 inline auto
 Test::status() const noexcept -> TestStatus {

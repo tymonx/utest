@@ -45,7 +45,7 @@
 
 using namespace utest;
 
-int main() {
-    return TestStatus::PASS == Test{}.run().status()
+int main(int argc, char* argv[]) {
+    return TestStatus::PASS == Test{}.command_line({argc, argv}).run().status()
         ? EXIT_SUCCESS : EXIT_FAILURE;
 }

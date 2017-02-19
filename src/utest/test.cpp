@@ -87,39 +87,40 @@ void Test::report(const TestMessage& test_message) noexcept {
 }
 
 Test& Test::run() noexcept {
-    TestSize test_suites_passed{0};
-    TestSize test_suites_failed{0};
-    TestSize test_cases_passed{0};
-    TestSize test_cases_failed{0};
+    if (m_command_line.valid()) {
+        TestSize test_suites_passed{0};
+        TestSize test_suites_failed{0};
+        TestSize test_cases_passed{0};
+        TestSize test_cases_failed{0};
 
-    auto& test_runs = TestRegister::get_instance();
-    m_status = TestStatus::PASS;
+        auto& test_runs = TestRegister::get_instance();
+        m_status = TestStatus::PASS;
 
-    report(test_message::TestBegin{
-        test_runs.size()
-    });
+        report(test_message::TestBegin{
+            test_runs.size()
+        });
 
-    for (auto& test_run : test_runs) {
-        TestSuite test_suite{*this};
-        test_run(test_suite);
+        for (auto& test_run : test_runs) {
+            TestSuite test_suite{*this};
+            test_run(test_suite);
 
-        test_suites_passed += test_suite.passed();
-        test_suites_failed += test_suite.failed();
+            test_suites_passed += test_suite.passed();
+            test_suites_failed += test_suite.failed();
 
-        test_cases_passed += test_suite.test_cases_passed();
-        test_cases_failed += test_suite.test_cases_failed();
+            test_cases_passed += test_suite.test_cases_passed();
+            test_cases_failed += test_suite.test_cases_failed();
+        }
+
+        if (test_suites_failed || test_cases_failed) {
+            m_status = TestStatus::FAIL;
+        }
+
+        report(test_message::TestEnd{
+            test_suites_passed,
+            test_suites_failed,
+            test_cases_passed,
+            test_cases_failed
+        });
     }
-
-    if (test_suites_failed || test_cases_failed) {
-        m_status = TestStatus::FAIL;
-    }
-
-    report(test_message::TestEnd{
-        test_suites_passed,
-        test_suites_failed,
-        test_cases_passed,
-        test_cases_failed
-    });
-
     return *this;
 }
