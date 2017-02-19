@@ -60,44 +60,38 @@ void TestSuite::report(const TestMessage& test_message) noexcept {
 
 TestSuite& TestSuite::run(TestRun test_run) noexcept {
     report(test_message::TestSuiteBegin{*this});
-    TestStatus test_status{TestStatus::PASS};
-    TestSize tests_passed{0};
-    TestSize tests_failed{0};
+    TestCase test_case{*this};
 
     if (test_run) {
-        TestCase test_case{*this};
 #if defined(UTEST_USE_EXCEPTIONS)
         try {
             test_run(test_case);
-            test_status = test_case.status();
         }
         catch (const std::exception& e) {
-            test_status = TestStatus::FAIL;
+            test_case.status(TestStatus::FAIL);
             report(test_message::TestSuiteException{*this, e.what()});
         }
         catch (...) {
-            test_status = TestStatus::FAIL;
+            test_case.status(TestStatus::FAIL);
             report(test_message::TestSuiteException{*this});
         }
 #else
         test_run(test_case);
-        test_status = test_case.status();
 #endif
-        tests_passed = test_case.passed();
-        tests_failed = test_case.failed();
     }
 
-    m_test_cases_passed += tests_passed;
-    m_test_cases_failed += tests_failed;
+    m_test_cases_passed += test_case.passed();
+    m_test_cases_failed += test_case.failed();
 
-    if (TestStatus::PASS == test_status) {
+    if (TestStatus::PASS == test_case.status()) {
         ++m_passed;
     }
     else {
         ++m_failed;
     }
 
-    report(test_message::TestSuiteEnd{*this, tests_passed, tests_failed});
+    report(test_message::TestSuiteEnd{*this,
+            test_case.passed(), test_case.failed()});
 
     return *this;
 }

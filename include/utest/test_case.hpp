@@ -124,6 +124,8 @@ private:
 
     void test_execute(TestParams& test_params, TestFunction test_run);
 
+    TestCase& status(TestStatus test_status) noexcept;
+
     TestSize passed() const noexcept;
 
     TestSize failed() const noexcept;
@@ -233,6 +235,12 @@ TestCase::line(TestSize number) noexcept -> TestCase& {
 inline auto
 TestCase::line() const noexcept -> TestSize {
     return m_line;
+}
+
+inline auto
+TestCase::status(TestStatus test_status) noexcept -> TestCase& {
+    m_status = test_status;
+    return *this;
 }
 
 inline auto
