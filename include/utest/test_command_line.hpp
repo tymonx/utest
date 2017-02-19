@@ -43,6 +43,7 @@
 #define UTEST_TEST_COMMAND_LINE_HPP
 
 #include <utest/test_string.hpp>
+#include <functional>
 
 namespace utest {
 
@@ -104,7 +105,7 @@ private:
 
     static const Command g_commands[];
 
-    TestWriter* m_writer;
+    std::reference_wrapper<TestWriter> m_writer;
     Arguments m_arguments{};
     bool m_no_valid{false};
 };
@@ -117,7 +118,7 @@ TestCommandLine::TestCommandLine(int argc, char* argv[]) noexcept :
 inline
 TestCommandLine::TestCommandLine(int argc, char* argv[],
         TestWriter& writer) noexcept :
-    m_writer{&writer}, m_arguments{argv, TestSize(argc)}
+    m_writer{writer}, m_arguments{argv, TestSize(argc)}
 {
     parsing();
 }
@@ -125,7 +126,7 @@ TestCommandLine::TestCommandLine(int argc, char* argv[],
 inline
 TestCommandLine::TestCommandLine(const Arguments& arguments,
         TestWriter& writer) noexcept :
-    m_writer{&writer}, m_arguments{arguments}
+    m_writer{writer}, m_arguments{arguments}
 {
     parsing();
 }
