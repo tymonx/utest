@@ -28,8 +28,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 set(CXX_SOURCES ${CXX_SOURCES}
-    udp.cpp
-    tcp.cpp
+    generic/udp.cpp
+    generic/tcp.cpp
+    PARENT_SCOPE
 )
-
-add_library(utest-writers OBJECT ${CXX_SOURCES})

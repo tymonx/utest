@@ -28,19 +28,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 set(CXX_SOURCES ${CXX_SOURCES}
-    udp.cpp
-    tcp.cpp
+    linux/udp.cpp
+    linux/tcp.cpp
+    PARENT_SCOPE
 )
-
-if (CMAKE_CXX_COMPILER_ID MATCHES GNU)
-    if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5.0)
-        set_source_files_properties(
-            udp.cpp
-            tcp.cpp
-            PROPERTIES
-            COMPILE_FLAGS "-Wno-missing-field-initializers"
-        )
-    endif()
-endif()
-
-add_library(utest-writers OBJECT ${CXX_SOURCES})

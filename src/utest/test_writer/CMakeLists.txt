@@ -27,12 +27,27 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-set(CXX_SOURCES
-    file.cpp
-)
+set(CXX_SOURCES)
 
 if (UNIX)
     add_subdirectory(linux)
 else()
     add_subdirectory(generic)
 endif()
+
+if (CMAKE_CXX_COMPILER_ID MATCHES GNU)
+    if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5.0)
+        set_source_files_properties(
+            linux/udp.cpp
+            linux/tcp.cpp
+            PROPERTIES
+            COMPILE_FLAGS "-Wno-missing-field-initializers"
+        )
+    endif()
+endif()
+
+set(CXX_SOURCES ${CXX_SOURCES}
+    file.cpp
+)
+
+add_library(utest-writers OBJECT ${CXX_SOURCES})

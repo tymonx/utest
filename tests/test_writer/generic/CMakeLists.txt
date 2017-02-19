@@ -34,9 +34,9 @@ add_executable(test_writer_tcp tcp.cpp)
 target_link_libraries(test_writer_tcp utest)
 
 if (DEFINED TEST_RUNNER)
-    add_test(NAME test_writer_udp COMMAND
+    add_test(NAME test_writer_udp COMMAND ${TEST_RUNNER}
         ${CMAKE_BINARY_DIR}/tests/test_writer_udp)
 
-    add_test(NAME test_writer_tcp COMMAND
+    add_test(NAME test_writer_tcp COMMAND ${TEST_RUNNER}
         ${CMAKE_BINARY_DIR}/tests/test_writer_tcp)
 endif()
