@@ -31,6 +31,8 @@ if (NOT CMAKE_CXX_COMPILER_ID MATCHES GNU)
     return()
 endif ()
 
+message(STATUS "${CMAKE_CXX_COMPILER_VERSION}")
+
 set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -std=c++11)
 
 if (NOT EXCEPTIONS)
@@ -220,6 +222,12 @@ endif()
 if (NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.6)
     set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS}
         -Wnoexcept
+    )
+endif()
+
+if (CMAKE_CXX_COMPILER_VERSION VERSION_EQUAL 4.9)
+    set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS}
+        -Wno-missing-field-initializers
     )
 endif()
 
