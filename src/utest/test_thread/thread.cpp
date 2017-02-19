@@ -62,7 +62,7 @@ void Generic::run(TestCase& test_case, TestCaseRun test_run,
     }
 }
 
-#elif
+#else
 
 void Generic::run(TestCase& test_case, TestCaseRun test_run,
         TestParams& test_params) noexcept {
