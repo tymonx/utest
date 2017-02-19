@@ -31,6 +31,8 @@ set(CXX_SOURCES)
 
 if (UNIX)
     add_subdirectory(linux)
+else()
+    add_subdirectory(generic)
 endif()
 
 add_library(utest-writers OBJECT

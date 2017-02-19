@@ -34,85 +34,30 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @file utest/test_writer/udp.hpp
+ * @file utest/test_writer/udp.cpp
  *
- * @brief Test writer interface
+ * @brief Test writer UDP implementation
  */
 
-#ifndef UTEST_TEST_WRITER_UDP_HPP
-#define UTEST_TEST_WRITER_UDP_HPP
+#include <utest/test_writer/udp.hpp>
 
-#include <utest/test_writer.hpp>
+using utest::TestString;
+using utest::test_writer::UDP;
 
-namespace utest {
-namespace test_writer {
+constexpr TestString UDP::DEFAULT_ADDRESS;
 
-class UDP final : public TestWriter {
-public:
-    using TestWriter::color;
-
-    static constexpr TestString DEFAULT_ADDRESS{"127.0.0.1"};
-    static constexpr TestSize   DEFAULT_PORT{8080};
-
-    UDP(UDP&& other) noexcept;
-
-    UDP& operator=(UDP&& other) noexcept;
-
-    UDP(TestSize port) noexcept;
-
-    UDP(const TestString& address = DEFAULT_ADDRESS,
-            TestSize port = DEFAULT_PORT) noexcept;
-
-    virtual ~UDP() noexcept override;
-private:
-    UDP(const UDP&) = delete;
-    UDP& operator=(const UDP&) = delete;
-
-    virtual void write(const TestString& str) noexcept override;
-
-    virtual void color(TestColor c) noexcept override;
-
-    template<typename T = void>
-    void context(T* ptr) noexcept;
-
-    template<typename T = void>
-    T* context() noexcept;
-
-    void* m_context{nullptr};
-};
-
-inline
-UDP::UDP(UDP&& other) noexcept :
-    m_context{other.context()}
-{
-    other.context<void>(nullptr);
+UDP::UDP(const TestString&, TestSize) noexcept {
+    /* Do nothing */
 }
 
-inline auto
-UDP::operator=(UDP&& other) noexcept -> UDP& {
-    if (this != &other) {
-        context(other.context());
-        other.context<void>(nullptr);
-    }
-    return *this;
+void UDP::write(const TestString&) noexcept {
+    /* Do nothing */
 }
 
-inline
-UDP::UDP(TestSize port) noexcept :
-    UDP{DEFAULT_ADDRESS, port}
-{ }
-
-template<typename T> inline void
-UDP::context(T* ptr) noexcept {
-    m_context = static_cast<void*>(ptr);
+void UDP::color(TestColor) noexcept {
+    /* Do nothing */
 }
 
-template<typename T> inline auto
-UDP::context() noexcept -> T* {
-    return static_cast<T*>(m_context);
+UDP::~UDP() noexcept {
+    /* Do nothing */
 }
-
-}
-}
-
-#endif /* UTEST_TEST_WRITER_UDP_HPP */

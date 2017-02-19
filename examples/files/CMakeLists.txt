@@ -27,9 +27,5 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-if (NOT UNIX)
-    return()
-endif()
-
 add_executable(example_files files.cpp)
 target_link_libraries(example_files utest)

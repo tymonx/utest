@@ -74,8 +74,6 @@ private:
 
     virtual void color(TestColor c) noexcept override;
 
-    void close() noexcept;
-
     template<typename T = void>
     void context(T* ptr) noexcept;
 

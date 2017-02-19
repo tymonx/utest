@@ -27,5 +27,16 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-add_executable(example_tcp tcp.cpp)
-target_link_libraries(example_tcp utest)
+add_executable(test_writer_udp udp.cpp)
+target_link_libraries(test_writer_udp utest)
+
+add_executable(test_writer_tcp tcp.cpp)
+target_link_libraries(test_writer_tcp utest)
+
+if (DEFINED TEST_RUNNER)
+    add_test(NAME test_writer_udp COMMAND
+        ${CMAKE_BINARY_DIR}/tests/test_writer_udp)
+
+    add_test(NAME test_writer_tcp COMMAND
+        ${CMAKE_BINARY_DIR}/tests/test_writer_tcp)
+endif()

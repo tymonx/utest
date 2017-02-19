@@ -27,5 +27,8 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-add_executable(example_tcp tcp.cpp)
-target_link_libraries(example_tcp utest)
+set(CXX_SOURCES ${CXX_SOURCES}
+    generic/udp.cpp
+    generic/tcp.cpp
+    PARENT_SCOPE
+)

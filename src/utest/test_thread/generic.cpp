@@ -40,45 +40,13 @@
  */
 
 #include <utest/test_thread/generic.hpp>
-#include <utest/test_exception.hpp>
 #include <utest/test_case.hpp>
 
-#if defined(UTEST_USE_THREADS)
-#include <thread>
-#include <functional>
-#endif
-
 using utest::test_thread::Generic;
-
-#if defined(UTEST_USE_THREADS) && defined(UTEST_USE_EXCEPTIONS)
-
-void Generic::run(TestCase& test_case, TestCaseRun test_run,
-        TestParams& test_params) noexcept {
-    try {
-        std::thread test(test_run, std::ref(test_case), std::ref(test_params));
-        try {
-            test.join();
-        } catch (...) { }
-    } catch (...) {
-        (test_case.*test_run)(test_params);
-    }
-}
-
-#elif defined(UTEST_USE_THREADS)
-
-void Generic::run(TestCase& test_case, TestCaseRun test_run,
-        TestParams& test_params) noexcept {
-    std::thread test(test_run, std::ref(test_case), std::ref(test_params));
-    test.join();
-}
-
-#else
 
 void Generic::run(TestCase& test_case, TestCaseRun test_run,
         TestParams& test_params) noexcept {
     (test_case.*test_run)(test_params);
 }
-
-#endif
 
 Generic::~Generic() noexcept { }

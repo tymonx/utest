@@ -100,7 +100,9 @@ void UDP::write(const TestString& str) noexcept {
                 sizeof(sockaddr_in));
         if (-1 == res) {
             perror("UDP");
-            close();
+            ::close(context<Socket>()->fd);
+            delete context<Socket>();
+            context<void>(nullptr);
         }
     }
 }
@@ -111,14 +113,10 @@ void UDP::color(TestColor c) noexcept {
     }
 }
 
-void UDP::close() noexcept {
+UDP::~UDP() noexcept {
     if (context()) {
         ::close(context<Socket>()->fd);
         delete context<Socket>();
     }
     context<void>(nullptr);
-}
-
-UDP::~UDP() noexcept {
-    close();
 }

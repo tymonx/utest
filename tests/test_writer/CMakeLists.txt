@@ -29,6 +29,8 @@
 
 if (UNIX)
     add_subdirectory(linux)
+else()
+    add_subdirectory(generic)
 endif()
 
 add_executable(test_writer_file file.cpp)

@@ -33,12 +33,12 @@ if (THREADS)
     find_package(Threads)
 
     if (CMAKE_THREAD_LIBS_INIT)
-        add_definitions(-DUTEST_USE_THREADS)
         set(CMAKE_EXE_LINKER_FLAGS
             "${CMAKE_EXE_LINKER_FLAGS} ${CMAKE_THREAD_LIBS_INIT}")
         message(STATUS "Threads enabled")
     else()
         message(WARNING "Threads not found")
+        set(THREADS OFF)
     endif()
 else()
     message(STATUS "Threads disabled")

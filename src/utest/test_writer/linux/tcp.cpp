@@ -113,7 +113,9 @@ void TCP::write(const TestString& str) noexcept {
         auto res = ::write(context<Socket>()->fd, str.data(), str.size());
         if (-1 == res) {
             perror("TCP");
-            close();
+            ::close(context<Socket>()->fd);
+            delete context<Socket>();
+            context<void>(nullptr);
         }
     }
 }
@@ -124,14 +126,10 @@ void TCP::color(TestColor c) noexcept {
     }
 }
 
-void TCP::close() noexcept {
+TCP::~TCP() noexcept {
     if (context()) {
         ::close(context<Socket>()->fd);
         delete context<Socket>();
     }
     context<void>(nullptr);
-}
-
-TCP::~TCP() noexcept {
-    close();
 }

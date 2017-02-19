@@ -27,6 +27,12 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-add_library(utest-threads OBJECT
-    generic.cpp
-)
+set(CXX_SOURCES)
+
+if (THREADS)
+    set(CXX_SOURCES ${CXX_SOURCES} thread.cpp)
+else()
+    set(CXX_SOURCES ${CXX_SOURCES} generic.cpp)
+endif()
+
+add_library(utest-threads OBJECT ${CXX_SOURCES})
