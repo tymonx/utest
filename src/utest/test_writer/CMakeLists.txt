@@ -29,7 +29,9 @@
 
 set(CXX_SOURCES)
 
-add_subdirectory(linux)
+if (UNIX)
+    add_subdirectory(linux)
+endif()
 
 add_library(utest-writers OBJECT
     file.cpp

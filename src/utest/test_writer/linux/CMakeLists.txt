@@ -27,12 +27,18 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-if (NOT UNIX)
-    return()
-endif()
-
 set(CXX_SOURCES ${CXX_SOURCES}
     linux/udp.cpp
     linux/tcp.cpp
     PARENT_SCOPE
 )
+
+if (CMAKE_CXX_COMPILER_ID MATCHES GNU AND
+        CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5.0)
+    set_source_files_properties(
+        udp.cpp
+        tcp.cpp
+        PROPERTIES
+        COMPILE_FLAGS "-Wno-missing-field-initializers"
+    )
+endif()
