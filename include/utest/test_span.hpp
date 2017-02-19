@@ -344,13 +344,13 @@ TestSpan<T>::crend() const noexcept -> const_reverse_iterator {
     return const_iterator{m_data - 1};
 }
 
-template<typename T1, typename T2> static inline bool
+template<typename T1, typename T2 = T1> static inline bool
 operator==(const TestSpan<T1>& lhs, const TestSpan<T2>& rhs) noexcept {
     return (lhs.size() == rhs.size())
         ? std::equal(lhs.cbegin(), lhs.cend(), rhs.cbegin()) : false;
 }
 
-template<typename T1, typename T2> static inline bool
+template<typename T1, typename T2 = T1> static inline bool
 operator!=(const TestSpan<T1>& lhs, const TestSpan<T2>& rhs) noexcept {
     return !(lhs == rhs);
 }

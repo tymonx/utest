@@ -39,15 +39,10 @@
  * @brief Main implementation
  */
 
+#include "test_utilities.hpp"
 #include <utest/utest.hpp>
 
 using namespace utest;
-
-#if defined(UTEST_USE_EXCEPTIONS)
-#define THROW(_throw_exception)   do {throw _throw_exception;} while(0)
-#else
-#define THROW(_throw_exception)   do { } while(0)
-#endif
 
 static TestRunner g([] (TestSuite& test_suite) {
     test_suite.file(__FILE__).line(__LINE__).fatal(false)
@@ -102,7 +97,9 @@ static TestRunner g([] (TestSuite& test_suite) {
 
         .name("floating").run([] (TestParams& p) {
             TestAssert{p}.equal(1.0, 1);
+            TestAssert{p}.equal(1.0f, 1);
             TestAssert{p}.equal(1.1, 1.1);
+            TestAssert{p}.equal(1.1f, 1.1f);
             TestAssert{p}.not_equal(1.6, 1.7);
             TestAssert{p}.less_than(-1.4, 1.3);
             TestAssert{p}.less_than_or_equal(-1.8, 1.9);
@@ -127,6 +124,28 @@ static TestRunner g([] (TestSuite& test_suite) {
             TestAssert{p}.equal("1.0e1", to_string(10.0, buffer));
             TestAssert{p}.equal("-1.0e1", to_string(-10.0, buffer));
             TestAssert{p}.equal("-1.0e-1", to_string(-0.10, buffer));
+        })
+
+        .name("array").run([] (TestParams& p) {
+            int array1[]{1, 2, 3, 4};
+            int array2[]{1, 2, 3, 4};
+            int array3[]{1, 2, 4, 3};
+
+            TestAssert{p}.equal(TestSpan<int>{array1}, array2);
+            TestAssert{p}.not_equal(TestSpan<int>{array1}, array3);
+        })
+
+        .name("union").run([] (TestParams& p) {
+            DummyUnion dummy{};
+
+            dummy.value = 4;
+            TestAssert{p}.is_true(dummy);
+            TestAssert{p}.equal(dummy, 4);
+
+            dummy.value = 0;
+            TestAssert{p}.is_false(dummy);
+            TestAssert{p}.not_equal(dummy, 4);
+            TestAssert{p}.equal(dummy, 0);
         })
 
         .name("exception").run([] (TestParams& p) {

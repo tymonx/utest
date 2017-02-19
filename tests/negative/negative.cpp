@@ -39,15 +39,10 @@
  * @brief Main implementation
  */
 
+#include "test_utilities.hpp"
 #include <utest/utest.hpp>
 
 using namespace utest;
-
-#if defined(UTEST_USE_EXCEPTIONS)
-#define THROW(_throw_exception)   do {throw _throw_exception;} while(0)
-#else
-#define THROW(_throw_exception)   do { } while(0)
-#endif
 
 struct DummyException { };
 
@@ -63,6 +58,10 @@ static TestRunner g([] (TestSuite& test_suite) {
 
         .name("fatal fail").run([] (TestParams& p) {
             TestAssert{p}.fatal(true).fail();
+        })
+
+        .name("no file").run([] (TestParams& p) {
+            TestAssert{p}.file(nullptr).fatal(true).fail();
         })
 
         .name("explanation").run([] (TestParams& p) {
@@ -102,10 +101,41 @@ static TestRunner g([] (TestSuite& test_suite) {
             TestAssert{p}.greater_than(-1, 1);
             TestAssert{p}.greater_than_or_equal(-1, 1);
             TestAssert{p}.greater_than_or_equal(0, 1);
+
+            TestAssert{p}.equal(static_cast<signed char>(1),
+                    static_cast<signed char>(2));
+
+            TestAssert{p}.equal(static_cast<unsigned char>(1),
+                    static_cast<unsigned char>(2));
+
+            TestAssert{p}.equal(static_cast<signed short>(1),
+                    static_cast<signed short>(2));
+
+            TestAssert{p}.equal(static_cast<unsigned short>(1),
+                    static_cast<unsigned short>(2));
+
+            TestAssert{p}.equal(static_cast<signed int>(1),
+                    static_cast<signed int>(2));
+
+            TestAssert{p}.equal(static_cast<unsigned int>(1),
+                    static_cast<unsigned int>(2));
+
+            TestAssert{p}.equal(static_cast<signed long>(1),
+                    static_cast<signed long>(2));
+
+            TestAssert{p}.equal(static_cast<unsigned long>(1),
+                    static_cast<unsigned long>(2));
+
+            TestAssert{p}.equal(static_cast<signed long long>(1),
+                    static_cast<signed long long>(2));
+
+            TestAssert{p}.equal(static_cast<unsigned long long>(1),
+                    static_cast<unsigned long long>(2));
         })
 
         .name("floating").run([] (TestParams& p) {
             TestAssert{p}.equal(1.0, 1.1);
+            TestAssert{p}.equal(1.0f, 1.1f);
             TestAssert{p}.equal(1.1, 0.9);
             TestAssert{p}.not_equal(1.7, 1.7);
             TestAssert{p}.less_than(1.4, -1.3);
@@ -126,6 +156,27 @@ static TestRunner g([] (TestSuite& test_suite) {
             TestAssert{p}.not_equal(TestString{"TEST"}.ignore_case(), "Test");
             TestAssert{p}.equal(5u, TestString::length("Test"));
             TestAssert{p}.equal("0.0", to_string(0.1, buffer));
+        })
+
+        .name("array").run([] (TestParams& p) {
+            int array1[]{1, 2, 3, 4};
+            int array2[]{1, 2, 3, 4};
+            int array3[]{1, 2, 4, 3};
+
+            TestAssert{p}.not_equal(TestSpan<int>{array1}, array2);
+            TestAssert{p}.equal(TestSpan<int>{array1}, array3);
+        })
+
+        .name("union").run([] (TestParams& p) {
+            DummyUnion dummy{};
+
+            dummy.value = 0;
+            TestAssert{p}.is_true(dummy);
+            TestAssert{p}.not_equal(dummy, 0);
+
+            dummy.value = 4;
+            TestAssert{p}.is_false(dummy);
+            TestAssert{p}.not_equal(dummy, 4);
         })
 
         .name("exception").run([] (TestParams& p) {

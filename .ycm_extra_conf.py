@@ -45,7 +45,8 @@ flags = [
 '-fexceptions',
 '-std=c++11',
 '-xc++',
-'-Iinclude'
+'-Iinclude',
+'-Itests/include'
 ]
 
 

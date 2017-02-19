@@ -488,7 +488,6 @@ void GoogleTest::write_value(const TestValue& value) noexcept {
     case TestValue::DOUBLE:
     case TestValue::ENUM:
     case TestValue::POINTER:
-    case TestValue::FUNCTION:
         write(value);
         break;
     default:

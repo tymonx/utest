@@ -33,9 +33,19 @@ add_executable(test_reporter_json
     ../negative/negative.cpp
 )
 
+add_executable(test_reporter_google_test
+    google_test.cpp
+    ../positive/positive.cpp
+    ../negative/negative.cpp
+)
+
 target_link_libraries(test_reporter_json utest)
+target_link_libraries(test_reporter_google_test utest)
 
 if (DEFINED TEST_RUNNER)
     add_test(NAME test_reporter_json COMMAND ${TEST_RUNNER}
         ${CMAKE_BINARY_DIR}/tests/test_reporter_json)
+
+    add_test(NAME test_reporter_google_test COMMAND ${TEST_RUNNER}
+        ${CMAKE_BINARY_DIR}/tests/test_reporter_google_test)
 endif()

@@ -34,7 +34,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @file json.cpp
+ * @file google_test.cpp
  *
  * @brief Main implementation
  */
@@ -42,40 +42,26 @@
 #include <utest/utest.hpp>
 
 #include <utest/test_writer/file.hpp>
-#include <utest/test_reporter/json.hpp>
+#include <utest/test_reporter/google_test.hpp>
 
-#include <cstdlib>
 #include <memory>
+#include <cstdlib>
 
 using namespace utest;
 
 int main() {
     test_writer::File out{stdout};
-    test_writer::File json_file[2]{
-        {"pretty.json"},
-        {"compact.json"}
-    };
+    test_writer::File file{"google_test.log"};
+    TestWriter* writers[][2]{{&out}, {&file}};
 
-    TestWriter* writers[][2]{
-        {
-            &out,
-            &json_file[0]
-        },
-        {
-            &json_file[1]
-        }
-    };
-
-    test_reporter::JSON json{writers[0]};
+    test_reporter::GoogleTest google_test{writers[0]};
 
     std::unique_ptr<TestReporter> reporter_ptr{
-        new test_reporter::JSON{writers[1]}
+        new test_reporter::GoogleTest{writers[1]}
     };
 
-    static_cast<test_reporter::JSON*>(reporter_ptr.get())->compact();
-
     TestReporter* reporters[]{
-        &json,
+        &google_test,
         reporter_ptr.get()
     };
 

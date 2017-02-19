@@ -110,9 +110,6 @@ TestString utest::to_string(TestValue::Type type) noexcept {
     case TestValue::ENUM:
         str = "enum";
         break;
-    case TestValue::FUNCTION:
-        str = "function";
-        break;
     case TestValue::UNION:
         str = "union";
         break;
@@ -169,7 +166,6 @@ TestString utest::to_string(const TestValue& value,
     case TestValue::UNION:
     case TestValue::OBJECT:
     case TestValue::POINTER:
-    case TestValue::FUNCTION:
         str = to_string(static_cast<const void*>(value), buffer);
         break;
     case TestValue::STRING:

@@ -486,7 +486,6 @@ JSON& JSON::value(const TestValue& val) noexcept {
     case TestValue::CHAR:
     case TestValue::STRING:
     case TestValue::POINTER:
-    case TestValue::FUNCTION:
         write("\"", val, "\"");
         break;
     case TestValue::ARRAY:

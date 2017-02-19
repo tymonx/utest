@@ -33,6 +33,8 @@ if (CMAKE_CXX_COMPILER_ID MATCHES Clang)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-global-constructors")
 endif()
 
+include_directories(include)
+
 add_subdirectory(positive)
 add_subdirectory(negative)
 add_subdirectory(fixture)

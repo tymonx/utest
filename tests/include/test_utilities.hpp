@@ -34,52 +34,48 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @file json.cpp
+ * @file test_utilities.hpp
  *
- * @brief Main implementation
+ * @brief Common utilities for tests
  */
 
-#include <utest/utest.hpp>
+#ifndef UTEST_TEST_UTILITIES_HPP
+#define UTEST_TEST_UTILITIES_HPP
 
-#include <utest/test_writer/file.hpp>
-#include <utest/test_reporter/json.hpp>
+#include <utest/test_size.hpp>
+#include <utest/test_span.hpp>
+#include <utest/test_exception.hpp>
 
-#include <cstdlib>
-#include <memory>
+#include <algorithm>
 
-using namespace utest;
+namespace utest {
 
-int main() {
-    test_writer::File out{stdout};
-    test_writer::File json_file[2]{
-        {"pretty.json"},
-        {"compact.json"}
-    };
-
-    TestWriter* writers[][2]{
-        {
-            &out,
-            &json_file[0]
-        },
-        {
-            &json_file[1]
-        }
-    };
-
-    test_reporter::JSON json{writers[0]};
-
-    std::unique_ptr<TestReporter> reporter_ptr{
-        new test_reporter::JSON{writers[1]}
-    };
-
-    static_cast<test_reporter::JSON*>(reporter_ptr.get())->compact();
-
-    TestReporter* reporters[]{
-        &json,
-        reporter_ptr.get()
-    };
-
-    Test{reporters}.run();
-
-    return EXIT_SUCCESS;
+template<typename T, TestSize N> bool
+operator==(const TestSpan<T>& lhs, const T (&rhs)[N]) {
+    return lhs.size() == N ? std::equal(lhs.cbegin(), lhs.cend(), rhs) : false;
 }
+
+template<typename T, TestSize N> bool
+operator!=(const TestSpan<T>& lhs, const T (&rhs)[N]) {
+    return !(lhs == rhs);
+}
+
+union DummyUnion {
+    int value;
+
+    operator bool() const noexcept { return !!value; }
+
+    bool operator==(int v) const noexcept { return value == v; }
+
+    bool operator!=(int v) const noexcept { return value != v; }
+};
+
+}
+
+#if defined(UTEST_USE_EXCEPTIONS)
+#define THROW(_throw_exception)   do {throw _throw_exception;} while(0)
+#else
+#define THROW(_throw_exception)   do { } while(0)
+#endif
+
+#endif /* UTEST_TEST_UTILITIES_HPP */

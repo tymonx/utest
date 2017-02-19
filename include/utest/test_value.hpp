@@ -44,7 +44,6 @@
 
 #include <utest/test_string.hpp>
 
-#include <string>
 #include <type_traits>
 
 namespace utest {
@@ -72,11 +71,6 @@ public:
         , int>::type;
 
     template<typename T>
-    using enable_function = typename std::enable_if<
-            std::is_function<T>::value
-        , unsigned int>::type;
-
-    template<typename T>
     using enable_floating_point = typename std::enable_if<
             std::is_floating_point<T>::value
         , long>::type;
@@ -101,7 +95,6 @@ public:
             !std::is_pointer<T>::value &&
             !std::is_function<T>::value &&
             !std::is_integral<T>::value &&
-            !std::is_same<T, std::string>::value &&
             !std::is_floating_point<T>::value &&
             !std::is_convertible<T, const char*>::value
         , long>::type;
@@ -127,7 +120,6 @@ public:
         ENUM,
         UNION,
         OBJECT,
-        FUNCTION,
         POINTER
     };
 
@@ -195,9 +187,6 @@ private:
     TestValue(const T& value) noexcept;
 
     template<typename T, enable_object<T> = 0>
-    TestValue(const T& value) noexcept;
-
-    template<typename T, enable_function<T> = 0>
     TestValue(const T& value) noexcept;
 
     Type m_type{NIL};
@@ -412,17 +401,12 @@ TestValue::TestValue(const T& value) noexcept :
 
 template<typename T, TestValue::enable_union<T>>
 TestValue::TestValue(const T& value) noexcept :
-    m_type{UNION}, m_size{sizeof(value)}, m_data{value}
+    m_type{UNION}, m_size{sizeof(value)}, m_data{&value}
 { }
 
 template<typename T, TestValue::enable_object<T>>
 TestValue::TestValue(const T& value) noexcept :
     m_type{OBJECT}, m_size{sizeof(value)}, m_data{&value}
-{ }
-
-template<typename T, TestValue::enable_function<T>>
-TestValue::TestValue(const T& value) noexcept :
-    m_type{FUNCTION}, m_size{sizeof(value)}, m_data{value}
 { }
 
 }
