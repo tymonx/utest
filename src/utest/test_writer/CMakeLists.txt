@@ -27,15 +27,12 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-set(CXX_SOURCES)
+set(CXX_SOURCES
+    file.cpp
+)
 
 if (UNIX)
     add_subdirectory(linux)
 else()
     add_subdirectory(generic)
 endif()
-
-add_library(utest-writers OBJECT
-    file.cpp
-    ${CXX_SOURCES}
-)
