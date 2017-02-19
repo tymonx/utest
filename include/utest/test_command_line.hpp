@@ -54,6 +54,8 @@ class TestCommandLine {
 public:
     using Arguments = TestSpan<char*>;
 
+    TestCommandLine() noexcept;
+
     TestCommandLine(const TestCommandLine& other) noexcept = default;
 
     TestCommandLine(TestCommandLine&& other) noexcept = default;
@@ -66,7 +68,7 @@ public:
 
     TestCommandLine(int argc, char* argv[], TestWriter& writer) noexcept;
 
-    TestCommandLine(const Arguments& arguments = {}) noexcept;
+    TestCommandLine(const Arguments& arguments) noexcept;
 
     TestCommandLine(const Arguments& arguments, TestWriter& writer) noexcept;
 

@@ -58,6 +58,10 @@ const TestCommandLine::Command TestCommandLine::g_commands[]{
     }
 };
 
+TestCommandLine::TestCommandLine() noexcept :
+    m_writer{TestWriter::get_default()}
+{ }
+
 TestCommandLine::TestCommandLine(const Arguments& arguments) noexcept :
     m_writer{TestWriter::get_default()},
     m_arguments{arguments}
