@@ -39,7 +39,7 @@
  * @brief Main implementation
  */
 
-#include "test_utilities.hpp"
+#include "utilities.hpp"
 #include <utest/utest.hpp>
 
 using namespace utest;

@@ -105,10 +105,10 @@ int main() {
     }
     {
         test_writer::UDP udp{"127.0.0.1"};
-        TestWriter* writers[]{&udp};
+        TestWriterReference writers[]{udp};
 
         test_reporter::GoogleTest google_test{writers};
-        TestReporter* reporters[]{&google_test};
+        TestReporterReference reporters[]{google_test};
 
         Test{reporters}.color().run();
     }

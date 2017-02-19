@@ -34,13 +34,13 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @file test_utilities.hpp
+ * @file utilities.hpp
  *
  * @brief Common utilities for tests
  */
 
-#ifndef UTEST_TEST_UTILITIES_HPP
-#define UTEST_TEST_UTILITIES_HPP
+#ifndef UTEST_UTILITIES_HPP
+#define UTEST_UTILITIES_HPP
 
 #include <utest/test_size.hpp>
 #include <utest/test_span.hpp>
@@ -78,4 +78,4 @@ union DummyUnion {
 #define THROW(_throw_exception)   do { } while(0)
 #endif
 
-#endif /* UTEST_TEST_UTILITIES_HPP */
+#endif /* UTEST_UTILITIES_HPP */

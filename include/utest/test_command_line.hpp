@@ -43,7 +43,7 @@
 #define UTEST_TEST_COMMAND_LINE_HPP
 
 #include <utest/test_string.hpp>
-#include <functional>
+#include <utest/test_utilities.hpp>
 
 namespace utest {
 
@@ -105,7 +105,7 @@ private:
 
     static const Command g_commands[];
 
-    std::reference_wrapper<TestWriter> m_writer;
+    TestWriterReference m_writer;
     Arguments m_arguments{};
     bool m_no_valid{false};
 };

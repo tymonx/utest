@@ -45,6 +45,7 @@
 #include <utest/test_status.hpp>
 #include <utest/test_value.hpp>
 #include <utest/test_exception.hpp>
+#include <utest/test_utilities.hpp>
 
 #include <limits>
 #include <cstddef>
@@ -197,7 +198,7 @@ private:
 
     void report_expected_throw(bool throws, const TestString& str = {}) noexcept;
 
-    TestParams& m_params;
+    TestReference<TestParams> m_params;
     TestString m_file{};
     TestSize m_line{0};
     TestStatus m_status{TestStatus::PASS};

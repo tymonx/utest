@@ -55,8 +55,8 @@
 using utest::Test;
 using utest::TestStatus;
 
-static std::array<utest::TestReporter*, 1> g_default{{
-    &utest::TestReporter::get_default()
+static std::array<utest::TestReporterReference, 1> g_default{{
+    utest::TestReporter::get_default()
 }};
 
 Test::Test() noexcept :
@@ -71,18 +71,14 @@ Test::Test(const TestReporters& test_reporters) noexcept :
 
 Test& Test::color(bool enable) noexcept {
     for (auto reporter : m_reporters) {
-        if (reporter) {
-            reporter->color(enable);
-        }
+        reporter.get().color(enable);
     }
     return *this;
 }
 
 void Test::report(const TestMessage& test_message) noexcept {
     for (auto reporter : m_reporters) {
-        if (reporter) {
-            reporter->report(test_message);
-        }
+        reporter.get().report(test_message);
     }
 }
 

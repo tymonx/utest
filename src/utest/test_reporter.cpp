@@ -47,8 +47,8 @@
 
 using utest::TestReporter;
 
-static std::array<utest::TestWriter*, 1> g_default{{
-    &utest::TestWriter::get_default()
+static std::array<utest::TestWriterReference, 1> g_default{{
+    utest::TestWriter::get_default()
 }};
 
 TestReporter& TestReporter::get_default() noexcept {
@@ -62,9 +62,7 @@ TestReporter::TestReporter() noexcept :
 
 void TestReporter::write_ex(const TestString& str) noexcept {
     for (auto writer : m_writers) {
-        if (writer) {
-            writer->write(str);
-        }
+        writer.get().write(str);
     }
 }
 
@@ -94,17 +92,13 @@ void TestReporter::write_ex(const void* ptr) noexcept {
 
 void TestReporter::color(bool enable) noexcept {
     for (auto writer : m_writers) {
-        if (writer) {
-            writer->color(enable);
-        }
+        writer.get().color(enable);
     }
 }
 
 void TestReporter::color(TestColor c) noexcept {
     for (auto writer : m_writers) {
-        if (writer) {
-            writer->color(c);
-        }
+        writer.get().color(c);
     }
 }
 

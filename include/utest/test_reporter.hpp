@@ -46,6 +46,7 @@
 #include <utest/test_string.hpp>
 #include <utest/test_color.hpp>
 #include <utest/test_value.hpp>
+#include <utest/test_utilities.hpp>
 
 #include <type_traits>
 
@@ -65,8 +66,6 @@ public:
     using enable_unsigned = typename std::enable_if<
             std::is_integral<T>::value && std::is_unsigned<T>::value
         , unsigned int>::type;
-
-    using TestWriters = TestSpan<TestWriter*>;
 
     static TestReporter& get_default() noexcept;
 

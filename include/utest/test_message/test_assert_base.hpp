@@ -44,6 +44,7 @@
 
 #include <utest/test_assert.hpp>
 #include <utest/test_message.hpp>
+#include <utest/test_utilities.hpp>
 
 namespace utest {
 namespace test_message {
@@ -59,28 +60,28 @@ protected:
     TestAssertBase(TestMessage::Type message_type,
             const TestAssert& test_assert) noexcept;
 private:
-    const TestAssert& m_test_assert;
+    TestReference<const TestAssert> m_test_assert;
 };
 
 inline
 TestAssertBase::TestAssertBase(TestMessage::Type message_type,
         const TestAssert& test_assert) noexcept :
-    TestMessage{message_type}, m_test_assert(test_assert)
+    TestMessage{message_type}, m_test_assert{test_assert}
 { }
 
 inline auto
 TestAssertBase::file() const noexcept -> const TestString& {
-    return m_test_assert.file();
+    return m_test_assert.get().file();
 }
 
 inline auto
 TestAssertBase::line() const noexcept -> TestSize {
-    return m_test_assert.line();
+    return m_test_assert.get().line();
 }
 
 inline auto
 TestAssertBase::status() const noexcept -> TestStatus {
-    return m_test_assert.status();
+    return m_test_assert.get().status();
 }
 
 template<> inline auto

@@ -46,6 +46,7 @@
 #include <utest/test_status.hpp>
 #include <utest/test_span.hpp>
 #include <utest/test_size.hpp>
+#include <utest/test_utilities.hpp>
 
 #include <cstddef>
 
@@ -61,7 +62,7 @@ class TestThread;
 
 class TestCase {
 public:
-    using TestReporters = TestSpan<TestReporter*>;
+    using TestReporters = TestSpan<TestReference<TestReporter>>;
     using TestFunction = void(*)(TestParams&);
     using TestContext = void*;
 
@@ -130,7 +131,7 @@ private:
 
     TestSize failed() const noexcept;
 
-    Test& m_test;
+    TestReference<Test> m_test;
     TestContext m_context{};
     TestFunction m_setup{};
     TestFunction m_teardown{};

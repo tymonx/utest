@@ -56,16 +56,16 @@ int main() {
     out.color(true);
     file2.color(true);
 
-    TestWriter* writers[]{
-        &out,
-        &file1,
-        &file2
+    TestWriterReference writers[]{
+        out,
+        file1,
+        file2
     };
 
     test_reporter::GoogleTest google_test{writers};
 
-    TestReporter* reporters[]{
-        &google_test
+    TestReporterReference reporters[]{
+        google_test
     };
 
     return TestStatus::PASS == Test{reporters}.run().status()

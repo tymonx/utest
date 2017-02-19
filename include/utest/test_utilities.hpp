@@ -34,37 +34,32 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @file tests/udp.cpp
+ * @file utest/test_utilities.hpp
  *
- * @brief Main implementation
+ * @brief Test utilities interface
  */
 
-#include <utest/utest.hpp>
-#include <utest/test_writer/udp.hpp>
-#include <utest/test_reporter/google_test.hpp>
+#ifndef UTEST_TEST_UTILITIES_HPP
+#define UTEST_TEST_UTILITIES_HPP
 
-#include <memory>
+#include <utest/test_span.hpp>
 
-using namespace utest;
+#include <functional>
 
-int main() {
-    {
-        test_writer::UDP udp{"127.0.0.1", 51234};
-    }
-    {
-        test_writer::UDP udp{"127.0.0.1"};
-        TestWriterReference writers[]{udp};
+namespace utest {
 
-        test_reporter::GoogleTest google_test{writers};
-        TestReporterReference reporters[]{google_test};
+class TestWriter;
+class TestReporter;
 
-        Test{reporters}.color().run();
-    }
-    {
-        std::unique_ptr<TestWriter> p{new test_writer::UDP{}};
-    }
+template<typename T>
+using TestReference = std::reference_wrapper<T>;
 
-    return EXIT_SUCCESS;
+using TestWriterReference = TestReference<TestWriter>;
+using TestWriters = TestSpan<TestWriterReference>;
+
+using TestReporterReference = TestReference<TestReporter>;
+using TestReporters = TestSpan<TestReporterReference>;
+
 }
 
-static TestRunner g([] (TestSuite&) { });
+#endif /* UTEST_TEST_UTILITIES_HPP */

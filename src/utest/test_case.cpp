@@ -52,7 +52,7 @@
 using utest::TestCase;
 
 TestCase::TestCase(TestSuite& test_suite) noexcept :
-    m_test(test_suite.m_test),
+    m_test{test_suite.m_test},
     m_context{test_suite.m_context},
     m_setup{test_suite.m_setup},
     m_teardown{test_suite.m_teardown},
@@ -75,7 +75,7 @@ void TestCase::test_execute(TestParams& test_params, TestFunction test_run) {
 }
 
 void TestCase::report(const TestMessage& test_message) noexcept {
-    m_test.report(test_message);
+    m_test.get().report(test_message);
 }
 
 void TestCase::run_setup(TestParams& test_params) noexcept {
@@ -139,14 +139,14 @@ TestCase& TestCase::run(TestFunction test_run) noexcept {
 
     report(test_message::TestCaseBegin{*this});
 
-    m_test.m_thread.run(*this, &TestCase::run_setup, test_params);
+    m_test.get().m_thread.get().run(*this, &TestCase::run_setup, test_params);
     report(test_message::TestCaseSetup{*this});
 
     if (TestStatus::PASS == m_status) {
-        m_test.m_thread.run(*this, &TestCase::run_test, test_params);
+        m_test.get().m_thread.get().run(*this, &TestCase::run_test, test_params);
     }
 
-    m_test.m_thread.run(*this, &TestCase::run_teardown, test_params);
+    m_test.get().m_thread.get().run(*this, &TestCase::run_teardown, test_params);
     report(test_message::TestCaseTeardown{*this});
 
     if (TestStatus::PASS == m_status) {

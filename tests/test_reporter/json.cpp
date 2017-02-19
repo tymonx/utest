@@ -56,27 +56,27 @@ int main() {
         {"compact.json"}
     };
 
-    TestWriter* writers[][2]{
-        {
-            &out,
-            &json_file[0]
-        },
-        {
-            &json_file[1]
-        }
+    TestWriterReference writers_1[]{
+        out,
+        json_file[0]
     };
 
-    test_reporter::JSON json{writers[0]};
+    TestWriterReference writers_2[]{
+        json_file[1]
+    };
+
+
+    test_reporter::JSON json{writers_1};
 
     std::unique_ptr<TestReporter> reporter_ptr{
-        new test_reporter::JSON{writers[1]}
+        new test_reporter::JSON{writers_2}
     };
 
     static_cast<test_reporter::JSON*>(reporter_ptr.get())->compact();
 
-    TestReporter* reporters[]{
-        &json,
-        reporter_ptr.get()
+    TestReporterReference reporters[]{
+        json,
+        *reporter_ptr
     };
 
     Test{reporters}.run();

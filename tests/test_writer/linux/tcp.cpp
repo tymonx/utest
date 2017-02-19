@@ -115,10 +115,10 @@ int main() {
     }
     {
         test_writer::TCP tcp{"127.0.0.1"};
-        TestWriter* writers[]{&tcp};
+        TestWriterReference writers[]{tcp};
 
         test_reporter::GoogleTest google_test{writers};
-        TestReporter* reporters[]{&google_test};
+        TestReporterReference reporters[]{google_test};
 
         Test{reporters}.color().run();
     }

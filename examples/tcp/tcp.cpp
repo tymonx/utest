@@ -53,15 +53,15 @@ int main() {
     test_writer::TCP udp{"127.0.0.1", 51234};
     test_writer::File out{stdout};
 
-    TestWriter* writers[]{
-        &out,
-        &udp
+    TestWriterReference writers[]{
+        out,
+        udp
     };
 
     test_reporter::GoogleTest google_test{writers};
 
-    TestReporter* reporters[]{
-        &google_test
+    TestReporterReference reporters[]{
+        google_test
     };
 
     return TestStatus::PASS == Test{reporters}.run().status()

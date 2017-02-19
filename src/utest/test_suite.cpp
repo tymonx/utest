@@ -50,12 +50,12 @@
 using utest::TestSuite;
 
 TestSuite::TestSuite(Test& test) noexcept :
-    m_test(test),
+    m_test{test},
     m_file{}
 { }
 
 void TestSuite::report(const TestMessage& test_message) noexcept {
-    m_test.report(test_message);
+    m_test.get().report(test_message);
 }
 
 TestSuite& TestSuite::run(TestRun test_run) noexcept {

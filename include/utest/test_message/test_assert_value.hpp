@@ -44,6 +44,7 @@
 
 #include <utest/test_message/test_assert_base.hpp>
 #include <utest/test_value.hpp>
+#include <utest/test_utilities.hpp>
 
 namespace utest {
 namespace test_message {
@@ -55,13 +56,13 @@ protected:
     TestAssertValue(TestMessage::Type message_type,
             const TestAssert& test_assert, const TestValue& value) noexcept;
 private:
-    const TestValue& m_value;
+    TestReference<const TestValue> m_value;
 };
 
 inline
 TestAssertValue::TestAssertValue(TestMessage::Type message_type,
         const TestAssert& test_assert, const TestValue& value) noexcept :
-    TestAssertBase{message_type, test_assert}, m_value(value)
+    TestAssertBase{message_type, test_assert}, m_value{value}
 { }
 
 template<> inline auto

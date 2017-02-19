@@ -55,26 +55,27 @@ int main() {
         {"compact.json"}
     };
 
-    TestWriter* writers[][2]{
-        {
-            &out,
-            &json_file[0]
-        },
-        {
-            &json_file[1]
-        }
+    TestWriterReference writer_1[]{
+        out,
+        json_file[0]
     };
 
+    TestWriterReference writer_2[]{
+        out,
+        json_file[0]
+    };
+
+
     test_reporter::JSON json[2]{
-        {writers[0]},
-        {writers[1]}
+        {writer_1},
+        {writer_2}
     };
 
     json[1].compact();
 
-    TestReporter* reporters[]{
-        &json[0],
-        &json[1]
+    TestReporterReference reporters[]{
+        json[0],
+        json[1]
     };
 
     return TestStatus::PASS == Test{reporters}.run().status()

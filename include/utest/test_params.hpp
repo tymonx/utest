@@ -45,6 +45,7 @@
 #include <utest/test_string.hpp>
 #include <utest/test_status.hpp>
 #include <utest/test_span.hpp>
+#include <utest/test_utilities.hpp>
 
 #include <cstddef>
 #include <csetjmp>
@@ -107,7 +108,7 @@ private:
 
     [[noreturn]] void jump() noexcept;
 
-    Test& m_test;
+    TestReference<Test> m_test;
     TestJumpBuffer m_jump_buffer{};
     TestContext* m_context{};
     TestString m_file{};

@@ -45,6 +45,7 @@
 #include <utest/test_span.hpp>
 #include <utest/test_status.hpp>
 #include <utest/test_command_line.hpp>
+#include <utest/test_utilities.hpp>
 
 namespace utest {
 
@@ -57,8 +58,6 @@ class TestThread;
 
 class Test {
 public:
-    using TestReporters = TestSpan<TestReporter*>;
-
     Test() noexcept;
 
     Test(const TestReporters& test_reporters) noexcept;
@@ -77,7 +76,7 @@ private:
 
     void report(const TestMessage& test_message) noexcept;
 
-    TestThread& m_thread;
+    TestReference<TestThread> m_thread;
     TestReporters m_reporters{};
     TestCommandLine m_command_line{};
     TestStatus m_status{TestStatus::PASS};

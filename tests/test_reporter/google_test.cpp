@@ -52,17 +52,18 @@ using namespace utest;
 int main() {
     test_writer::File out{stdout};
     test_writer::File file{"google_test.log"};
-    TestWriter* writers[][2]{{&out}, {&file}};
+    TestWriterReference writers_1[]{out};
+    TestWriterReference writers_2[]{file};
 
-    test_reporter::GoogleTest google_test{writers[0]};
+    test_reporter::GoogleTest google_test{writers_1};
 
     std::unique_ptr<TestReporter> reporter_ptr{
-        new test_reporter::GoogleTest{writers[1]}
+        new test_reporter::GoogleTest{writers_2}
     };
 
-    TestReporter* reporters[]{
-        &google_test,
-        reporter_ptr.get()
+    TestReporterReference reporters[]{
+        google_test,
+        *reporter_ptr
     };
 
     Test{reporters}.run();

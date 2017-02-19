@@ -88,7 +88,7 @@ TestString::TestString(value_type (&arr)[N]) noexcept :
     TestSpan{arr, N - 1}
 { }
 
-template<typename T, TestString::enable_null_terminated_string<T>> inline
+template<typename T, TestString::enable_null_terminated_string<T>>
 TestString::TestString(T str) noexcept :
     TestSpan{str, TestString::length(str)}
 { }

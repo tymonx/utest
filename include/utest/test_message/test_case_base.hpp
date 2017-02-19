@@ -44,6 +44,7 @@
 
 #include <utest/test_case.hpp>
 #include <utest/test_message.hpp>
+#include <utest/test_utilities.hpp>
 
 namespace utest {
 namespace test_message {
@@ -61,33 +62,33 @@ protected:
 
     TestStatus status() const noexcept;
 private:
-    const TestCase& m_test_case;
+    TestReference<const TestCase> m_test_case;
 };
 
 inline
 TestCaseBase::TestCaseBase(TestMessage::Type message_type,
         const TestCase& test_case) noexcept :
-    TestMessage{message_type}, m_test_case(test_case)
+    TestMessage{message_type}, m_test_case{test_case}
 { }
 
 inline auto
 TestCaseBase::name() const noexcept -> const TestString& {
-    return m_test_case.name();
+    return m_test_case.get().name();
 }
 
 inline auto
 TestCaseBase::file() const noexcept -> const TestString& {
-    return m_test_case.file();
+    return m_test_case.get().file();
 }
 
 inline auto
 TestCaseBase::line() const noexcept -> TestSize {
-    return m_test_case.line();
+    return m_test_case.get().line();
 }
 
 inline auto
 TestCaseBase::status() const noexcept -> TestStatus {
-    return m_test_case.status();
+    return m_test_case.get().status();
 }
 
 }
