@@ -53,9 +53,13 @@ class TestCommandLine {
 public:
     using Arguments = TestSpan<char*>;
 
-    TestCommandLine(const TestCommandLine& other) noexcept;
+    TestCommandLine(const TestCommandLine& other) noexcept = default;
 
-    TestCommandLine& operator=(const TestCommandLine& other) noexcept;
+    TestCommandLine(TestCommandLine&& other) noexcept = default;
+
+    TestCommandLine& operator=(const TestCommandLine& other) noexcept = default;
+
+    TestCommandLine& operator=(TestCommandLine&& other) noexcept = default;
 
     TestCommandLine(int argc, char* argv[]) noexcept;
 
@@ -100,17 +104,10 @@ private:
 
     static const Command g_commands[];
 
-    TestWriter& m_writer;
+    TestWriter* m_writer;
     Arguments m_arguments{};
     bool m_no_valid{false};
 };
-
-inline
-TestCommandLine::TestCommandLine(const TestCommandLine& other) noexcept :
-    m_writer(other.m_writer),
-    m_arguments{other.m_arguments},
-    m_no_valid{other.m_no_valid}
-{ }
 
 inline
 TestCommandLine::TestCommandLine(int argc, char* argv[]) noexcept :
@@ -120,7 +117,7 @@ TestCommandLine::TestCommandLine(int argc, char* argv[]) noexcept :
 inline
 TestCommandLine::TestCommandLine(int argc, char* argv[],
         TestWriter& writer) noexcept :
-    m_writer(writer), m_arguments{argv, TestSize(argc)}
+    m_writer{&writer}, m_arguments{argv, TestSize(argc)}
 {
     parsing();
 }
@@ -128,7 +125,7 @@ TestCommandLine::TestCommandLine(int argc, char* argv[],
 inline
 TestCommandLine::TestCommandLine(const Arguments& arguments,
         TestWriter& writer) noexcept :
-    m_writer(writer), m_arguments{arguments}
+    m_writer{&writer}, m_arguments{arguments}
 {
     parsing();
 }

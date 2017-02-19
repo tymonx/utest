@@ -59,24 +59,14 @@ const TestCommandLine::Command TestCommandLine::g_commands[]{
 };
 
 TestCommandLine::TestCommandLine(const Arguments& arguments) noexcept :
-    m_writer(TestWriter::get_default()),
+    m_writer{&TestWriter::get_default()},
     m_arguments{arguments}
 {
     parsing();
 }
 
-TestCommandLine& TestCommandLine::operator=(
-        const TestCommandLine& other) noexcept {
-    if (this != &other) {
-        m_writer = other.m_writer;
-        m_arguments = other.m_arguments;
-        m_no_valid = other.m_no_valid;
-    }
-    return *this;
-}
-
 void TestCommandLine::write(const TestString& str) noexcept {
-    m_writer.write(str);
+    m_writer->write(str);
 }
 
 TestSize TestCommandLine::get_arguments_length(
