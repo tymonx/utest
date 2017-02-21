@@ -62,9 +62,15 @@ public:
 
     Test(const TestReporters& test_reporters) noexcept;
 
-    Test& run() noexcept;
+    Test(int argc, char* argv[]) noexcept;
+
+    Test(const TestCommandLine& test_command_line) noexcept;
+
+    Test& command_line(int argc, char* argv[]) noexcept;
 
     Test& command_line(const TestCommandLine& test_command_line) noexcept;
+
+    Test& run() noexcept;
 
     TestStatus status() const noexcept;
 
@@ -82,10 +88,20 @@ private:
     TestStatus m_status{TestStatus::PASS};
 };
 
+inline
+Test::Test(int argc, char* argv[]) noexcept :
+    Test{{argc, argv}}
+{ }
+
 inline auto
 Test::command_line(const TestCommandLine& test_command_line) noexcept -> Test& {
     m_command_line = test_command_line;
     return *this;
+}
+
+inline auto
+Test::command_line(int argc, char* argv[]) noexcept -> Test& {
+    return command_line({argc, argv});
 }
 
 inline auto

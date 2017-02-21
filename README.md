@@ -103,7 +103,7 @@ Main example with multi writers:
 
 using namespace utest;
 
-int main() {
+int main(int argc, char* argv[]) {
     test_writer::UDP udp{"127.0.0.1", 51234};
     test_writer::File out{stdout};
 
@@ -118,7 +118,7 @@ int main() {
         google_test
     };
 
-    return TestStatus::PASS == Test{reporters}.run().status()
+    return TestStatus::PASS == Test{argc, argv}.run().status()
         ? EXIT_SUCCESS : EXIT_FAILURE;
 }
 ```

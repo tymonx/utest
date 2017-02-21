@@ -64,6 +64,12 @@ Test::Test() noexcept :
     m_reporters{g_default}
 { }
 
+Test::Test(const TestCommandLine& test_command_line) noexcept :
+    m_thread(TestThread::get_default()),
+    m_reporters{g_default},
+    m_command_line{test_command_line}
+{ }
+
 Test::Test(const TestReporters& test_reporters) noexcept :
     m_thread(TestThread::get_default()),
     m_reporters{test_reporters}

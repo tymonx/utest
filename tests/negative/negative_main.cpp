@@ -45,7 +45,7 @@
 
 using namespace utest;
 
-int main() {
-    return TestStatus::FAIL == Test{}.color().run().status()
+int main(int argc, char* argv[]) {
+    return TestStatus::FAIL == Test{argc, argv}.color().run().status()
         ? EXIT_SUCCESS : EXIT_FAILURE;
 }
